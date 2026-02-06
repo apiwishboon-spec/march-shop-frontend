@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Success</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="container center">
+
+    <h1>Order submitted 🎉</h1>
+    <p class="subtitle">Check your email for payment</p>
+
+    <div class="card" style="padding:20px; display:inline-block">
+      <div class="small">Order code</div>
+      <div id="code" style="font-size:1.4rem;font-family:monospace"></div>
+    </div>
+
+    <br><br>
+
+    <button class="btn-outline" onclick="location.href='index.html'">
+      Continue shopping
+    </button>
+
+  </div>
+
+  <script>
+    document.getElementById("code").textContent =
+      new URLSearchParams(location.search).get("id");
+  </script>
+</body>
+</html>

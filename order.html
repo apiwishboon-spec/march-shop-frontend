@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Order</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="container">
+
+    <h1>Complete order</h1>
+    <p class="subtitle" id="item-text"></p>
+
+    <div id="error" class="error" style="display:none"></div>
+
+    <input id="email" placeholder="Email address">
+    <input id="phone" placeholder="Phone number">
+    <input id="qty" type="number" min="1" value="1">
+
+    <button class="btn-primary" onclick="submitOrder()">
+      Submit order
+    </button>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
