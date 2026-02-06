@@ -9,76 +9,48 @@
 <body>
   <div class="container">
 
-    <h1>Complete order</h1>
+    <h1 class="brand">
+      <span class="brand-gradient">Art&Ink Studio</span>
+    </h1>
+
     <p class="subtitle" id="item-text"></p>
 
     <div id="error" class="error" style="display:none"></div>
 
-    <!-- Email -->
     <label class="label">
       Email address
-      <input
-        id="email"
-        type="email"
-        placeholder="you@example.com"
-      >
+      <input id="email" type="email" placeholder="you@example.com">
     </label>
 
-    <!-- Phone -->
     <label class="label">
       Phone number
-      <input
-        id="phone"
-        type="tel"
-        placeholder="xxx-xxx-xxxx"
-      >
+      <input id="phone" type="tel" placeholder="xxx-xxx-xxxx">
     </label>
 
-    <!-- Quantity -->
     <label class="label">
       Quantity
-      <input
-        id="qty"
-        type="number"
-        min="1"
-        value="1"
-      >
-      <span class="hint">
-        Number of items you want to order
-      </span>
+      <input id="qty" type="number" min="1" value="1">
+      <span class="hint">Number of items you want</span>
     </label>
 
-    <!-- Buttons -->
     <div class="button-row">
-      <button class="btn-secondary" onclick="cancelOrder()">
-        Cancel
-      </button>
-
-      <button class="btn-primary" onclick="submitOrder()">
-        Submit order
-      </button>
+      <button class="btn-secondary" onclick="cancelOrder()">Cancel</button>
+      <button class="btn-primary" onclick="submitOrder()">Submit order</button>
     </div>
 
   </div>
 
   <script src="app.js"></script>
-
   <script>
-    // show item name so user feels confident
     const item = localStorage.getItem("item");
     const price = localStorage.getItem("price");
-
     if (item && price) {
       document.getElementById("item-text").textContent =
         `${item} — ฿${price} each`;
     }
 
     function cancelOrder() {
-      // clear selected product
-      localStorage.removeItem("item");
-      localStorage.removeItem("price");
-
-      // go back to shop
+      localStorage.clear();
       location.href = "index.html";
     }
   </script>
