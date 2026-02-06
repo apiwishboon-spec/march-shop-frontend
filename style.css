@@ -10,17 +10,20 @@ body {
 
 /* ===== BRAND ===== */
 .brand {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 6px;
-}
+  font-weight: 800;
+  letter-spacing: -0.02em;
 
-.brand-gradient {
-  background: linear-gradient(90deg, #f6a6c1, #9cc9ff);
+  /* RESPONSIVE SIZE = big on desktop, comfy on mobile */
+  font-size: clamp(2.4rem, 7vw, 3.6rem);
+
+  /* Gradient: light pink → blue */
+  background: linear-gradient(90deg, #f9a8d4, #93c5fd);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 18px rgba(156,201,255,.25);
+
+  margin-bottom: 0.5rem;
 }
+
 
 /* ===== LAYOUT ===== */
 .container {
