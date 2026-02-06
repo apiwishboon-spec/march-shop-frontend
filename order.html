@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ART&INK - Order</title>
+  <title>Art&Ink Studio – Order</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -14,16 +14,73 @@
 
     <div id="error" class="error" style="display:none"></div>
 
-    <input id="email" placeholder="Email address">
-    <input id="phone" placeholder="Phone number">
-    <input id="qty" type="number" min="1" value="1">
+    <!-- Email -->
+    <label class="label">
+      Email address
+      <input
+        id="email"
+        type="email"
+        placeholder="you@example.com"
+      >
+    </label>
 
-    <button class="btn-primary" onclick="submitOrder()">
-      Submit order
-    </button>
+    <!-- Phone -->
+    <label class="label">
+      Phone number
+      <input
+        id="phone"
+        type="tel"
+        placeholder="xxx-xxx-xxxx"
+      >
+    </label>
+
+    <!-- Quantity -->
+    <label class="label">
+      Quantity
+      <input
+        id="qty"
+        type="number"
+        min="1"
+        value="1"
+      >
+      <span class="hint">
+        Number of items you want to order
+      </span>
+    </label>
+
+    <!-- Buttons -->
+    <div class="button-row">
+      <button class="btn-secondary" onclick="cancelOrder()">
+        Cancel
+      </button>
+
+      <button class="btn-primary" onclick="submitOrder()">
+        Submit order
+      </button>
+    </div>
 
   </div>
 
   <script src="app.js"></script>
+
+  <script>
+    // show item name so user feels confident
+    const item = localStorage.getItem("item");
+    const price = localStorage.getItem("price");
+
+    if (item && price) {
+      document.getElementById("item-text").textContent =
+        `${item} — ฿${price} each`;
+    }
+
+    function cancelOrder() {
+      // clear selected product
+      localStorage.removeItem("item");
+      localStorage.removeItem("price");
+
+      // go back to shop
+      location.href = "index.html";
+    }
+  </script>
 </body>
 </html>
