@@ -2,22 +2,25 @@
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ART&INK - Success</title>
+  <title>ART&INK – Success</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
   <div class="container center">
 
-    <h1>Order submitted 🎉</h1>
-    <p class="subtitle">Check your email for payment</p>
+    <h1 class="brand">
+      <span class="brand-gradient">Order submitted 🎉</span>
+    </h1>
 
-    <div class="card" style="padding:20px; display:inline-block">
+    <p class="subtitle">Check your email for payment instructions</p>
+
+    <div class="card glow-box">
       <div class="small">Order code</div>
-      <div id="code" style="font-size:1.4rem;font-family:monospace"></div>
+      <div id="code" class="order-code"></div>
     </div>
 
-    <br><br>
+    <br>
 
     <button class="btn-outline" onclick="location.href='index.html'">
       Continue shopping
