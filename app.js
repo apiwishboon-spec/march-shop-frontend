@@ -26,7 +26,7 @@ function submitOrder() {
     quantity: qty
   };
 
-  fetch("https://script.google.com/macros/library/d/1Xu1iWHjggv1WQMAvmqHIOkX6JfHiskELkCFoa8y4fafxDRdZlDFy0nDu/26", {
+  fetch("https://script.google.com/macros/s/AKfycbwKYXw52HpjFeKPBwkXpRc7PpiP6itwKkPXnATmmAAAaZFJW7c0Hm0MlpqdgmWRKfrXLg/exec", {
     method: "POST",
     body: JSON.stringify(payload)
   })
@@ -40,4 +40,5 @@ function submitOrder() {
       error.style.display = "block";
     });
 }
+
 
