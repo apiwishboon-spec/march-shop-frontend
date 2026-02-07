@@ -39,7 +39,6 @@ h1 {
   letter-spacing: -0.04em;
   margin: 14px 0 10px;
 
-  /* Suankularb Pink → Sky Blue */
   background: linear-gradient(
     90deg,
     #f3a6c8 0%,
@@ -90,10 +89,7 @@ h1 {
   border: 1px solid #e5e5e5;
   border-radius: 26px;
   overflow: hidden;
-
-  transition:
-    transform 0.25s ease,
-    box-shadow 0.25s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .card:hover {
@@ -135,10 +131,7 @@ button {
   font-size: 0.9rem;
   border-radius: 999px;
   padding: 12px 18px;
-  transition:
-    background 0.2s ease,
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 button:active {
@@ -155,15 +148,6 @@ button:active {
   box-shadow: 0 10px 26px rgba(0,0,0,0.18);
 }
 
-.btn-secondary {
-  background: #e5e7eb;
-  color: #171717;
-}
-
-.btn-secondary:hover {
-  background: #d1d5db;
-}
-
 .btn-outline {
   background: white;
   border: 1px solid #d4d4d4;
@@ -174,82 +158,27 @@ button:active {
 }
 
 /* =====================
-   FORMS
-===================== */
-label {
-  display: block;
-  font-size: 0.85rem;
-  color: #525252;
-  margin-bottom: 10px;
-}
-
-input {
-  width: 100%;
-  padding: 13px 15px;
-  margin-top: 6px;
-  border-radius: 16px;
-  border: 1px solid #d4d4d4;
-  font-size: 0.9rem;
-  background: white;
-
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-input:focus {
-  outline: none;
-  border-color: #9ecbff;
-  box-shadow:
-    0 0 0 3px rgba(158,203,255,0.35);
-}
-
-.hint {
-  display: block;
-  font-size: 0.72rem;
-  color: #9ca3af;
-  margin-top: 6px;
-}
-
-.error {
-  color: #dc2626;
-  font-size: 0.85rem;
-  margin-bottom: 12px;
-}
-
-/* =====================
-   BUTTON ROW
-===================== */
-.button-row {
-  display: flex;
-  gap: 12px;
-  margin-top: 12px;
-}
-
-/* =====================
-   SUCCESS CARD
-===================== */
-.card.inline {
-  display: inline-block;
-  padding: 22px;
-}
-
-/* =====================
-   PRIVACY POLICY MODAL
+   PRIVACY MODAL (SMOOTH AF)
 ===================== */
 .overlay {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.45);
   backdrop-filter: blur(8px);
+
   display: flex;
   align-items: center;
   justify-content: center;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
   z-index: 9999;
 }
 
-.overlay.hidden {
-  display: none;
+.overlay.show {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .modal-card {
@@ -259,43 +188,27 @@ input:focus {
   padding: 26px;
   border-radius: 22px;
   box-shadow: 0 40px 90px rgba(0,0,0,0.3);
-  animation: modalPop 0.25s ease-out;
+
+  transform: scale(0.95) translateY(12px);
+  opacity: 0;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.overlay.show .modal-card {
+  transform: scale(1) translateY(0);
+  opacity: 1;
 }
 
 .modal-card h2 {
   margin-top: 0;
   font-size: 1.35rem;
-
-  background: linear-gradient(
-    90deg,
-    #f3a6c8,
-    #9ecbff
-  );
+  background: linear-gradient(90deg, #f3a6c8, #9ecbff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.modal-card p {
+.modal-card p,
+.modal-card li {
   font-size: 0.9rem;
   line-height: 1.6;
-}
-
-.modal-card ul {
-  padding-left: 18px;
-}
-
-.modal-card li {
-  margin-bottom: 8px;
-  font-size: 0.88rem;
-}
-
-@keyframes modalPop {
-  from {
-    transform: scale(0.95) translateY(12px);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1) translateY(0);
-    opacity: 1;
-  }
 }
