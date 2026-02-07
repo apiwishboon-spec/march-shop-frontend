@@ -1,9 +1,20 @@
+/***************************************
+ * ART&INK STUDIO – FRONTEND LOGIC
+ * Clean UX • Anti-double-submit • Spinner
+ ***************************************/
+
+/* =====================
+   GO TO ORDER PAGE
+===================== */
 function goOrder(item, price) {
   localStorage.setItem("item", item);
   localStorage.setItem("price", price);
   location.href = "order.html";
 }
 
+/* =====================
+   SUBMIT ORDER
+===================== */
 let isSubmitting = false; // 🔒 anti-double-submit flag
 
 function submitOrder() {
@@ -17,16 +28,25 @@ function submitOrder() {
 
   error.style.display = "none";
 
+  // 🧪 basic validation (keep it sane)
   if (!email.includes("@")) {
-    error.textContent = "Invalid email";
+    error.textContent = "Invalid email address";
     error.style.display = "block";
     return;
   }
 
-  // 🔥 LOCK THE BUTTON
+  if (!qty || qty < 1) {
+    error.textContent = "Quantity must be at least 1";
+    error.style.display = "block";
+    return;
+  }
+
+  /* ===== LOCK UI ===== */
   isSubmitting = true;
   submitBtn.disabled = true;
-  submitBtn.textContent = "Submitting…";
+
+  // 🔄 swap text → spinner
+  submitBtn.innerHTML = `<div class="spinner"></div>`;
 
   const payload = {
     email,
@@ -40,17 +60,22 @@ function submitOrder() {
     "https://script.google.com/macros/s/AKfycbwKYXw52HpjFeKPBwkXpRc7PpiP6itwKkPXnATmmAAAaZFJW7c0Hm0MlpqdgmWRKfrXLg/exec",
     {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify(payload)
     }
   )
     .then(r => r.json())
     .then(res => {
       if (!res.success) throw new Error(res.message);
+
+      // ✅ SUCCESS → redirect
       location.href = `success.html?id=${res.data.orderId}`;
     })
     .catch(err => {
-      // ❌ if error, unlock button
-      error.textContent = err.message;
+      // ❌ ERROR → unlock UI
+      error.textContent = err.message || "Order failed. Please try again.";
       error.style.display = "block";
 
       isSubmitting = false;
