@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,12 +11,16 @@
 
   <div class="container center">
 
-    <h1>ART&INK</h1>
+    <!-- BRAND -->
+    <h1 class="brand">
+      <span class="brand-gradient">ART&INK</span>
+    </h1>
 
     <p class="subtitle">
       Limited artwork screen-printed shirts
     </p>
 
+    <!-- PRODUCTS -->
     <div class="grid">
 
       <div class="card">
@@ -24,7 +29,8 @@
           <h3>Abstract Line Art Tee</h3>
           <p>Minimalist line artwork. Screen-printed on premium cotton.</p>
           <strong>฿590</strong><br><br>
-          <button class="btn-primary" onclick="goOrder('Abstract Line Art Tee', 590)">
+          <button class="btn-primary"
+            onclick="goOrder('Abstract Line Art Tee', 590)">
             Order
           </button>
         </div>
@@ -36,41 +42,71 @@
           <h3>Cyber Geometry Tee</h3>
           <p>Futuristic geometric artwork. Hand-finished print.</p>
           <strong>฿650</strong><br><br>
-          <button class="btn-primary" onclick="goOrder('Cyber Geometry Tee', 650)">
+          <button class="btn-primary"
+            onclick="goOrder('Cyber Geometry Tee', 650)">
             Order
           </button>
         </div>
       </div>
 
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1503342217505-b0a15ec3261c">
+        <div class="card-body">
+          <h3>Monochrome Art Tee</h3>
+          <p>High-contrast artwork. Matte black ink.</p>
+          <strong>฿620</strong><br><br>
+          <button class="btn-primary"
+            onclick="goOrder('Monochrome Art Tee', 620)">
+            Order
+          </button>
+        </div>
+      </div>
+
+      <div class="card coming-soon">
+        <img src="https://images.squarespace-cdn.com/content/v1/62588c633f5e973c79f762d6/1684871690589-I8MTBUOPW70YTDL8FA9B/White+Cherry+Tshirt-Back+for+web.png?format=1000w">
+        <div class="card-body">
+          <h3>Artist Collab Tee</h3>
+          <p>Limited collaboration. Coming soon.</p>
+        </div>
+      </div>
+
     </div>
 
+    <!-- FOOTER -->
     <p class="small" style="margin-top:32px">
-      All shirts are screen-printed in limited quantities.<br>
-      <a href="#" onclick="openPrivacy()">Privacy Policy</a>
+      All shirts are screen-printed in limited quantities.
+      <br>
+      <a href="#" class="privacy-link" onclick="openPrivacy()">Privacy Policy</a>
     </p>
 
   </div>
 
-  <!-- PRIVACY MODAL -->
-  <div id="privacy-overlay" class="overlay">
+  <!-- ===== PRIVACY MODAL ===== -->
+  <div id="privacy-overlay" class="overlay hidden">
     <div class="modal-card">
+
       <h2>Privacy Policy</h2>
 
       <p>
-        ART&INK Studio collects only the information required to process orders:
+        At <strong>ART&INK Studio</strong>, we respect your privacy.
+        We only collect information required to process your order.
       </p>
 
       <ul>
-        <li>Email address</li>
-        <li>Phone number</li>
-        <li>Order details</li>
+        <li>Email address – order confirmation & updates</li>
+        <li>Phone number – delivery or pickup contact</li>
+        <li>Order details – item, quantity, order code</li>
       </ul>
 
       <p>
-        We do not sell, share, or use your data for marketing. Period.
+        Your data is <strong>never sold</strong>, shared, or used for marketing.
+        All information is used only for order processing.
       </p>
 
-      <button class="btn-outline" onclick="closePrivacy()">Close</button>
+      <button class="btn-outline" onclick="closePrivacy()">
+        Close
+      </button>
+
     </div>
   </div>
 
@@ -78,13 +114,15 @@
 
   <script>
     function openPrivacy() {
-      document.getElementById("privacy-overlay").classList.add("show");
+      document.getElementById("privacy-overlay").classList.remove("hidden");
     }
 
     function closePrivacy() {
-      document.getElementById("privacy-overlay").classList.remove("show");
+      document.getElementById("privacy-overlay").classList.add("hidden");
     }
   </script>
 
 </body>
 </html>
+
+
