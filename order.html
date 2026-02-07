@@ -35,7 +35,14 @@
 
     <div class="button-row">
       <button class="btn-secondary" onclick="cancelOrder()">Cancel</button>
-      <button class="btn-primary" onclick="submitOrder()">Submit order</button>
+
+      <!-- IMPORTANT: give button an ID -->
+      <button
+        id="submitBtn"
+        class="btn-primary"
+        onclick="submitOrder()">
+        Submit order
+      </button>
     </div>
 
   </div>
@@ -44,6 +51,7 @@
   <script>
     const item = localStorage.getItem("item");
     const price = localStorage.getItem("price");
+
     if (item && price) {
       document.getElementById("item-text").textContent =
         `${item} — ฿${price} each`;
