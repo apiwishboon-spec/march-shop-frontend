@@ -35,7 +35,15 @@
 
     <div class="button-row">
       <button class="btn-secondary" onclick="cancelOrder()">Cancel</button>
-      <button class="btn-primary" onclick="submitOrder()">Submit order</button>
+      <button
+        class="btn-primary"
+        id="submitBtn"
+        onclick="submitOrder()"
+      >
+        <span class="btn-text">Submit order</span>
+        <span class="btn-loader"></span>
+      </button>
+
     </div>
 
   </div>
