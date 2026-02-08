@@ -5,10 +5,14 @@ function goOrder(item, price) {
 }
 
 function submitOrder() {
+  const submitBtn = document.getElementById("submitBtn");
   const email = document.getElementById("email").value.trim();
   const phone = document.getElementById("phone").value.trim();
   const qty = Number(document.getElementById("qty").value);
   const error = document.getElementById("error");
+
+  // 🚫 stop double-click spam
+  if (submitBtn.disabled) return;
 
   error.style.display = "none";
 
@@ -17,6 +21,10 @@ function submitOrder() {
     error.style.display = "block";
     return;
   }
+
+  // 🔒 LOCK UI
+  submitBtn.disabled = true;
+  submitBtn.classList.add("loading");
 
   const payload = {
     email,
@@ -33,13 +41,21 @@ function submitOrder() {
     .then(r => r.json())
     .then(res => {
       if (!res.success) throw new Error(res.message);
+
+      // 🏁 success = redirect, never re-enable
       location.href = `success.html?id=${res.data.orderId}`;
     })
     .catch(err => {
       error.textContent = err.message;
       error.style.display = "block";
+
+      // 🔓 unlock ONLY if failed
+      submitBtn.disabled = false;
+      submitBtn.classList.remove("loading");
     });
 }
+
+
 
 
 
