@@ -8,6 +8,8 @@
 </head>
 
 <body>
+  <canvas id="confetti"></canvas>
+
   <div class="container center">
 
     <h1 class="brand">
@@ -33,5 +35,62 @@
     document.getElementById("code").textContent =
       new URLSearchParams(location.search).get("id");
   </script>
+  
+  <script>
+  const canvas = document.getElementById("confetti");
+  const ctx = canvas.getContext("2d");
+
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const colors = ["#f3a6c8", "#d9b7ee", "#9ecbff", "#fde68a"];
+  const pieces = [];
+
+  function createConfetti() {
+    for (let i = 0; i < 120; i++) {
+      pieces.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * -canvas.height,
+        r: Math.random() * 6 + 4,
+        dY: Math.random() * 3 + 2,
+        dX: (Math.random() - 0.5) * 2,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        life: 200
+      });
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    pieces.forEach((p, i) => {
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+
+      p.y += p.dY;
+      p.x += p.dX;
+      p.life--;
+
+      if (p.life <= 0) pieces.splice(i, 1);
+    });
+
+    if (pieces.length > 0) {
+      requestAnimationFrame(draw);
+    }
+  }
+
+  // 🎉 launch sequence
+  createConfetti();
+  draw();
+
+  // resize safety
+  window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+</script>
+
 </body>
 </html>
