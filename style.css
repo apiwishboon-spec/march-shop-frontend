@@ -364,4 +364,14 @@ input:focus {
 }
 
 
+.site-footer {
+  margin-top: 40px;
+  padding: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #888;
+  opacity: 0.8;
+}
+
+
 
