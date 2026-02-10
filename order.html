@@ -17,6 +17,7 @@
 
     <div id="error" class="error" style="display:none"></div>
 
+    <!-- CONTACT INFO -->
     <label class="label">
       Email address
       <input id="email" type="email" placeholder="you@example.com">
@@ -33,8 +34,43 @@
       <span class="hint">Number of items you want</span>
     </label>
 
+    <!-- PAYMENT -->
+    <div class="payment-box">
+      <h3>Scan to Pay</h3>
+      <img
+        src="https://raw.githubusercontent.com/apiwishboon-spec/runcatcher/refs/heads/main/static/spornserme.png"
+        alt="QR Payment"
+        class="qr-img"
+      />
+      <p class="hint">
+        Scan the QR, complete payment, then upload your slip
+      </p>
+    </div>
+
+    <!-- SLIP UPLOAD -->
+    <label class="label">
+      Upload payment slip
+      <input
+        type="file"
+        id="slip"
+        accept="image/*"
+        onchange="runOCR()"
+      >
+    </label>
+
+    <div id="ocr-status" class="hint"></div>
+
+    <div id="ocr-result" class="ocr-box" style="display:none">
+      <strong>OCR detected text:</strong>
+      <pre id="ocr-text"></pre>
+    </div>
+
+    <!-- ACTION BUTTONS -->
     <div class="button-row">
-      <button class="btn-secondary" onclick="cancelOrder()">Cancel</button>
+      <button class="btn-secondary" onclick="cancelOrder()">
+        Cancel
+      </button>
+
       <button
         class="btn-primary"
         id="submitBtn"
@@ -43,15 +79,21 @@
         <span class="btn-text">Submit order</span>
         <span class="btn-loader"></span>
       </button>
-      
     </div>
 
   </div>
 
+  <!-- OCR ENGINE -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+  <!-- MAIN APP -->
   <script src="app.js"></script>
+
+  <!-- PAGE LOGIC -->
   <script>
     const item = localStorage.getItem("item");
     const price = localStorage.getItem("price");
+
     if (item && price) {
       document.getElementById("item-text").textContent =
         `${item} — ฿${price} each`;
@@ -60,6 +102,49 @@
     function cancelOrder() {
       localStorage.clear();
       location.href = "index.html";
+    }
+
+    async function runOCR() {
+      const fileInput = document.getElementById("slip");
+      const status = document.getElementById("ocr-status");
+      const resultBox = document.getElementById("ocr-result");
+      const textEl = document.getElementById("ocr-text");
+
+      if (!fileInput.files.length) return;
+
+      status.textContent = "Reading slip…";
+      resultBox.style.display = "none";
+
+      const image = fileInput.files[0];
+
+      try {
+        const { data } = await Tesseract.recognize(
+          image,
+          "eng",
+          {
+            logger: m => {
+              if (m.status === "recognizing text") {
+                status.textContent =
+                  `OCR progress: ${Math.round(m.progress * 100)}%`;
+              }
+            }
+          }
+        );
+
+        status.textContent = "OCR complete ✔";
+        textEl.textContent = data.text;
+        resultBox.style.display = "block";
+
+        // basic sanity signal
+        if (!data.text.toLowerCase().includes("baht")) {
+          status.textContent += " (⚠️ currency not detected)";
+        }
+
+      } catch (err) {
+        status.textContent =
+          "OCR failed. That slip chose violence 😤";
+        console.error(err);
+      }
     }
   </script>
 </body>
