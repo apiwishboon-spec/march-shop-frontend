@@ -92,3 +92,4 @@ function showError(message) {
   errorBox.textContent = message;
   errorBox.style.display = "block";
 }
+
