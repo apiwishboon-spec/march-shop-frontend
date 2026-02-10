@@ -17,6 +17,7 @@ function submitOrder() {
   const emailInput = document.getElementById("email");
   const phoneInput = document.getElementById("phone");
   const qtyInput = document.getElementById("qty");
+  const slipInput = document.getElementById("slipUrl");
   const errorBox = document.getElementById("error");
 
   // 🚫 anti-rage-click system
@@ -28,57 +29,63 @@ function submitOrder() {
 
   const email = emailInput.value.trim();
   const phone = phoneInput.value.trim();
-  const quantity = Number(qtyInput.value);
+  const qty = Number(qtyInput.value);
+  const slipUrl = slipInput.value.trim();
 
-  // 🧪 basic validation (not rocket science, but not dumb)
+  // 🧪 validation (strict but human)
   if (!/^\S+@\S+\.\S+$/.test(email)) {
     return showError("Invalid email address.");
   }
 
-  if (!quantity || quantity <= 0) {
+  if (!phone || phone.length < 8) {
+    return showError("Invalid phone number.");
+  }
+
+  if (!qty || qty <= 0) {
     return showError("Quantity must be at least 1.");
+  }
+
+  if (!slipUrl.startsWith("http")) {
+    return showError("Slip image URL is required.");
   }
 
   // 📦 load order data
   const storedOrder = localStorage.getItem("order");
   if (!storedOrder) {
-    return showError("Order data missing. Did you teleport here?");
+    return showError("Order data missing. Wrong page flow.");
   }
 
   const { item, price } = JSON.parse(storedOrder);
 
-  // 🔒 lock UI like Fort Knox
+  // 🔒 lock UI
   submitBtn.disabled = true;
   submitBtn.classList.add("loading");
 
-  const payload = {
-    email,
-    phone,
-    item,
-    price: Number(price),
-    quantity
-  };
+  // 🧾 Apps Script–compatible payload
+  const formData = new URLSearchParams();
+  formData.append("email", email);
+  formData.append("phone", phone);
+  formData.append("item", item);
+  formData.append("price", price);
+  formData.append("qty", qty);
+  formData.append("slipUrl", slipUrl);
 
-  // 🌐 send to backend overlords
+  // 🌐 send to backend
   fetch("https://script.google.com/macros/s/AKfycbwKYXw52HpjFeKPBwkXpRc7PpiP6itwKkPXnATmmAAAaZFJW7c0Hm0MlpqdgmWRKfrXLg/exec", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(payload)
+    body: formData
   })
     .then(res => res.json())
     .then(data => {
       if (!data.success) {
-        throw new Error(data.message || "Unknown backend errer");
+        throw new Error(data.message || "Backend rejected order");
       }
 
-      // 🏁 success = GTFO to success page
-      location.href = `success.html?id=${data.data.orderId}`;
+      // 🏁 success page
+      location.href = `success.html?id=${data.message}`;
     })
     .catch(err => {
-      // 🔥 failure path
-      showError(err.message || "Something broke. Not your fault. Probably.");
+      showError(err.message || "Something broke. Backend vibes.");
       submitBtn.disabled = false;
       submitBtn.classList.remove("loading");
     });
@@ -92,4 +99,3 @@ function showError(message) {
   errorBox.textContent = message;
   errorBox.style.display = "block";
 }
-
