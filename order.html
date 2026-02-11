@@ -17,24 +17,53 @@
 
     <div id="error" class="error" style="display:none"></div>
 
+    <!-- EMAIL -->
     <label class="label">
       Email address
-      <input id="email" type="email" placeholder="you@example.com">
+      <input id="email" type="email" placeholder="you@example.com" required>
     </label>
 
+    <!-- PHONE -->
     <label class="label">
       Phone number
       <input id="phone" type="tel" placeholder="xxx-xxx-xxxx">
     </label>
 
+    <!-- QUANTITY -->
     <label class="label">
       Quantity
-      <input id="qty" type="number" min="1" value="1">
+      <input id="qty" type="number" min="1" value="1" required>
       <span class="hint">Number of items you want</span>
     </label>
 
+    <!-- PAYMENT SECTION -->
+    <div class="payment-box">
+      <h3>💸 Payment</h3>
+      <p>Please scan the QR code below and upload your payment slip.</p>
+
+      <img 
+        src="https://raw.githubusercontent.com/apiwishboon-spec/runcatcher/refs/heads/main/static/spornserme.png"
+        width="220"
+        alt="Payment QR"
+      >
+    </div>
+
+    <!-- SLIP UPLOAD -->
+    <label class="label">
+      Upload payment slip
+      <input 
+        id="slip"
+        type="file"
+        accept="image/png, image/jpeg"
+        required
+      >
+      <span class="hint">Max 5MB • JPG or PNG</span>
+    </label>
+
+    <!-- BUTTONS -->
     <div class="button-row">
       <button class="btn-secondary" onclick="cancelOrder()">Cancel</button>
+
       <button
         class="btn-primary"
         id="submitBtn"
@@ -43,16 +72,19 @@
         <span class="btn-text">Submit order</span>
         <span class="btn-loader"></span>
       </button>
-      
     </div>
 
   </div>
 
   <script src="app.js"></script>
+
   <script>
     const item = localStorage.getItem("item");
     const price = localStorage.getItem("price");
-    if (item && price) {
+
+    if (!item || !price) {
+      location.href = "index.html";
+    } else {
       document.getElementById("item-text").textContent =
         `${item} — ฿${price} each`;
     }
@@ -62,5 +94,6 @@
       location.href = "index.html";
     }
   </script>
+
 </body>
 </html>
