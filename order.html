@@ -39,16 +39,25 @@
     <div id="error" class="error" style="display:none"></div>
 
     <!-- PAYMENT SECTION -->
+    <!-- PAYMENT SECTION -->
     <div class="payment-box">
       <h3>💸 Payment</h3>
       <p>Please scan the QR code below and upload your payment slip.</p>
 
-      <img 
-        src="https://raw.githubusercontent.com/apiwishboon-spec/march-shop-frontend/refs/heads/main/QR_payment.jpg"
-        width="290"
-        alt="Payment QR"
-      >
+    <img 
+      id="qrImage"
+      src="https://raw.githubusercontent.com/apiwishboon-spec/march-shop-frontend/refs/heads/main/QR_payment.jpg"
+      width="290"
+      alt="Payment QR"
+    >
+
+    <br><br>
+
+      <button class="btn-secondary" onclick="downloadQR()">
+        Download QR Code
+      </button>
     </div>
+
 
     <!-- SLIP UPLOAD -->
     <label class="label">
@@ -118,6 +127,18 @@
       localStorage.clear();
       location.href = "index.html";
     }
+
+    function downloadQR() {
+  const qrUrl = document.getElementById("qrImage").src;
+
+  const link = document.createElement("a");
+  link.href = qrUrl;
+  link.download = "ArtInk_Payment_QR.jpg";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
   </script>
 
 </body>
