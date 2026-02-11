@@ -14,6 +14,7 @@
     </h1>
 
     <p class="subtitle" id="item-text"></p>
+    <p class="total-price" id="total-text"></p>
 
     <div id="error" class="error" style="display:none"></div>
 
@@ -80,14 +81,37 @@
 
   <script>
     const item = localStorage.getItem("item");
-    const price = localStorage.getItem("price");
+    const price = parseFloat(localStorage.getItem("price"));
+
+    const itemText = document.getElementById("item-text");
+    const totalText = document.getElementById("total-text");
+    const qtyInput = document.getElementById("qty");
 
     if (!item || !price) {
       location.href = "index.html";
-    } else {
-      document.getElementById("item-text").textContent =
-        `${item} — ฿${price} each`;
     }
+
+    function formatCurrency(num) {
+      return num.toLocaleString("en-US");
+    }
+
+    function updatePrice() {
+      const qty = parseInt(qtyInput.value) || 1;
+
+      if (qty < 1) {
+        qtyInput.value = 1;
+        return;
+      }
+
+      const total = price * qty;
+
+      itemText.textContent = `${item} — ฿${formatCurrency(price)} each`;
+      totalText.textContent = `Total: ฿${formatCurrency(total)}`;
+    }
+
+    qtyInput.addEventListener("input", updatePrice);
+
+    updatePrice();
 
     function cancelOrder() {
       localStorage.clear();
