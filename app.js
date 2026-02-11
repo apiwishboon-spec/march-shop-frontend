@@ -13,6 +13,7 @@ function goOrder(item, price) {
 
 // ========== SUBMIT ORDER ==========
 function submitOrder() {
+
   const submitBtn = document.getElementById("submitBtn");
   const email = document.getElementById("email").value.trim();
   const phone = document.getElementById("phone").value.trim();
@@ -20,12 +21,11 @@ function submitOrder() {
   const slipInput = document.getElementById("slip");
   const error = document.getElementById("error");
 
-  // 🚫 Stop spam click
   if (submitBtn.disabled) return;
 
   error.style.display = "none";
 
-  // 🧪 Validation
+  // ---- Validation ----
   if (!email.includes("@")) {
     return showError("Invalid email");
   }
@@ -40,23 +40,23 @@ function submitOrder() {
 
   const file = slipInput.files[0];
 
-  // 🔒 File size limit (5MB)
   if (file.size > 5 * 1024 * 1024) {
     return showError("Slip too large (max 5MB)");
   }
 
-  // 🔒 Lock UI
+  // ---- Lock UI ----
   submitBtn.disabled = true;
   submitBtn.classList.add("loading");
 
   const reader = new FileReader();
 
   reader.onload = function () {
+
     try {
+
       const base64Image = reader.result.split(",")[1];
 
       const formData = new URLSearchParams();
-
       formData.append("email", email);
       formData.append("phone", phone);
       formData.append("item", localStorage.getItem("item"));
@@ -68,22 +68,26 @@ function submitOrder() {
         method: "POST",
         body: formData
       })
-        .then(res => res.json())
-        .then(data => {
-          if (!data.success) throw new Error(data.message);
+      .then(res => res.json())
+      .then(data => {
 
-          // 🎉 Success = redirect
-          location.href = `success.html?id=${data.data.orderId}`;
-        })
-        .catch(err => {
-          showError(err.message);
-          unlockUI();
-        });
+        if (!data.success) {
+          throw new Error(data.message);
+        }
+
+        location.href = `success.html?id=${data.data.orderId}`;
+
+      })
+      .catch(err => {
+        showError(err.message);
+        unlockUI();
+      });
 
     } catch (err) {
       showError("Image processing failed");
       unlockUI();
     }
+
   };
 
   reader.onerror = function () {
@@ -107,65 +111,3 @@ function unlockUI() {
   submitBtn.disabled = false;
   submitBtn.classList.remove("loading");
 }
-function goOrder(item, price) {
-  localStorage.setItem("item", item);
-  localStorage.setItem("price", price);
-  location.href = "order.html";
-}
-
-function submitOrder() {
-  const submitBtn = document.getElementById("submitBtn");
-  const email = document.getElementById("email").value.trim();
-  const phone = document.getElementById("phone").value.trim();
-  const qty = Number(document.getElementById("qty").value);
-  const error = document.getElementById("error");
-
-  // 🚫 stop double-click spam
-  if (submitBtn.disabled) return;
-
-  error.style.display = "none";
-
-  if (!email.includes("@")) {
-    error.textContent = "Invalid email";
-    error.style.display = "block";
-    return;
-  }
-
-  // 🔒 LOCK UI
-  submitBtn.disabled = true;
-  submitBtn.classList.add("loading");
-
-  const payload = {
-    email,
-    phone,
-    item: localStorage.getItem("item"),
-    price: Number(localStorage.getItem("price")),
-    quantity: qty
-  };
-
-  fetch("https://script.google.com/macros/s/AKfycbwKYXw52HpjFeKPBwkXpRc7PpiP6itwKkPXnATmmAAAaZFJW7c0Hm0MlpqdgmWRKfrXLg/exec", {
-    method: "POST",
-    body: JSON.stringify(payload)
-  })
-    .then(r => r.json())
-    .then(res => {
-      if (!res.success) throw new Error(res.message);
-
-      // 🏁 success = redirect, never re-enable
-      location.href = `success.html?id=${res.data.orderId}`;
-    })
-    .catch(err => {
-      error.textContent = err.message;
-      error.style.display = "block";
-
-      // 🔓 unlock ONLY if failed
-      submitBtn.disabled = false;
-      submitBtn.classList.remove("loading");
-    });
-}
-
-
-
-
-
-
