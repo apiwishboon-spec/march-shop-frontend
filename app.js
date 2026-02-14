@@ -64,7 +64,7 @@ function submitOrder() {
       formData.append("quantity", qty);
       formData.append("base64Image", base64Image);
 
-      fetch("https://script.google.com/macros/s/AKfycbwKYXw52HpjFeKPBwkXpRc7PpiP6itwKkPXnATmmAAAaZFJW7c0Hm0MlpqdgmWRKfrXLg/exec", {
+      fetch("https://script.google.com/macros/s/AKfycbyXoKnwQXyZF5iKgG_kiHRd8uxGwmHxfPd_ya0f3IIoXhSWDxElAPcpgWhzbaQGjS4LpA/exec", {
         method: "POST",
         body: formData
       })
@@ -111,3 +111,4 @@ function unlockUI() {
   submitBtn.disabled = false;
   submitBtn.classList.remove("loading");
 }
+
