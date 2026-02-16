@@ -1,7 +1,18 @@
 /*************************************************
  * 🎁 ART&INK SHOP – FRONTEND LOGIC
  * Stable • Slip Upload • Apps Script Compatible
+ * With Cloudflare Turnstile Protection
  *************************************************/
+
+// ========== GLOBAL TURNSTILE TOKEN ==========
+let turnstileToken = null;
+
+// Called automatically by Turnstile when verified
+function onTurnstileSuccess(token) {
+  turnstileToken = token;
+  const submitBtn = document.getElementById("submitBtn");
+  submitBtn.disabled = false;
+}
 
 // ========== GO TO ORDER ==========
 function goOrder(item, price) {
@@ -24,6 +35,11 @@ function submitOrder() {
   if (submitBtn.disabled) return;
 
   error.style.display = "none";
+
+  // ---- Turnstile Check ----
+  if (!turnstileToken) {
+    return showError("Please verify you are human.");
+  }
 
   // ---- Validation ----
   if (!email.includes("@")) {
@@ -63,6 +79,7 @@ function submitOrder() {
       formData.append("price", localStorage.getItem("price"));
       formData.append("quantity", qty);
       formData.append("base64Image", base64Image);
+      formData.append("turnstileToken", turnstileToken);
 
       fetch("https://script.google.com/macros/s/AKfycbyXoKnwQXyZF5iKgG_kiHRd8uxGwmHxfPd_ya0f3IIoXhSWDxElAPcpgWhzbaQGjS4LpA/exec", {
         method: "POST",
@@ -79,12 +96,14 @@ function submitOrder() {
 
       })
       .catch(err => {
-        showError(err.message);
+        showError(err.message || "Submission failed");
+        resetTurnstile();
         unlockUI();
       });
 
     } catch (err) {
       showError("Image processing failed");
+      resetTurnstile();
       unlockUI();
     }
 
@@ -92,10 +111,20 @@ function submitOrder() {
 
   reader.onerror = function () {
     showError("Failed to read image");
+    resetTurnstile();
     unlockUI();
   };
 
   reader.readAsDataURL(file);
+}
+
+
+// ========== RESET TURNSTILE ==========
+function resetTurnstile() {
+  if (window.turnstile) {
+    window.turnstile.reset();
+  }
+  turnstileToken = null;
 }
 
 
@@ -111,4 +140,3 @@ function unlockUI() {
   submitBtn.disabled = false;
   submitBtn.classList.remove("loading");
 }
-
