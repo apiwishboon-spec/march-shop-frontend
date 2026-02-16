@@ -4,6 +4,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Art&Ink Studio – Order</title>
   <link rel="stylesheet" href="style.css">
+
+  <!-- Cloudflare Turnstile -->
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 
@@ -36,30 +38,26 @@
       <span class="hint">Number of items you want</span>
     </label>
 
-        <p class="total-price" id="total-text"></p>
+    <p class="total-price" id="total-text"></p>
 
-    <!-- PAYMENT SECTION -->
     <!-- PAYMENT SECTION -->
     <div class="payment-box">
       <h3>💸 Payment</h3>
       <p>Please scan the QR code below and upload your payment slip.</p>
 
-    <img 
-      id="qrImage"
-      src="https://raw.githubusercontent.com/apiwishboon-spec/march-shop-frontend/refs/heads/main/QR_payment.jpg"
-      width="290"
-      alt="Payment QR"
-    >
+      <img 
+        id="qrImage"
+        src="https://raw.githubusercontent.com/apiwishboon-spec/march-shop-frontend/refs/heads/main/QR_payment.jpg"
+        width="290"
+        alt="Payment QR"
+      >
 
-    <br><br>
+      <br><br>
 
       <button class="btn-secondary" onclick="downloadQR()">
         Download QR Code
       </button>
-
-      
     </div>
-
 
     <!-- SLIP UPLOAD -->
     <label class="label">
@@ -73,11 +71,11 @@
       <span class="hint">Max 5MB • JPG or PNG</span>
     </label>
 
-    <!--bot-->
+    <!-- BOT PROTECTION -->
     <div class="cf-turnstile"
-     data-sitekey="0x4AAAAAACd8YswS-VO9XLfe">
-</div>
-
+         data-sitekey="0x4AAAAAACd8YswS-VO9XLfe"
+         data-callback="onTurnstileSuccess">
+    </div>
 
     <!-- BUTTONS -->
     <div class="button-row">
@@ -87,6 +85,7 @@
         class="btn-primary"
         id="submitBtn"
         onclick="submitOrder()"
+        disabled
       >
         <span class="btn-text">Submit order</span>
         <span class="btn-loader"></span>
@@ -137,16 +136,13 @@
     }
 
     function downloadQR() {
-  const qrUrl = document.getElementById("qrImage").src;
-
-  const link = document.createElement("a");
-  link.href = "https://i.postimg.cc/ysnZqCgX/LINE-20260211-200132.jpg?dl=1";
-  link.download = "ArtInk_Payment_QR.jpg";
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-}
-
+      const link = document.createElement("a");
+      link.href = "https://i.postimg.cc/ysnZqCgX/LINE-20260211-200132.jpg?dl=1";
+      link.download = "ArtInk_Payment_QR.jpg";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   </script>
 
 </body>
