@@ -22,13 +22,13 @@
     <!-- EMAIL -->
     <label class="label">
       Email address
-      <input id="email" type="email" placeholder="you@example.com" required>
+      <input id="email" type="email" required>
     </label>
 
     <!-- PHONE -->
     <label class="label">
       Phone number
-      <input id="phone" type="tel" placeholder="xxx-xxx-xxxx">
+      <input id="phone" type="tel">
     </label>
 
     <!-- QUANTITY -->
@@ -40,13 +40,12 @@
 
     <p class="total-price" id="total-text"></p>
 
-    <!-- PAYMENT SECTION -->
+    <!-- PAYMENT -->
     <div class="payment-box">
       <h3>💸 Payment</h3>
       <p>Please scan the QR code below and upload your payment slip.</p>
 
-      <img 
-        id="qrImage"
+      <img
         src="https://raw.githubusercontent.com/apiwishboon-spec/march-shop-frontend/refs/heads/main/QR_payment.jpg"
         width="290"
         alt="Payment QR"
@@ -62,7 +61,7 @@
     <!-- SLIP UPLOAD -->
     <label class="label">
       Upload payment slip
-      <input 
+      <input
         id="slip"
         type="file"
         accept="image/png, image/jpeg"
@@ -71,7 +70,15 @@
       <span class="hint">Max 5MB • JPG or PNG</span>
     </label>
 
-    <!-- BOT PROTECTION -->
+    <!-- OCR RESULT -->
+    <div id="ocrBox" style="display:none; margin-top:15px;">
+      <p><strong>Detected slip amount:</strong>
+        <span id="detectedAmount">-</span>
+      </p>
+      <p id="matchStatus"></p>
+    </div>
+
+    <!-- TURNSTILE -->
     <div class="cf-turnstile"
          data-sitekey="0x4AAAAAACd8YswS-VO9XLfe"
          data-callback="onTurnstileSuccess">
@@ -85,10 +92,8 @@
         class="btn-primary"
         id="submitBtn"
         onclick="submitOrder()"
-        disabled
-      >
-        <span class="btn-text">Submit order</span>
-        <span class="btn-loader"></span>
+        disabled>
+        Submit order
       </button>
     </div>
 
@@ -100,13 +105,13 @@
     const item = localStorage.getItem("item");
     const price = parseFloat(localStorage.getItem("price"));
 
-    const itemText = document.getElementById("item-text");
-    const totalText = document.getElementById("total-text");
-    const qtyInput = document.getElementById("qty");
-
     if (!item || !price) {
       location.href = "index.html";
     }
+
+    const itemText = document.getElementById("item-text");
+    const totalText = document.getElementById("total-text");
+    const qtyInput = document.getElementById("qty");
 
     function formatCurrency(num) {
       return num.toLocaleString("en-US");
@@ -114,11 +119,7 @@
 
     function updatePrice() {
       const qty = parseInt(qtyInput.value) || 1;
-
-      if (qty < 1) {
-        qtyInput.value = 1;
-        return;
-      }
+      if (qty < 1) qtyInput.value = 1;
 
       const total = price * qty;
 
@@ -127,7 +128,6 @@
     }
 
     qtyInput.addEventListener("input", updatePrice);
-
     updatePrice();
 
     function cancelOrder() {
@@ -139,9 +139,7 @@
       const link = document.createElement("a");
       link.href = "https://i.postimg.cc/ysnZqCgX/LINE-20260211-200132.jpg?dl=1";
       link.download = "ArtInk_Payment_QR.jpg";
-      document.body.appendChild(link);
       link.click();
-      document.body.removeChild(link);
     }
   </script>
 
