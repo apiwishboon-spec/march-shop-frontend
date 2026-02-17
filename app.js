@@ -1,40 +1,27 @@
 /*************************************************
- * 🎁 ART&INK SHOP – FRONTEND LOGIC
- * Product Select • Turnstile • Slip Upload
- * OCR Amount Display
+ * 🎁 ART&INK SHOP – FRONTEND LOGIC (NO OCR)
+ * Dynamic PromptPay QR Flow
  *************************************************/
 
-// ========== PRODUCT SELECT (HOME PAGE) ==========
-function goOrder(item, price) {
-
-  // Store selected product
-  localStorage.setItem("item", item);
-  localStorage.setItem("price", price);
-
-  // Navigate to order page
-  window.location.href = "order.html";
-}
+let turnstileToken = null;
+let generatedQR = null;
 
 
 // ========== TURNSTILE ==========
-let turnstileToken = null;
-
 function onTurnstileSuccess(token) {
   turnstileToken = token;
 
-  const btn = document.getElementById("submitBtn");
+  const btn = document.getElementById("generateBtn");
   if (btn) btn.disabled = false;
 }
 
 
-// ========== SUBMIT ORDER ==========
-function submitOrder() {
+// ========== GENERATE QR ==========
+function generateQR() {
 
-  const submitBtn = document.getElementById("submitBtn");
   const email = document.getElementById("email").value.trim();
   const phone = document.getElementById("phone").value.trim();
   const qty = Number(document.getElementById("qty").value);
-  const slipInput = document.getElementById("slip");
 
   if (!turnstileToken)
     return showError("Please verify you are human.");
@@ -45,97 +32,51 @@ function submitOrder() {
   if (!qty || qty < 1)
     return showError("Invalid quantity");
 
-  if (!slipInput.files.length)
-    return showError("Upload payment slip");
+  const price = parseFloat(localStorage.getItem("price"));
+  const item = localStorage.getItem("item");
+  const total = (price * qty).toFixed(2);
 
-  const file = slipInput.files[0];
+  const formData = new URLSearchParams();
+  formData.append("email", email);
+  formData.append("phone", phone);
+  formData.append("item", item);
+  formData.append("price", price);
+  formData.append("quantity", qty);
+  formData.append("turnstileToken", turnstileToken);
 
-  if (file.size > 5 * 1024 * 1024)
-    return showError("Slip too large (max 5MB)");
+  fetch("YOUR_WEBAPP_URL_HERE", {
+    method: "POST",
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
 
-  submitBtn.disabled = true;
+    if (!data.success) {
+      throw new Error(data.message);
+    }
 
-  const reader = new FileReader();
+    generatedQR = data.data.qrImage;
 
-  reader.onload = function () {
+    document.getElementById("qrContainer").style.display = "block";
+    document.getElementById("qrImage").src = generatedQR;
+    document.getElementById("payTotal").textContent =
+      "฿" + total;
 
-    const base64Image = reader.result.split(",")[1];
+  })
+  .catch(err => {
+    showError(err.message || "Failed to generate QR");
+    resetTurnstile();
+  });
+}
 
-    const formData = new URLSearchParams();
-    formData.append("email", email);
-    formData.append("phone", phone);
-    formData.append("item", localStorage.getItem("item"));
-    formData.append("price", localStorage.getItem("price"));
-    formData.append("quantity", qty);
-    formData.append("base64Image", base64Image);
-    formData.append("turnstileToken", turnstileToken);
 
-    fetch("https://script.google.com/macros/s/AKfycbxENBG6cKm3ImJd_6gjvxCUnM-hG0xeNhPhjLUleDCyh0JsXhkkG7wOwkBjRW43j-88mg/exec", {
-      method: "POST",
-      body: formData
-    })
-    .then(res => res.json())
-    .then(data => {
+// ========== SUBMIT CONFIRMATION ==========
+function submitConfirmation() {
 
-      if (!data.success) {
-        throw new Error(data.message);
-      }
+  if (!generatedQR)
+    return showError("Generate QR and pay first.");
 
-      // ========== OCR DISPLAY ==========
-      const detected = data.data.detectedAmount;
-      const total =
-        parseFloat(localStorage.getItem("price")) * qty;
-
-      const ocrBox = document.getElementById("ocrBox");
-      const detectedSpan =
-        document.getElementById("detectedAmount");
-      const matchStatus =
-        document.getElementById("matchStatus");
-
-      if (ocrBox) ocrBox.style.display = "block";
-
-      if (detected) {
-
-        detectedSpan.textContent = "฿" + detected;
-
-        if (parseFloat(detected) ===
-            parseFloat(total.toFixed(2))) {
-
-          matchStatus.innerHTML =
-            "✅ Amount matches order total.";
-          matchStatus.style.color = "green";
-
-        } else {
-
-          matchStatus.innerHTML =
-            "⚠️ Amount does NOT match order total.";
-          matchStatus.style.color = "red";
-        }
-
-      } else {
-
-        detectedSpan.textContent = "Not detected";
-        matchStatus.innerHTML =
-          "⚠️ OCR could not detect amount.";
-        matchStatus.style.color = "orange";
-      }
-
-      submitBtn.disabled = false;
-
-    })
-    .catch(err => {
-      showError(err.message || "Submission failed");
-      resetTurnstile();
-      submitBtn.disabled = false;
-    });
-  };
-
-  reader.onerror = function () {
-    showError("Failed to read image");
-    submitBtn.disabled = false;
-  };
-
-  reader.readAsDataURL(file);
+  alert("Order submitted. Waiting for payment verification.");
 }
 
 
@@ -151,12 +92,8 @@ function showError(message) {
 }
 
 function resetTurnstile() {
-
   if (window.turnstile)
     window.turnstile.reset();
 
   turnstileToken = null;
 }
-
-
-
