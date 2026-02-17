@@ -1,50 +1,40 @@
 /*************************************************
- * 🎁 ART&INK SHOP – FRONTEND LOGIC (NO OCR)
- * Dynamic PromptPay QR Flow
+ * 🎁 ART&INK SHOP – FRONTEND LOGIC
+ * Auto PromptPay QR + Slip Upload
  *************************************************/
 
 let turnstileToken = null;
-let generatedQR = null;
+let generatedPayload = null;
 
 
 // ========== TURNSTILE ==========
 function onTurnstileSuccess(token) {
   turnstileToken = token;
-
-  const btn = document.getElementById("generateBtn");
-  if (btn) btn.disabled = false;
+  tryGenerateQR();
 }
 
 
-// ========== GENERATE QR ==========
-function generateQR() {
+// ========== AUTO GENERATE QR ==========
+function tryGenerateQR() {
 
   const email = document.getElementById("email").value.trim();
-  const phone = document.getElementById("phone").value.trim();
   const qty = Number(document.getElementById("qty").value);
-
-  if (!turnstileToken)
-    return showError("Please verify you are human.");
-
-  if (!email.includes("@"))
-    return showError("Invalid email");
-
-  if (!qty || qty < 1)
-    return showError("Invalid quantity");
-
   const price = parseFloat(localStorage.getItem("price"));
   const item = localStorage.getItem("item");
-  const total = (price * qty).toFixed(2);
+
+  if (!turnstileToken) return;
+  if (!email.includes("@")) return;
+  if (!qty || qty < 1) return;
 
   const formData = new URLSearchParams();
   formData.append("email", email);
-  formData.append("phone", phone);
+  formData.append("phone", document.getElementById("phone").value.trim());
   formData.append("item", item);
   formData.append("price", price);
   formData.append("quantity", qty);
   formData.append("turnstileToken", turnstileToken);
 
-  fetch("YOUR_WEBAPP_URL_HERE", {
+  fetch("https://script.google.com/macros/s/AKfycbxENBG6cKm3ImJd_6gjvxCUnM-hG0xeNhPhjLUleDCyh0JsXhkkG7wOwkBjRW43j-88mg/exec", {
     method: "POST",
     body: formData
   })
@@ -55,28 +45,78 @@ function generateQR() {
       throw new Error(data.message);
     }
 
-    generatedQR = data.data.qrImage;
+    generatedPayload = data.data.promptPayPayload;
 
-    document.getElementById("qrContainer").style.display = "block";
-    document.getElementById("qrImage").src = generatedQR;
-    document.getElementById("payTotal").textContent =
-      "฿" + total;
+    const qrImage = document.getElementById("dynamicQR");
+    const totalText = document.getElementById("qrTotal");
+
+    qrImage.src = data.data.qrImage;
+    totalText.textContent = "฿" + data.data.total;
 
   })
   .catch(err => {
-    showError(err.message || "Failed to generate QR");
-    resetTurnstile();
+    console.error("QR generation failed:", err.message);
   });
 }
 
 
-// ========== SUBMIT CONFIRMATION ==========
-function submitConfirmation() {
+// ========== SUBMIT ORDER ==========
+function submitOrder() {
 
-  if (!generatedQR)
-    return showError("Generate QR and pay first.");
+  const submitBtn = document.getElementById("submitBtn");
+  const slipInput = document.getElementById("slip");
 
-  alert("Order submitted. Waiting for payment verification.");
+  if (!generatedPayload)
+    return showError("QR not generated yet.");
+
+  if (!slipInput.files.length)
+    return showError("Upload payment slip");
+
+  const file = slipInput.files[0];
+
+  if (file.size > 5 * 1024 * 1024)
+    return showError("Slip too large (max 5MB)");
+
+  submitBtn.disabled = true;
+
+  const reader = new FileReader();
+
+  reader.onload = function () {
+
+    const base64Image = reader.result.split(",")[1];
+
+    const formData = new URLSearchParams();
+    formData.append("email", document.getElementById("email").value.trim());
+    formData.append("phone", document.getElementById("phone").value.trim());
+    formData.append("item", localStorage.getItem("item"));
+    formData.append("price", localStorage.getItem("price"));
+    formData.append("quantity", document.getElementById("qty").value);
+    formData.append("base64Image", base64Image);
+    formData.append("turnstileToken", turnstileToken);
+
+    fetch("https://script.google.com/macros/s/AKfycbxENBG6cKm3ImJd_6gjvxCUnM-hG0xeNhPhjLUleDCyh0JsXhkkG7wOwkBjRW43j-88mg/exec", {
+      method: "POST",
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+
+      if (!data.success) {
+        throw new Error(data.message);
+      }
+
+      alert("Order submitted successfully!");
+      localStorage.clear();
+      location.href = "index.html";
+
+    })
+    .catch(err => {
+      showError(err.message || "Submission failed");
+      submitBtn.disabled = false;
+    });
+  };
+
+  reader.readAsDataURL(file);
 }
 
 
@@ -89,11 +129,4 @@ function showError(message) {
     error.textContent = message;
     error.style.display = "block";
   }
-}
-
-function resetTurnstile() {
-  if (window.turnstile)
-    window.turnstile.reset();
-
-  turnstileToken = null;
 }
