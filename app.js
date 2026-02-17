@@ -1,5 +1,5 @@
 /*************************************************
- * ART&INK SHOP – FINAL CLEAN VERSION
+ * ART&INK SHOP – FIXED VERSION
  *************************************************/
 
 let turnstileToken = null;
@@ -19,34 +19,45 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const itemText = document.getElementById("item-text");
   const qtyInput = document.getElementById("qty");
+  const emailInput = document.getElementById("email");
 
   itemText.textContent = `${item} — ฿${price} each`;
 
   updateTotal();
-  qtyInput.addEventListener("input", updateTotal);
-  document.getElementById("email").addEventListener("input", tryGenerateQR);
-  qtyInput.addEventListener("input", tryGenerateQR);
+  tryGenerateQR();
+
+  qtyInput.addEventListener("input", () => {
+    updateTotal();
+    tryGenerateQR();
+  });
+
+  emailInput.addEventListener("input", tryGenerateQR);
 });
 
 
-// ========== UPDATE TOTAL ==========
+// ================================
+// UPDATE TOTAL
+// ================================
 function updateTotal() {
   const price = parseFloat(localStorage.getItem("price"));
   const qty = Number(document.getElementById("qty").value);
   const total = price * (qty || 1);
 
-  document.getElementById("total-text").textContent = "Total: ฿" + total;
+  document.getElementById("qrTotal").textContent = "฿" + total;
 }
 
 
-// ========== TURNSTILE ==========
+// ================================
+// TURNSTILE CALLBACK
+// ================================
 function onTurnstileSuccess(token) {
   turnstileToken = token;
-  tryGenerateQR();
 }
 
 
-// ========== GENERATE QR ==========
+// ================================
+// GENERATE QR (NO TURNSTILE BLOCK)
+// ================================
 function tryGenerateQR() {
 
   const email = document.getElementById("email").value.trim();
@@ -54,7 +65,6 @@ function tryGenerateQR() {
   const price = parseFloat(localStorage.getItem("price"));
   const item = localStorage.getItem("item");
 
-  if (!turnstileToken) return;
   if (!email.includes("@")) return;
   if (!qty || qty < 1) return;
 
@@ -64,7 +74,6 @@ function tryGenerateQR() {
   formData.append("item", item);
   formData.append("price", price);
   formData.append("quantity", qty);
-  formData.append("turnstileToken", turnstileToken);
 
   fetch(API_URL, {
     method: "POST",
@@ -89,10 +98,15 @@ function tryGenerateQR() {
 }
 
 
-// ========== SUBMIT ==========
+// ================================
+// SUBMIT ORDER (TURNSTILE REQUIRED)
+// ================================
 function submitOrder() {
 
   const slipInput = document.getElementById("slip");
+
+  if (!turnstileToken)
+    return showError("Please verify you are human.");
 
   if (!generatedPayload)
     return showError("QR not generated yet.");
@@ -145,7 +159,9 @@ function submitOrder() {
 }
 
 
-// ========== HELPERS ==========
+// ================================
+// HELPERS
+// ================================
 function cancelOrder() {
   localStorage.clear();
   location.href = "index.html";
