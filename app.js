@@ -70,7 +70,7 @@ function submitOrder() {
     formData.append("base64Image", base64Image);
     formData.append("turnstileToken", turnstileToken);
 
-    fetch("YOUR_APPS_SCRIPT_WEBAPP_URL", {
+    fetch("https://script.google.com/macros/s/AKfycbyXoKnwQXyZF5iKgG_kiHRd8uxGwmHxfPd_ya0f3IIoXhSWDxElAPcpgWhzbaQGjS4LpA/exec", {
       method: "POST",
       body: formData
     })
@@ -157,3 +157,4 @@ function resetTurnstile() {
 
   turnstileToken = null;
 }
+
