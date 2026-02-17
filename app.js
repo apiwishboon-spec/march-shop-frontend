@@ -168,9 +168,10 @@ function submitOrder() {
         throw new Error(data.message);
       }
 
-      alert("Order submitted successfully!");
+      const orderId = data.data?.orderId || Date.now();
       localStorage.clear();
-      location.href = "index.html";
+      location.href = "success.html?id=" + orderId;
+
 
     })
     .catch(err => {
@@ -193,4 +194,5 @@ function showError(message) {
   error.textContent = message;
   error.style.display = "block";
 }
+
 
