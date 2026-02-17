@@ -1,10 +1,42 @@
 /*************************************************
- * 🎁 ART&INK SHOP – FRONTEND LOGIC
- * Auto PromptPay QR + Slip Upload
+ * ART&INK SHOP – FINAL CLEAN VERSION
  *************************************************/
 
 let turnstileToken = null;
 let generatedPayload = null;
+
+const API_URL = "https://script.google.com/macros/s/AKfycbxENBG6cKm3ImJd_6gjvxCUnM-hG0xeNhPhjLUleDCyh0JsXhkkG7wOwkBjRW43j-88mg/exec";
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  const item = localStorage.getItem("item");
+  const price = parseFloat(localStorage.getItem("price"));
+
+  if (!item || !price) {
+    location.href = "index.html";
+    return;
+  }
+
+  const itemText = document.getElementById("item-text");
+  const qtyInput = document.getElementById("qty");
+
+  itemText.textContent = `${item} — ฿${price} each`;
+
+  updateTotal();
+  qtyInput.addEventListener("input", updateTotal);
+  document.getElementById("email").addEventListener("input", tryGenerateQR);
+  qtyInput.addEventListener("input", tryGenerateQR);
+});
+
+
+// ========== UPDATE TOTAL ==========
+function updateTotal() {
+  const price = parseFloat(localStorage.getItem("price"));
+  const qty = Number(document.getElementById("qty").value);
+  const total = price * (qty || 1);
+
+  document.getElementById("total-text").textContent = "Total: ฿" + total;
+}
 
 
 // ========== TURNSTILE ==========
@@ -14,7 +46,7 @@ function onTurnstileSuccess(token) {
 }
 
 
-// ========== AUTO GENERATE QR ==========
+// ========== GENERATE QR ==========
 function tryGenerateQR() {
 
   const email = document.getElementById("email").value.trim();
@@ -34,7 +66,7 @@ function tryGenerateQR() {
   formData.append("quantity", qty);
   formData.append("turnstileToken", turnstileToken);
 
-  fetch("https://script.google.com/macros/s/AKfycbxENBG6cKm3ImJd_6gjvxCUnM-hG0xeNhPhjLUleDCyh0JsXhkkG7wOwkBjRW43j-88mg/exec", {
+  fetch(API_URL, {
     method: "POST",
     body: formData
   })
@@ -47,37 +79,31 @@ function tryGenerateQR() {
 
     generatedPayload = data.data.promptPayPayload;
 
-    const qrImage = document.getElementById("dynamicQR");
-    const totalText = document.getElementById("qrTotal");
-
-    qrImage.src = data.data.qrImage;
-    totalText.textContent = "฿" + data.data.total;
+    document.getElementById("dynamicQR").src = data.data.qrImage;
+    document.getElementById("qrTotal").textContent = "฿" + data.data.total;
 
   })
   .catch(err => {
-    console.error("QR generation failed:", err.message);
+    console.error("QR failed:", err.message);
   });
 }
 
 
-// ========== SUBMIT ORDER ==========
+// ========== SUBMIT ==========
 function submitOrder() {
 
-  const submitBtn = document.getElementById("submitBtn");
   const slipInput = document.getElementById("slip");
 
   if (!generatedPayload)
     return showError("QR not generated yet.");
 
   if (!slipInput.files.length)
-    return showError("Upload payment slip");
+    return showError("Upload payment slip.");
 
   const file = slipInput.files[0];
 
   if (file.size > 5 * 1024 * 1024)
-    return showError("Slip too large (max 5MB)");
-
-  submitBtn.disabled = true;
+    return showError("Slip too large (max 5MB).");
 
   const reader = new FileReader();
 
@@ -94,7 +120,7 @@ function submitOrder() {
     formData.append("base64Image", base64Image);
     formData.append("turnstileToken", turnstileToken);
 
-    fetch("https://script.google.com/macros/s/AKfycbxENBG6cKm3ImJd_6gjvxCUnM-hG0xeNhPhjLUleDCyh0JsXhkkG7wOwkBjRW43j-88mg/exec", {
+    fetch(API_URL, {
       method: "POST",
       body: formData
     })
@@ -112,7 +138,6 @@ function submitOrder() {
     })
     .catch(err => {
       showError(err.message || "Submission failed");
-      submitBtn.disabled = false;
     });
   };
 
@@ -121,12 +146,13 @@ function submitOrder() {
 
 
 // ========== HELPERS ==========
+function cancelOrder() {
+  localStorage.clear();
+  location.href = "index.html";
+}
+
 function showError(message) {
-
   const error = document.getElementById("error");
-
-  if (error) {
-    error.textContent = message;
-    error.style.display = "block";
-  }
+  error.textContent = message;
+  error.style.display = "block";
 }
