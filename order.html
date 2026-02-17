@@ -7,6 +7,9 @@
 
   <!-- Cloudflare Turnstile -->
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+  <!-- Your JS -->
+  <script src="app.js" defer></script>
 </head>
 
 <body>
@@ -19,209 +22,52 @@
     <p class="subtitle" id="item-text"></p>
     <div id="error" class="error" style="display:none;color:red;"></div>
 
-    <!-- EMAIL -->
     <label class="label">
       Email address
       <input id="email" type="email" required>
     </label>
 
-    <!-- PHONE -->
     <label class="label">
       Phone number
       <input id="phone" type="tel">
     </label>
 
-    <!-- QUANTITY -->
     <label class="label">
       Quantity
       <input id="qty" type="number" min="1" value="1" required>
       <span class="hint">Number of items you want</span>
     </label>
 
-    <p class="total-price" id="total-text"></p>
-
-    <!-- PAYMENT (DYNAMIC QR) -->
+    <!-- PAYMENT -->
     <div class="payment-box">
       <h3>💸 Payment</h3>
-      <p>Scan the QR code below to pay.</p>
+      <p>QR will appear automatically.</p>
 
       <div style="margin-top:15px;">
-        <img id="dynamicQR" width="290" alt="Payment QR">
+        <img id="dynamicQR" width="290">
       </div>
 
-      <p style="margin-top:10px;">
-        <strong id="qrTotal"></strong>
-      </p>
+      <p><strong id="qrTotal"></strong></p>
     </div>
 
-    <!-- SLIP UPLOAD -->
     <label class="label">
       Upload payment slip
-      <input
-        id="slip"
-        type="file"
-        accept="image/png, image/jpeg"
-        required
-      >
+      <input id="slip" type="file" accept="image/png, image/jpeg" required>
       <span class="hint">Max 5MB • JPG or PNG</span>
     </label>
 
-    <!-- TURNSTILE -->
     <div class="cf-turnstile"
          data-sitekey="0x4AAAAAACd8YswS-VO9XLfe"
          data-callback="onTurnstileSuccess">
     </div>
 
-    <!-- BUTTONS -->
     <div class="button-row">
       <button type="button" class="btn-secondary" onclick="cancelOrder()">Cancel</button>
-
-      <button
-        type="button"
-        class="btn-primary"
-        id="submitBtn"
-        onclick="submitOrder()"
-        disabled>
+      <button type="button" class="btn-primary" id="submitBtn" onclick="submitOrder()">
         Submit order
       </button>
     </div>
 
   </div>
-
-<script>
-
-  // =========================
-  // LOAD ITEM FROM STORAGE
-  // =========================
-
-  const item = localStorage.getItem("item");
-  const price = parseFloat(localStorage.getItem("price"));
-
-  if (!item || !price) {
-    location.href = "index.html";
-  }
-
-  const itemText = document.getElementById("item-text");
-  const totalText = document.getElementById("total-text");
-  const qtyInput = document.getElementById("qty");
-  const slipInput = document.getElementById("slip");
-  const errorBox = document.getElementById("error");
-  const submitBtn = document.getElementById("submitBtn");
-  const qrImage = document.getElementById("dynamicQR");
-  const qrTotal = document.getElementById("qrTotal");
-
-  const PROMPTPAY_ID = "0812345678"; // 🔥 CHANGE TO YOUR REAL PROMPTPAY NUMBER
-
-  function formatCurrency(num) {
-    return num.toLocaleString("en-US");
-  }
-
-  // =========================
-  // GENERATE DYNAMIC QR
-  // =========================
-
-  function generateQR(total) {
-    const payload = `PAYMENT|${PROMPTPAY_ID}|${total}`;
-    const qrURL = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(payload)}`;
-
-    qrImage.src = qrURL;
-    qrTotal.textContent = `Total to pay: ฿${formatCurrency(total)}`;
-  }
-
-  // =========================
-  // UPDATE PRICE
-  // =========================
-
-  function updatePrice() {
-    let qty = parseInt(qtyInput.value) || 1;
-
-    if (qty < 1) {
-      qty = 1;
-      qtyInput.value = 1;
-    }
-
-    const total = price * qty;
-
-    itemText.textContent = `${item} — ฿${formatCurrency(price)} each`;
-    totalText.textContent = `Total: ฿${formatCurrency(total)}`;
-
-    generateQR(total); // 🔥 Dynamic QR update
-  }
-
-  qtyInput.addEventListener("input", updatePrice);
-  updatePrice();
-
-  // =========================
-  // SLIP VALIDATION
-  // =========================
-
-  slipInput.addEventListener("change", function () {
-    const file = this.files[0];
-    if (!file) return;
-
-    if (!["image/jpeg", "image/png"].includes(file.type)) {
-      showError("Only JPG or PNG allowed.");
-      this.value = "";
-      return;
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-      showError("File too large. Max 5MB.");
-      this.value = "";
-      return;
-    }
-
-    hideError();
-  });
-
-  // =========================
-  // TURNSTILE SUCCESS
-  // =========================
-
-  function onTurnstileSuccess() {
-    submitBtn.disabled = false;
-  }
-
-  // =========================
-  // SUBMIT ORDER
-  // =========================
-
-  function submitOrder() {
-    const email = document.getElementById("email").value.trim();
-    const qty = parseInt(qtyInput.value);
-    const slip = slipInput.files[0];
-
-    if (!email) return showError("Please enter your email.");
-    if (!qty || qty < 1) return showError("Invalid quantity.");
-    if (!slip) return showError("Please upload payment slip.");
-
-    hideError();
-
-    alert("Order submitted successfully! 🎉");
-
-    localStorage.clear();
-    location.href = "index.html";
-  }
-
-  // =========================
-  // CANCEL
-  // =========================
-
-  function cancelOrder() {
-    localStorage.clear();
-    location.href = "index.html";
-  }
-
-  function showError(message) {
-    errorBox.textContent = message;
-    errorBox.style.display = "block";
-  }
-
-  function hideError() {
-    errorBox.style.display = "none";
-  }
-
-</script>
-
 </body>
 </html>
