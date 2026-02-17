@@ -17,7 +17,7 @@
     </h1>
 
     <p class="subtitle" id="item-text"></p>
-    <div id="error" class="error" style="display:none"></div>
+    <div id="error" class="error" style="display:none;color:red;"></div>
 
     <!-- EMAIL -->
     <label class="label">
@@ -53,7 +53,7 @@
 
       <br><br>
 
-      <button class="btn-secondary" onclick="downloadQR()">
+      <button type="button" class="btn-secondary" onclick="downloadQR()">
         Download QR Code
       </button>
     </div>
@@ -69,6 +69,7 @@
       >
       <span class="hint">Max 5MB • JPG or PNG</span>
     </label>
+
     <!-- TURNSTILE -->
     <div class="cf-turnstile"
          data-sitekey="0x4AAAAAACd8YswS-VO9XLfe"
@@ -77,9 +78,10 @@
 
     <!-- BUTTONS -->
     <div class="button-row">
-      <button class="btn-secondary" onclick="cancelOrder()">Cancel</button>
+      <button type="button" class="btn-secondary" onclick="cancelOrder()">Cancel</button>
 
       <button
+        type="button"
         class="btn-primary"
         id="submitBtn"
         onclick="submitOrder()"
@@ -90,49 +92,134 @@
 
   </div>
 
-  <script src="app.js"></script>
+<script>
+  // =========================
+  // LOAD ITEM FROM STORAGE
+  // =========================
 
-  <script>
-    const item = localStorage.getItem("item");
-    const price = parseFloat(localStorage.getItem("price"));
+  const item = localStorage.getItem("item");
+  const price = parseFloat(localStorage.getItem("price"));
 
-    if (!item || !price) {
-      location.href = "index.html";
+  if (!item || !price) {
+    location.href = "index.html";
+  }
+
+  const itemText = document.getElementById("item-text");
+  const totalText = document.getElementById("total-text");
+  const qtyInput = document.getElementById("qty");
+  const slipInput = document.getElementById("slip");
+  const errorBox = document.getElementById("error");
+  const submitBtn = document.getElementById("submitBtn");
+
+  function formatCurrency(num) {
+    return num.toLocaleString("en-US");
+  }
+
+  function updatePrice() {
+    let qty = parseInt(qtyInput.value) || 1;
+
+    if (qty < 1) {
+      qty = 1;
+      qtyInput.value = 1;
     }
 
-    const itemText = document.getElementById("item-text");
-    const totalText = document.getElementById("total-text");
-    const qtyInput = document.getElementById("qty");
+    const total = price * qty;
 
-    function formatCurrency(num) {
-      return num.toLocaleString("en-US");
+    itemText.textContent = `${item} — ฿${formatCurrency(price)} each`;
+    totalText.textContent = `Total: ฿${formatCurrency(total)}`;
+  }
+
+  qtyInput.addEventListener("input", updatePrice);
+  updatePrice();
+
+  // =========================
+  // SLIP VALIDATION
+  // =========================
+
+  slipInput.addEventListener("change", function () {
+    const file = this.files[0];
+    if (!file) return;
+
+    if (!["image/jpeg", "image/png"].includes(file.type)) {
+      showError("Only JPG or PNG allowed.");
+      this.value = "";
+      return;
     }
 
-    function updatePrice() {
-      const qty = parseInt(qtyInput.value) || 1;
-      if (qty < 1) qtyInput.value = 1;
-
-      const total = price * qty;
-
-      itemText.textContent = `${item} — ฿${formatCurrency(price)} each`;
-      totalText.textContent = `Total: ฿${formatCurrency(total)}`;
+    if (file.size > 5 * 1024 * 1024) {
+      showError("File too large. Max 5MB.");
+      this.value = "";
+      return;
     }
 
-    qtyInput.addEventListener("input", updatePrice);
-    updatePrice();
+    hideError();
+  });
 
-    function cancelOrder() {
-      localStorage.clear();
-      location.href = "index.html";
+  // =========================
+  // TURNSTILE SUCCESS
+  // =========================
+
+  function onTurnstileSuccess() {
+    submitBtn.disabled = false;
+  }
+
+  // =========================
+  // SUBMIT ORDER
+  // =========================
+
+  function submitOrder() {
+    const email = document.getElementById("email").value.trim();
+    const qty = parseInt(qtyInput.value);
+    const slip = slipInput.files[0];
+
+    if (!email) {
+      showError("Please enter your email.");
+      return;
     }
 
-    function downloadQR() {
-      const link = document.createElement("a");
-      link.href = "https://i.postimg.cc/ysnZqCgX/LINE-20260211-200132.jpg?dl=1";
-      link.download = "ArtInk_Payment_QR.jpg";
-      link.click();
+    if (!qty || qty < 1) {
+      showError("Invalid quantity.");
+      return;
     }
-  </script>
+
+    if (!slip) {
+      showError("Please upload payment slip.");
+      return;
+    }
+
+    hideError();
+
+    alert("Order submitted successfully! 🎉");
+    
+    localStorage.clear();
+    location.href = "index.html";
+  }
+
+  // =========================
+  // CANCEL
+  // =========================
+
+  function cancelOrder() {
+    localStorage.clear();
+    location.href = "index.html";
+  }
+
+  function downloadQR() {
+    const link = document.createElement("a");
+    link.href = "https://i.postimg.cc/ysnZqCgX/LINE-20260211-200132.jpg?dl=1";
+    link.download = "ArtInk_Payment_QR.jpg";
+    link.click();
+  }
+
+  function showError(message) {
+    errorBox.textContent = message;
+    errorBox.style.display = "block";
+  }
+
+  function hideError() {
+    errorBox.style.display = "none";
+  }
+</script>
 
 </body>
 </html>
