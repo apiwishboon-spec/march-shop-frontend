@@ -1,14 +1,31 @@
 /*************************************************
  * 🎁 ART&INK SHOP – FRONTEND LOGIC
- * Turnstile • Slip Upload • OCR Amount Display
+ * Product Select • Turnstile • Slip Upload
+ * OCR Amount Display
  *************************************************/
 
+// ========== PRODUCT SELECT (HOME PAGE) ==========
+function goOrder(item, price) {
+
+  // Store selected product
+  localStorage.setItem("item", item);
+  localStorage.setItem("price", price);
+
+  // Navigate to order page
+  window.location.href = "order.html";
+}
+
+
+// ========== TURNSTILE ==========
 let turnstileToken = null;
 
 function onTurnstileSuccess(token) {
   turnstileToken = token;
-  document.getElementById("submitBtn").disabled = false;
+
+  const btn = document.getElementById("submitBtn");
+  if (btn) btn.disabled = false;
 }
+
 
 // ========== SUBMIT ORDER ==========
 function submitOrder() {
@@ -18,12 +35,18 @@ function submitOrder() {
   const phone = document.getElementById("phone").value.trim();
   const qty = Number(document.getElementById("qty").value);
   const slipInput = document.getElementById("slip");
-  const error = document.getElementById("error");
 
-  if (!turnstileToken) return showError("Please verify you are human.");
-  if (!email.includes("@")) return showError("Invalid email");
-  if (!qty || qty < 1) return showError("Invalid quantity");
-  if (!slipInput.files.length) return showError("Upload payment slip");
+  if (!turnstileToken)
+    return showError("Please verify you are human.");
+
+  if (!email.includes("@"))
+    return showError("Invalid email");
+
+  if (!qty || qty < 1)
+    return showError("Invalid quantity");
+
+  if (!slipInput.files.length)
+    return showError("Upload payment slip");
 
   const file = slipInput.files[0];
 
@@ -58,32 +81,42 @@ function submitOrder() {
         throw new Error(data.message);
       }
 
-      // 🔥 OCR DISPLAY
+      // ========== OCR DISPLAY ==========
       const detected = data.data.detectedAmount;
-      const total = parseFloat(localStorage.getItem("price")) * qty;
+      const total =
+        parseFloat(localStorage.getItem("price")) * qty;
 
       const ocrBox = document.getElementById("ocrBox");
-      const detectedSpan = document.getElementById("detectedAmount");
-      const matchStatus = document.getElementById("matchStatus");
+      const detectedSpan =
+        document.getElementById("detectedAmount");
+      const matchStatus =
+        document.getElementById("matchStatus");
 
-      ocrBox.style.display = "block";
+      if (ocrBox) ocrBox.style.display = "block";
 
       if (detected) {
 
         detectedSpan.textContent = "฿" + detected;
 
-        if (parseFloat(detected) === parseFloat(total.toFixed(2))) {
-          matchStatus.innerHTML = "✅ Amount matches order total.";
+        if (parseFloat(detected) ===
+            parseFloat(total.toFixed(2))) {
+
+          matchStatus.innerHTML =
+            "✅ Amount matches order total.";
           matchStatus.style.color = "green";
+
         } else {
-          matchStatus.innerHTML = "⚠️ Amount does NOT match order total.";
+
+          matchStatus.innerHTML =
+            "⚠️ Amount does NOT match order total.";
           matchStatus.style.color = "red";
         }
 
       } else {
 
         detectedSpan.textContent = "Not detected";
-        matchStatus.innerHTML = "⚠️ OCR could not detect amount.";
+        matchStatus.innerHTML =
+          "⚠️ OCR could not detect amount.";
         matchStatus.style.color = "orange";
       }
 
@@ -108,12 +141,19 @@ function submitOrder() {
 
 // ========== HELPERS ==========
 function showError(message) {
+
   const error = document.getElementById("error");
-  error.textContent = message;
-  error.style.display = "block";
+
+  if (error) {
+    error.textContent = message;
+    error.style.display = "block";
+  }
 }
 
 function resetTurnstile() {
-  if (window.turnstile) window.turnstile.reset();
+
+  if (window.turnstile)
+    window.turnstile.reset();
+
   turnstileToken = null;
 }
