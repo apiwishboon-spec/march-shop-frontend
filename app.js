@@ -1,5 +1,5 @@
 /*************************************************
- * ART&INK SHOP – FIXED VERSION
+ * ART&INK SHOP – AUTO QR VERSION
  *************************************************/
 
 let turnstileToken = null;
@@ -17,21 +17,17 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  const itemText = document.getElementById("item-text");
-  const qtyInput = document.getElementById("qty");
-  const emailInput = document.getElementById("email");
-
-  itemText.textContent = `${item} — ฿${price} each`;
+  document.getElementById("item-text").textContent =
+    `${item} — ฿${price} each`;
 
   updateTotal();
-  tryGenerateQR();
+  generateQR(); // 🔥 generate immediately
 
-  qtyInput.addEventListener("input", () => {
-    updateTotal();
-    tryGenerateQR();
-  });
-
-  emailInput.addEventListener("input", tryGenerateQR);
+  document.getElementById("qty")
+    .addEventListener("input", () => {
+      updateTotal();
+      generateQR();
+    });
 });
 
 
@@ -48,29 +44,19 @@ function updateTotal() {
 
 
 // ================================
-// TURNSTILE CALLBACK
+// GENERATE QR (NO EMAIL REQUIRED)
 // ================================
-function onTurnstileSuccess(token) {
-  turnstileToken = token;
-}
+function generateQR() {
 
-
-// ================================
-// GENERATE QR (NO TURNSTILE BLOCK)
-// ================================
-function tryGenerateQR() {
-
-  const email = document.getElementById("email").value.trim();
   const qty = Number(document.getElementById("qty").value);
   const price = parseFloat(localStorage.getItem("price"));
   const item = localStorage.getItem("item");
 
-  if (!email.includes("@")) return;
   if (!qty || qty < 1) return;
 
   const formData = new URLSearchParams();
-  formData.append("email", email);
-  formData.append("phone", document.getElementById("phone").value.trim());
+  formData.append("email", "preview@shop.com"); // dummy
+  formData.append("phone", "");
   formData.append("item", item);
   formData.append("price", price);
   formData.append("quantity", qty);
@@ -88,9 +74,13 @@ function tryGenerateQR() {
 
     generatedPayload = data.data.promptPayPayload;
 
-    document.getElementById("dynamicQR").src = data.data.qrImage;
-    document.getElementById("qrTotal").textContent = "฿" + data.data.total;
+    const qrImg = document.getElementById("dynamicQR");
+    qrImg.src = data.data.qrImage;
 
+    document.getElementById("qrTotal").textContent =
+      "฿" + data.data.total;
+
+    enableDownload(qrImg.src);
   })
   .catch(err => {
     console.error("QR failed:", err.message);
@@ -99,17 +89,47 @@ function tryGenerateQR() {
 
 
 // ================================
-// SUBMIT ORDER (TURNSTILE REQUIRED)
+// DOWNLOAD BUTTON
+// ================================
+function enableDownload(imageUrl) {
+
+  let btn = document.getElementById("downloadQR");
+
+  if (!btn) {
+    btn = document.createElement("a");
+    btn.id = "downloadQR";
+    btn.className = "btn-secondary";
+    btn.style.display = "inline-block";
+    btn.style.marginTop = "10px";
+    btn.textContent = "Download QR";
+    btn.download = "promptpay-qr.png";
+
+    document.getElementById("dynamicQR")
+      .parentElement
+      .appendChild(btn);
+  }
+
+  btn.href = imageUrl;
+}
+
+
+// ================================
+// TURNSTILE CALLBACK
+// ================================
+function onTurnstileSuccess(token) {
+  turnstileToken = token;
+}
+
+
+// ================================
+// SUBMIT ORDER
 // ================================
 function submitOrder() {
-
-  const slipInput = document.getElementById("slip");
 
   if (!turnstileToken)
     return showError("Please verify you are human.");
 
-  if (!generatedPayload)
-    return showError("QR not generated yet.");
+  const slipInput = document.getElementById("slip");
 
   if (!slipInput.files.length)
     return showError("Upload payment slip.");
@@ -159,8 +179,6 @@ function submitOrder() {
 }
 
 
-// ================================
-// HELPERS
 // ================================
 function cancelOrder() {
   localStorage.clear();
