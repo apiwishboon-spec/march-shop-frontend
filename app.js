@@ -21,13 +21,16 @@ document.addEventListener("DOMContentLoaded", () => {
     `${item} — ฿${price} each`;
 
   updateTotal();
-  generateQR(); // 🔥 generate immediately
+  generateQR();
 
   document.getElementById("qty")
     .addEventListener("input", () => {
       updateTotal();
       generateQR();
     });
+
+  document.getElementById("submitBtn")
+    .addEventListener("click", submitOrder);
 });
 
 
@@ -190,3 +193,4 @@ function showError(message) {
   error.textContent = message;
   error.style.display = "block";
 }
+
