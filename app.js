@@ -4,9 +4,8 @@
 
 let turnstileToken = null;
 let generatedPayload = null;
-let qrExpirationTime = null;
-let countdownInterval = null;
-let qrTimestamp = null;
+let qrTimer = null;
+let qrExpiryTime = null;
 
 const API_URL = "https://script.google.com/macros/s/AKfycbxENBG6cKm3ImJd_6gjvxCUnM-hG0xeNhPhjLUleDCyh0JsXhkkG7wOwkBjRW43j-88mg/exec";
 
@@ -60,15 +59,12 @@ function generateQR() {
 
   if (!qty || qty < 1) return;
 
-  const timestamp = Date.now().toString();
-
   const formData = new URLSearchParams();
   formData.append("email", "preview@shop.com"); // dummy
   formData.append("phone", "");
   formData.append("item", item);
   formData.append("price", price);
   formData.append("quantity", qty);
-  formData.append("timestamp", timestamp); // Add timestamp for security
 
   fetch(API_URL, {
     method: "POST",
@@ -82,49 +78,111 @@ function generateQR() {
     }
 
     generatedPayload = data.data.promptPayPayload;
-    qrTimestamp = timestamp;
-    qrExpirationTime = parseInt(data.data.expiresAt) || (qrTimestamp + (5 * 60 * 1000));
 
     const qrImg = document.getElementById("dynamicQR");
-    const qrUrlWithCache = data.data.qrImage + "&v=" + qrTimestamp;
+    // Add cache busting timestamp and higher error correction for security
+    const qrUrlWithCache = data.data.qrImage + "&v=" + Date.now() + "&ecc=H";
     qrImg.src = qrUrlWithCache;
+
+    // Start 5-minute timer
+    startQRTimer();
 
     document.getElementById("qrTotal").textContent =
       "฿" + data.data.total;
 
     enableDownload(qrUrlWithCache);
-    startCountdown();
-    addSecondDownloadButton(qrUrlWithCache);
   })
   .catch(err => {
     console.error("QR failed:", err.message);
-    showError("QR generation failed: " + err.message);
   });
 }
 
 
 // ================================
+// QR TIMER FUNCTION
+// ================================
+function startQRTimer() {
+  // Clear existing timer
+  if (qrTimer) {
+    clearInterval(qrTimer);
+  }
+
+  // Set expiry time (5 minutes from now)
+  qrExpiryTime = Date.now() + (5 * 60 * 1000);
+  
+  // Update timer display every second
+  qrTimer = setInterval(() => {
+    const now = Date.now();
+    const remaining = Math.max(0, qrExpiryTime - now);
+    
+    if (remaining === 0) {
+      // QR expired
+      clearInterval(qrTimer);
+      expireQR();
+    } else {
+      // Update timer display
+      const minutes = Math.floor(remaining / 60000);
+      const seconds = Math.floor((remaining % 60000) / 1000);
+      updateTimerDisplay(minutes, seconds);
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay(minutes, seconds) {
+  let timerElement = document.getElementById("qrTimer");
+  if (!timerElement) {
+    timerElement = document.createElement("div");
+    timerElement.id = "qrTimer";
+    timerElement.style.cssText = "text-align:center; margin-top:10px; font-weight:bold; color:#e74c3c;";
+    document.getElementById("dynamicQR").parentElement.appendChild(timerElement);
+  }
+  
+  if (minutes === 0 && seconds <= 30) {
+    timerElement.style.color = "#e74c3c";
+    timerElement.innerHTML = `⏰ QR expires in ${seconds}s`;
+  } else {
+    timerElement.style.color = "#f39c12";
+    timerElement.innerHTML = `⏰ QR expires in ${minutes}:${seconds.toString().padStart(2, '0')}`;
+  }
+}
+
+function expireQR() {
+  const qrImg = document.getElementById("dynamicQR");
+  qrImg.style.opacity = "0.3";
+  qrImg.style.filter = "blur(5px)";
+  
+  const timerElement = document.getElementById("qrTimer");
+  if (timerElement) {
+    timerElement.innerHTML = "⏰ QR Expired - Please refresh";
+    timerElement.style.color = "#e74c3c";
+  }
+  
+  showError("QR code expired. Please refresh to generate a new one.");
+}
+
+// ================================
 // DOWNLOAD BUTTON
 // ================================
 function enableDownload(imageUrl) {
-
-  let btn = document.getElementById("downloadQR");
-
-  if (!btn) {
-    btn = document.createElement("a");
-    btn.id = "downloadQR";
-    btn.className = "btn-secondary";
-    btn.style.display = "inline-block";
-    btn.style.marginTop = "10px";
-    btn.textContent = "Download QR";
-    btn.download = "promptpay-qr.png";
-
-    document.getElementById("dynamicQR")
-      .parentElement
-      .appendChild(btn);
+  // Remove existing download button to prevent duplicates
+  const existingBtn = document.getElementById("downloadQR");
+  if (existingBtn) {
+    existingBtn.remove();
   }
 
+  // Create new download button
+  const btn = document.createElement("a");
+  btn.id = "downloadQR";
+  btn.className = "btn-secondary";
+  btn.style.display = "inline-block";
+  btn.style.marginTop = "10px";
+  btn.textContent = "Download QR";
+  btn.download = "promptpay-qr.png";
   btn.href = imageUrl;
+
+  document.getElementById("dynamicQR")
+    .parentElement
+    .appendChild(btn);
 }
 
 
@@ -168,7 +226,6 @@ function submitOrder() {
     formData.append("quantity", document.getElementById("qty").value);
     formData.append("base64Image", base64Image);
     formData.append("turnstileToken", turnstileToken);
-    formData.append("timestamp", qrTimestamp); // Include QR timestamp for validation
 
     fetch(API_URL, {
       method: "POST",
@@ -200,112 +257,6 @@ function submitOrder() {
 function cancelOrder() {
   localStorage.clear();
   location.href = "index.html";
-}
-
-// ================================
-// COUNTDOWN TIMER
-// ================================
-function startCountdown() {
-  // Clear existing countdown
-  if (countdownInterval) {
-    clearInterval(countdownInterval);
-  }
-
-  // Create or update countdown display
-  let countdownDiv = document.getElementById("qrCountdown");
-  if (!countdownDiv) {
-    countdownDiv = document.createElement("div");
-    countdownDiv.id = "qrCountdown";
-    countdownDiv.style.cssText = `
-      background: #ff6b6b;
-      color: white;
-      padding: 10px 15px;
-      border-radius: 8px;
-      margin-top: 15px;
-      font-weight: bold;
-      text-align: center;
-      font-size: 14px;
-    `;
-    document.getElementById("dynamicQR").parentElement.appendChild(countdownDiv);
-  }
-
-  countdownInterval = setInterval(() => {
-    const now = Date.now();
-    const timeLeft = qrExpirationTime - now;
-
-    if (timeLeft <= 0) {
-      clearInterval(countdownInterval);
-      countdownDiv.textContent = "⏰ QR Code Expired - Please Refresh";
-      countdownDiv.style.background = "#dc3545";
-      disableQRSubmission();
-      return;
-    }
-
-    const minutes = Math.floor(timeLeft / (1000 * 60));
-    const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-    
-    countdownDiv.textContent = `⏱️ QR expires in: ${minutes}:${seconds.toString().padStart(2, '0')}`;
-    
-    // Change color when time is running out
-    if (timeLeft < 60000) { // Less than 1 minute
-      countdownDiv.style.background = "#dc3545";
-      countdownDiv.textContent = `⚠️ QR expires in: ${minutes}:${seconds.toString().padStart(2, '0')}`;
-    }
-  }, 1000);
-}
-
-// ================================
-// SECOND DOWNLOAD BUTTON
-// ================================
-function addSecondDownloadButton(imageUrl) {
-  // Remove existing second button if any
-  const existingBtn = document.getElementById("downloadQR2");
-  if (existingBtn) {
-    existingBtn.remove();
-  }
-
-  const btn = document.createElement("a");
-  btn.id = "downloadQR2";
-  btn.className = "btn-secondary";
-  btn.style.cssText = `
-    display: inline-block;
-    margin-top: 10px;
-    margin-left: 10px;
-    background: #28a745;
-    border-color: #28a745;
-  `;
-  btn.textContent = "📥 Save QR";
-  btn.download = `promptpay-qr-${qrTimestamp}.png`;
-  btn.href = imageUrl;
-
-  // Insert after first download button
-  const firstBtn = document.getElementById("downloadQR");
-  if (firstBtn) {
-    firstBtn.parentNode.insertBefore(btn, firstBtn.nextSibling);
-  }
-}
-
-// ================================
-// DISABLE QR SUBMISSION
-// ================================
-function disableQRSubmission() {
-  const qrImg = document.getElementById("dynamicQR");
-  qrImg.style.opacity = "0.3";
-  qrImg.style.filter = "blur(2px)";
-  
-  const submitBtn = document.getElementById("submitBtn");
-  submitBtn.disabled = true;
-  submitBtn.textContent = "QR Expired - Refresh Page";
-  submitBtn.style.background = "#6c757d";
-  
-  // Show refresh button
-  const refreshBtn = document.createElement("button");
-  refreshBtn.className = "btn-primary";
-  refreshBtn.style.cssText = "margin-left: 10px; background: #007bff;";
-  refreshBtn.textContent = "🔄 Refresh QR";
-  refreshBtn.onclick = () => location.reload();
-  
-  submitBtn.parentNode.insertBefore(refreshBtn, submitBtn.nextSibling);
 }
 
 function showError(message) {

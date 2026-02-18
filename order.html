@@ -48,11 +48,6 @@
       </div>
 
       <p><strong id="qrTotal"></strong></p>
-
-      <!-- DOWNLOAD BUTTON -->
-      <button type="button" class="btn-secondary" onclick="downloadQR()" style="margin-top:10px;">
-        Download QR
-      </button>
     </div>
 
     <label class="label">
@@ -75,38 +70,6 @@
     </div>
 
   </div>
-
-<script>
-const basePrice = 299; // change to your real price
-
-// SHOW QR WHEN PAGE LOADS
-window.onload = function() {
-  updateQR();
-};
-
-function updateQR() {
-  const qty = document.getElementById("qty").value;
-  const total = basePrice * qty;
-
-  // Example QR generator (replace with your real promptpay or QR link)
-  const qrURL = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=PAYMENT-" + total;
-
-  document.getElementById("dynamicQR").src = qrURL;
-  document.getElementById("qrTotal").innerText = "Total: ฿" + total;
-}
-
-// DOWNLOAD FUNCTION
-function downloadQR() {
-  const qrImage = document.getElementById("dynamicQR").src;
-
-  const link = document.createElement("a");
-  link.href = qrImage;
-  link.download = "ArtInkStudio-QR.png";
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-}
-</script>
 
 </body>
 </html>
