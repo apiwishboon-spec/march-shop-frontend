@@ -60,6 +60,16 @@
          data-sitekey="0x4AAAAAACd8YswS-VO9XLfe"
          data-callback="onTurnstileSuccess">
     </div>
+    
+    <div id="turnstile-status" style="text-align:center; margin-top:10px; font-size:12px; color:#666;">
+      🔒 Please complete verification above
+    </div>
+    
+    <div style="text-align:center; margin-top:5px;">
+      <button type="button" onclick="resetTurnstile()" style="font-size:11px; padding:5px 10px; background:#f8f9fa; border:1px solid #dee2e6; border-radius:4px; cursor:pointer;">
+        🔄 Reset Verification
+      </button>
+    </div>
 
     <div class="button-row">
       <button type="button" class="btn-secondary" onclick="cancelOrder()">Cancel</button>

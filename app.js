@@ -191,6 +191,42 @@ function enableDownload(imageUrl) {
 // ================================
 function onTurnstileSuccess(token) {
   turnstileToken = token;
+  console.log("Turnstile verified successfully");
+  
+  // Update status indicator
+  const statusElement = document.getElementById("turnstile-status");
+  if (statusElement) {
+    statusElement.innerHTML = "✅ Verification complete";
+    statusElement.style.color = "#27ae60";
+  }
+  
+  // Clear any existing error messages when verification succeeds
+  const errorElement = document.getElementById("error");
+  if (errorElement) {
+    errorElement.style.display = "none";
+  }
+}
+
+// ================================
+// RESET TURNSTILE (for troubleshooting)
+// ================================
+function resetTurnstile() {
+  turnstileToken = null;
+  
+  const statusElement = document.getElementById("turnstile-status");
+  if (statusElement) {
+    statusElement.innerHTML = "🔄 Resetting verification...";
+    statusElement.style.color = "#f39c12";
+  }
+  
+  // Reload Turnstile widget
+  setTimeout(() => {
+    if (window.turnstile) {
+      window.turnstile.reset();
+    }
+    statusElement.innerHTML = "🔒 Please complete verification above";
+    statusElement.style.color = "#666";
+  }, 1000);
 }
 
 
@@ -199,18 +235,25 @@ function onTurnstileSuccess(token) {
 // ================================
 function submitOrder() {
 
-  if (!turnstileToken)
-    return showError("Please verify you are human.");
+  console.log("Submit order called");
+  console.log("Turnstile token:", turnstileToken ? "exists" : "missing");
+
+  if (!turnstileToken) {
+    console.log("No turnstile token found");
+    return showError("Please verify you are human. Complete the verification challenge above.");
+  }
 
   const slipInput = document.getElementById("slip");
 
   if (!slipInput.files.length)
-    return showError("Upload payment slip.");
+    return showError("Please upload payment slip.");
 
   const file = slipInput.files[0];
 
   if (file.size > 5 * 1024 * 1024)
     return showError("Slip too large (max 5MB).");
+
+  console.log("All validations passed, submitting order...");
 
   const reader = new FileReader();
 
