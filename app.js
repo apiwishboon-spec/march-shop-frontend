@@ -6,8 +6,6 @@ let turnstileToken = null;
 let generatedPayload = null;
 let qrTimer = null;
 let qrExpiryTime = null;
-let autoSaveTimer = null;
-let currentStep = 1;
 
 const API_URL = "https://script.google.com/macros/s/AKfycbxENBG6cKm3ImJd_6gjvxCUnM-hG0xeNhPhjLUleDCyh0JsXhkkG7wOwkBjRW43j-88mg/exec";
 
@@ -24,15 +22,6 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("item-text").textContent =
     `${item} — ฿${price} each`;
 
-  // Load saved form data
-  loadSavedFormData();
-  
-  // Start auto-save
-  startAutoSave();
-  
-  // Initialize progress
-  updateProgress(1);
-
   updateTotal();
   generateQR();
 
@@ -40,16 +29,10 @@ document.addEventListener("DOMContentLoaded", () => {
     .addEventListener("input", () => {
       updateTotal();
       generateQR();
-      saveFormData();
     });
 
   document.getElementById("submitBtn")
     .addEventListener("click", submitOrder);
-  
-  // Add form change listeners for auto-save
-  document.getElementById("email").addEventListener("input", saveFormData);
-  document.getElementById("phone").addEventListener("input", saveFormData);
-  document.getElementById("slip").addEventListener("change", saveFormData);
 });
 
 
@@ -103,9 +86,6 @@ function generateQR() {
 
     // Start 5-minute timer
     startQRTimer();
-    
-    // Update progress to payment step
-    updateProgress(2);
 
     document.getElementById("qrTotal").textContent =
       "฿" + data.data.total;
@@ -117,70 +97,6 @@ function generateQR() {
   });
 }
 
-
-// ================================
-// AUTO-SAVE FUNCTIONALITY
-// ================================
-function saveFormData() {
-  const formData = {
-    email: document.getElementById("email").value,
-    phone: document.getElementById("phone").value,
-    qty: document.getElementById("qty").value,
-    timestamp: Date.now()
-  };
-  
-  localStorage.setItem("orderFormData", JSON.stringify(formData));
-}
-
-function loadSavedFormData() {
-  try {
-    const saved = localStorage.getItem("orderFormData");
-    if (saved) {
-      const formData = JSON.parse(saved);
-      
-      // Only restore if saved within last 30 minutes
-      if (Date.now() - formData.timestamp < 30 * 60 * 1000) {
-        if (formData.email) document.getElementById("email").value = formData.email;
-        if (formData.phone) document.getElementById("phone").value = formData.phone;
-        if (formData.qty) document.getElementById("qty").value = formData.qty;
-      }
-    }
-  } catch (err) {
-    console.log("Could not load saved form data");
-  }
-}
-
-function startAutoSave() {
-  // Auto-save every 30 seconds
-  autoSaveTimer = setInterval(saveFormData, 30000);
-}
-
-function clearSavedFormData() {
-  localStorage.removeItem("orderFormData");
-  if (autoSaveTimer) {
-    clearInterval(autoSaveTimer);
-  }
-}
-
-// ================================
-// PROGRESS INDICATOR
-// ================================
-function updateProgress(step) {
-  currentStep = step;
-  
-  // Remove all active/completed classes
-  document.querySelectorAll('.progress-step').forEach(el => {
-    el.classList.remove('active', 'completed');
-  });
-  
-  // Add completed classes to previous steps
-  for (let i = 1; i < step; i++) {
-    document.getElementById(`step${i}`).classList.add('completed');
-  }
-  
-  // Add active class to current step
-  document.getElementById(`step${step}`).classList.add('active');
-}
 
 // ================================
 // QR TIMER FUNCTION
@@ -295,18 +211,6 @@ function submitOrder() {
 
   if (file.size > 5 * 1024 * 1024)
     return showError("Slip too large (max 5MB).");
-    
-  // Validate quantity limit
-  const qty = parseInt(document.getElementById("qty").value);
-  if (qty > 5) {
-    return showError("Maximum 5 items per order.");
-  }
-  
-  // Update progress to confirmation step
-  updateProgress(3);
-  
-  // Clear saved form data on successful submission
-  clearSavedFormData();
 
   const reader = new FileReader();
 

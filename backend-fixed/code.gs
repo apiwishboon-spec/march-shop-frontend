@@ -14,13 +14,6 @@ const PROMPTPAY_ID = "0933372907"; // 🔥 YOUR PROMPTPAY
 // ========== ENTRY POINT ==========
 function doPost(e) {
   try {
-    // Enhanced security logging
-    const clientIP = e.parameters.remoteip || "unknown";
-    const userAgent = e.parameters.useragent || "unknown";
-    Logger.log("=== ORDER REQUEST ===");
-    Logger.log("IP: " + clientIP);
-    Logger.log("User Agent: " + userAgent);
-    Logger.log("Timestamp: " + new Date().toISOString());
 
     const email = String(e.parameter.email || "").trim();
     const phone = String(e.parameter.phone || "").trim();
@@ -30,28 +23,11 @@ function doPost(e) {
     const base64Image = e.parameter.base64Image;
     const turnstileToken = e.parameter.turnstileToken;
 
-    // Enhanced validation
     if (!item || price <= 0 || quantity < 1 || quantity > 5) {
-      Logger.log("Invalid order data - item: " + item + ", price: " + price + ", qty: " + quantity);
-      return jsonError("Invalid order data");
-    }
-    
-    // Email validation with regex
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (email && !emailRegex.test(email)) {
-      Logger.log("Invalid email format: " + email);
-      return jsonError("Invalid email format");
-    }
-    
-    // Phone validation (Thai numbers)
-    if (phone && !/^0[689]\d{8}$/.test(phone.replace(/[-\s]/g, ''))) {
-      Logger.log("Invalid phone format: " + phone);
-      return jsonError("Invalid phone format");
+      return jsonError("Invalid order data: Maximum 5 items allowed per order");
     }
 
     const total = Number((price * quantity).toFixed(2));
-    
-    Logger.log("Order details - Item: " + item + ", Qty: " + quantity + ", Total: ฿" + total);
 
     // =================================================
     // QR MODE (NO IMAGE) - NO TURNSTILE REQUIRED
@@ -79,16 +55,13 @@ function doPost(e) {
       return jsonError("Invalid email");
 
     // Professional Turnstile verification with detailed logging
-    const turnstileResult = verifyTurnstileProfessional(turnstileToken, clientIP);
+    const turnstileResult = verifyTurnstileProfessional(turnstileToken);
     if (!turnstileResult.success) {
       Logger.log("Turnstile verification failed: " + turnstileResult.error);
       return jsonError("Bot verification failed. Please refresh the page and try again.");
     }
-    
-    Logger.log("Turnstile verification: SUCCESS");
 
     const slipUrl = uploadToImgBB(base64Image);
-    Logger.log("Image uploaded: " + slipUrl);
 
     const sheet = SpreadsheetApp
       .openById(SHEET_ID)
@@ -236,13 +209,12 @@ function calculateCRC(payload) {
 // =================================================
 // PROFESSIONAL TURNSTILE VERIFICATION
 // =================================================
-function verifyTurnstileProfessional(token, clientIP) {
+function verifyTurnstileProfessional(token) {
   try {
     // Log verification attempt
     Logger.log("=== Turnstile Verification Attempt ===");
     Logger.log("Token provided: " + (token ? "YES" : "NO"));
     Logger.log("Token length: " + (token ? token.length : 0));
-    Logger.log("Client IP: " + (clientIP || "unknown"));
 
     if (!token) {
       return { success: false, error: "No token provided" };
@@ -266,8 +238,8 @@ function verifyTurnstileProfessional(token, clientIP) {
     };
 
     // Add remote IP if available
-    if (clientIP) {
-      payload.remoteip = clientIP;
+    if (typeof e !== 'undefined' && e && e.parameters && e.parameters.remoteip) {
+      payload.remoteip = e.parameters.remoteip;
     }
 
     Logger.log("Sending verification request to Cloudflare...");
@@ -277,8 +249,7 @@ function verifyTurnstileProfessional(token, clientIP) {
       {
         method: "post",
         payload: payload,
-        muteHttpExceptions: true,  // Don't throw on HTTP errors
-        timeout: 10000  // 10 second timeout
+        muteHttpExceptions: true  // Don't throw on HTTP errors
       }
     );
 
