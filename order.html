@@ -1,75 +1,241 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Art&Ink Studio – Order</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ART&INK Shop - Order</title>
   <link rel="stylesheet" href="style.css">
-
-  <!-- Cloudflare Turnstile -->
-  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-
-  <!-- Your JS -->
-  <script src="app.js" defer></script>
+  <style>
+    /* Step Indicator Styles */
+    .step-indicator {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+      position: relative;
+    }
+    
+    .step-indicator::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 2px;
+      background: #e0e0e0;
+      z-index: 0;
+    }
+    
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+      margin: 0 40px;
+    }
+    
+    .step-dot {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #666;
+      transition: all 0.3s ease;
+      margin-bottom: 8px;
+    }
+    
+    .step.active .step-dot {
+      background: #000;
+      color: #fff;
+      transform: scale(1.1);
+    }
+    
+    .step.completed .step-dot {
+      background: #4CAF50;
+      color: #fff;
+    }
+    
+    .step-label {
+      font-size: 14px;
+      color: #666;
+      font-weight: 500;
+    }
+    
+    .step.active .step-label {
+      color: #000;
+      font-weight: 600;
+    }
+    
+    .step.completed .step-label {
+      color: #4CAF50;
+    }
+    
+    /* Step Content */
+    .step-content {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .step-content.active {
+      display: block;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Loading Animation */
+    .loading-spinner {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #f3f3f3;
+      border-top: 2px solid #000;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 8px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .btn-loading .loading-spinner {
+      display: inline-block;
+    }
+    
+    .btn-loading {
+      pointer-events: none;
+      opacity: 0.7;
+    }
+    
+    /* Download Button Fix */
+    .download-btn {
+      display: inline-block;
+      background: #6c757d;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 15px;
+    }
+    
+    .download-btn:hover {
+      background: #5a6268;
+      transform: translateY(-2px);
+    }
+  </style>
 </head>
-
 <body>
   <div class="container">
+    <header>
+      <h1>ART&INK Shop</h1>
+      <p>Complete your order</p>
+    </header>
 
-    <h1 class="brand">
-      <span class="brand-gradient">Art&Ink Studio</span>
-    </h1>
+    <!-- Step Indicator -->
+    <div class="step-indicator">
+      <div class="step active" id="step1-indicator">
+        <div class="step-dot">1</div>
+        <div class="step-label">Contact</div>
+      </div>
+      <div class="step" id="step2-indicator">
+        <div class="step-dot">2</div>
+        <div class="step-label">Payment</div>
+      </div>
+    </div>
 
-    <p class="subtitle" id="item-text"></p>
-    <div id="error" class="error" style="display:none;color:red;"></div>
+    <main>
+      <!-- Step 1: Contact Information -->
+      <div class="step-content active" id="step1">
+        <div class="form-card">
+          <h2>📝 Contact Information</h2>
+          <p>Please provide your contact details to continue.</p>
 
-    <label class="label">
-      Email address
-      <input id="email" type="email" required>
-    </label>
+          <form id="contactForm">
+            <label class="label">
+              Email address
+              <input id="email" type="email" required>
+            </label>
 
-    <label class="label">
-      Phone number
-      <input id="phone" type="tel">
-    </label>
+            <label class="label">
+              Phone number
+              <input id="phone" type="tel">
+            </label>
 
-    <label class="label">
-      Quantity
-      <input id="qty" type="number" min="1" max="5" value="1" required onchange="updateQR()">
-      <span class="hint">Maximum 5 items per order (spam protection)</span>
-    </label>
+            <label class="label">
+              Quantity
+              <input id="qty" type="number" min="1" max="5" value="1" required>
+              <span class="hint">Maximum 5 items per order (spam protection)</span>
+            </label>
 
-    <!-- PAYMENT -->
-    <div class="payment-box">
-      <h3>💸 Payment</h3>
-      <p>Scan the QR below to pay.</p>
-
-      <div style="margin-top:15px;">
-        <img id="dynamicQR" width="290">
+            <div class="button-row">
+              <button type="button" class="btn-primary" onclick="goToStep2()">
+                Next →
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
 
-      <p><strong id="qrTotal"></strong></p>
-    </div>
+      <!-- Step 2: Payment -->
+      <div class="step-content" id="step2">
+        <div class="form-card">
+          <h2>💸 Payment</h2>
+          <p>Scan the QR code below to complete your payment.</p>
 
-    <label class="label">
-      Upload payment slip
-      <input id="slip" type="file" accept="image/png, image/jpeg" required>
-      <span class="hint">Max 5MB • JPG or PNG</span>
-    </label>
+          <!-- PAYMENT -->
+          <div class="payment-box">
+            <h3>Payment Details</h3>
+            <div style="margin-top:15px;">
+              <img id="dynamicQR" width="300">
+            </div>
+            <p><strong id="qrTotal"></strong></p>
+            
+            <!-- Download Button -->
+            <a id="downloadQR" class="download-btn" style="display:none;">
+              📥 Download QR
+            </a>
+          </div>
 
-    <div class="cf-turnstile"
-         data-sitekey="0x4AAAAAACd8YswS-VO9XLfe"
-         data-callback="onTurnstileSuccess">
-    </div>
+          <label class="label">
+            Upload payment slip
+            <input id="slip" type="file" accept="image/png, image/jpeg" required>
+            <span class="hint">Max 5MB • JPG or PNG</span>
+          </label>
 
-    <div class="button-row">
-      <button type="button" class="btn-secondary" onclick="cancelOrder()">Cancel</button>
-      <button type="button" class="btn-primary" id="submitBtn">
-        Submit order
-      </button>
+          <!-- Cloudflare Turnstile -->
+          <div class="cf-turnstile"
+               data-sitekey="0x4AAAAAACd8YswS-VO9XLfe"
+               data-callback="onTurnstileSuccess">
+          </div>
 
-    </div>
-
+          <div class="button-row">
+            <button type="button" class="btn-secondary" onclick="goToStep1()">
+              ← Back
+            </button>
+            <button type="button" class="btn-primary" id="submitBtn" onclick="submitOrder()">
+              <span class="loading-spinner"></span>
+              <span class="btn-text">Submit Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
   </div>
 
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  <script src="app.js"></script>
 </body>
 </html>

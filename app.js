@@ -1,5 +1,5 @@
 /*************************************************
- * ART&INK SHOP – AUTO QR VERSION
+ * ART&INK SHOP – AUTO QR VERSION (2-STEP PROCESS)
  *************************************************/
 
 let turnstileToken = null;
@@ -19,22 +19,54 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  document.getElementById("item-text").textContent =
-    `${item} — ฿${price} each`;
-
+  // Initialize step 1
   updateTotal();
-  generateQR();
-
-  document.getElementById("qty")
-    .addEventListener("input", () => {
-      updateTotal();
-      generateQR();
-    });
-
-  document.getElementById("submitBtn")
-    .addEventListener("click", submitOrder);
 });
 
+// ================================
+// STEP NAVIGATION
+// ================================
+function goToStep1() {
+  hideAllSteps();
+  document.getElementById("step1").classList.add("active");
+  document.getElementById("step1-indicator").classList.add("active");
+  document.getElementById("step2-indicator").classList.remove("completed");
+}
+
+function goToStep2() {
+  // Validate contact form
+  const email = document.getElementById("email").value.trim();
+  const qty = document.getElementById("qty").value;
+
+  if (!email || !email.includes("@")) {
+    showError("Please enter a valid email address.");
+    return;
+  }
+
+  if (!qty || qty < 1 || qty > 5) {
+    showError("Please select a valid quantity (1-5).");
+    return;
+  }
+
+  // Transition to step 2
+  hideAllSteps();
+  document.getElementById("step2").classList.add("active");
+  document.getElementById("step1-indicator").classList.remove("active");
+  document.getElementById("step1-indicator").classList.add("completed");
+  document.getElementById("step2-indicator").classList.add("active");
+
+  // Generate QR for payment step
+  generateQR();
+}
+
+function hideAllSteps() {
+  document.querySelectorAll(".step-content").forEach(step => {
+    step.classList.remove("active");
+  });
+  document.querySelectorAll(".step").forEach(step => {
+    step.classList.remove("active", "completed");
+  });
+}
 
 // ================================
 // UPDATE TOTAL
@@ -44,15 +76,17 @@ function updateTotal() {
   const qty = Number(document.getElementById("qty").value);
   const total = price * (qty || 1);
 
-  document.getElementById("qrTotal").textContent = "฿" + total;
+  // Update display if we're on payment step
+  const qrTotalElement = document.getElementById("qrTotal");
+  if (qrTotalElement) {
+    qrTotalElement.textContent = "฿" + total;
+  }
 }
-
 
 // ================================
 // GENERATE QR (NO EMAIL REQUIRED)
 // ================================
 function generateQR() {
-
   const qty = Number(document.getElementById("qty").value);
   const price = parseFloat(localStorage.getItem("price"));
   const item = localStorage.getItem("item");
@@ -94,9 +128,9 @@ function generateQR() {
   })
   .catch(err => {
     console.error("QR failed:", err.message);
+    showError("QR generation failed: " + err.message);
   });
 }
-
 
 // ================================
 // QR TIMER FUNCTION
@@ -161,30 +195,17 @@ function expireQR() {
 }
 
 // ================================
-// DOWNLOAD BUTTON
+// DOWNLOAD BUTTON (FIXED)
 // ================================
 function enableDownload(imageUrl) {
-  // Remove existing download button to prevent duplicates
-  const existingBtn = document.getElementById("downloadQR");
-  if (existingBtn) {
-    existingBtn.remove();
+  // Use existing download button instead of creating new one
+  const downloadBtn = document.getElementById("downloadQR");
+  if (downloadBtn) {
+    downloadBtn.href = imageUrl;
+    downloadBtn.download = "promptpay-qr.png";
+    downloadBtn.style.display = "inline-block";
   }
-
-  // Create new download button
-  const btn = document.createElement("a");
-  btn.id = "downloadQR";
-  btn.className = "btn-secondary";
-  btn.style.display = "inline-block";
-  btn.style.marginTop = "10px";
-  btn.textContent = "Download QR";
-  btn.download = "promptpay-qr.png";
-  btn.href = imageUrl;
-
-  document.getElementById("dynamicQR")
-    .parentElement
-    .appendChild(btn);
 }
-
 
 // ================================
 // TURNSTILE CALLBACK
@@ -193,9 +214,8 @@ function onTurnstileSuccess(token) {
   turnstileToken = token;
 }
 
-
 // ================================
-// SUBMIT ORDER
+// SUBMIT ORDER (WITH LOADING)
 // ================================
 function submitOrder() {
 
@@ -211,6 +231,13 @@ function submitOrder() {
 
   if (file.size > 5 * 1024 * 1024)
     return showError("Slip too large (max 5MB).");
+
+  // Show loading state
+  const submitBtn = document.getElementById("submitBtn");
+  const btnText = submitBtn.querySelector(".btn-text");
+  submitBtn.classList.add("btn-loading");
+  submitBtn.disabled = true;
+  btnText.textContent = "Submitting...";
 
   const reader = new FileReader();
 
@@ -242,16 +269,18 @@ function submitOrder() {
       localStorage.clear();
       location.href = "success.html?id=" + orderId;
 
-
     })
     .catch(err => {
+      // Reset button state on error
+      submitBtn.classList.remove("btn-loading");
+      submitBtn.disabled = false;
+      btnText.textContent = "Submit Order";
       showError(err.message || "Submission failed");
     });
   };
 
   reader.readAsDataURL(file);
 }
-
 
 // ================================
 function cancelOrder() {
@@ -260,10 +289,20 @@ function cancelOrder() {
 }
 
 function showError(message) {
-  const error = document.getElementById("error");
-  error.textContent = message;
-  error.style.display = "block";
+  // Create or update error message
+  let errorElement = document.getElementById("error");
+  if (!errorElement) {
+    errorElement = document.createElement("div");
+    errorElement.id = "error";
+    errorElement.style.cssText = "background:#f8d7da;color:#721c24;padding:12px;border-radius:8px;margin-bottom:20px;display:none;";
+    document.querySelector(".container").insertBefore(errorElement, document.querySelector("main"));
+  }
+  
+  errorElement.textContent = message;
+  errorElement.style.display = "block";
+  
+  // Auto-hide after 5 seconds
+  setTimeout(() => {
+    errorElement.style.display = "none";
+  }, 5000);
 }
-
-
-
