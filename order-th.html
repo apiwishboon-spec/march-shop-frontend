@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ART&INK Shop - สั่งซื้อ</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Step Indicator Styles */
+    .step-indicator {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+      position: relative;
+    }
+    
+    .step-indicator::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 2px;
+      background: #e0e0e0;
+      z-index: 0;
+    }
+    
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+      margin: 0 40px;
+    }
+    
+    .step-dot {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #666;
+      transition: all 0.3s ease;
+      margin-bottom: 8px;
+    }
+    
+    .step.active .step-dot {
+      background: #000;
+      color: #fff;
+      transform: scale(1.1);
+    }
+    
+    .step.completed .step-dot {
+      background: #4CAF50;
+      color: #fff;
+    }
+    
+    .step-label {
+      font-size: 14px;
+      color: #666;
+      font-weight: 500;
+    }
+    
+    .step.active .step-label {
+      color: #000;
+      font-weight: 600;
+    }
+    
+    .step.completed .step-label {
+      color: #4CAF50;
+    }
+    
+    /* Step Content */
+    .step-content {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .step-content.active {
+      display: block;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Loading Animation */
+    .loading-spinner {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #f3f3f3;
+      border-top: 2px solid #000;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 8px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .btn-loading .loading-spinner {
+      display: inline-block;
+    }
+    
+    .btn-loading {
+      pointer-events: none;
+      opacity: 0.7;
+    }
+    
+    /* Dark Mode Toggle */
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: white;
+      border: 2px solid #e5e7eb;
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .theme-toggle:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+    
+    .dark .theme-toggle {
+      background: #1f2937;
+      border-color: #374151;
+    }
+    
+    /* Language Toggle */
+    .lang-toggle {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: white;
+      border: 2px solid #e5e7eb;
+      border-radius: 25px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .lang-toggle:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+    
+    .dark .lang-toggle {
+      background: #1f2937;
+      border-color: #374151;
+      color: white;
+    }
+    
+    /* Collapsible Instructions */
+    .instructions-toggle {
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 24px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .instructions-toggle:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    
+    .instructions-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .instructions-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #1f2937;
+    }
+    
+    .chevron-icon {
+      transition: transform 0.3s ease;
+    }
+    
+    .instructions-toggle.expanded .chevron-icon {
+      transform: rotate(180deg);
+    }
+    
+    .payment-instructions {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    
+    .instructions-toggle.expanded .payment-instructions {
+      max-height: 1000px;
+      margin-top: 20px;
+    }
+    
+    .dark .instructions-toggle {
+      background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+      border-color: #374151;
+    }
+    
+    .dark .instructions-title {
+      color: #f3f4f6;
+    }
+  </style>
+</head>
+<body>
+  <!-- Dark Mode Toggle -->
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+    <i data-lucide="sun" class="sun-icon"></i>
+    <i data-lucide="moon" class="moon-icon" style="display:none;"></i>
+  </button>
+
+  <!-- Language Toggle -->
+  <button class="lang-toggle" onclick="toggleLanguage()" aria-label="Toggle language">
+    <span class="lang-text">EN</span>
+  </button>
+
+  <div class="container">
+    <header>
+      <h1>ART&INK Shop</h1>
+      <p>ดำเนินการสั่งซื้อของคุณ</p>
+    </header>
+
+    <!-- Step Indicator -->
+    <div class="step-indicator">
+      <div class="step active" id="step1-indicator">
+        <div class="step-dot">1</div>
+        <div class="step-label">ข้อมูลติดต่อ</div>
+      </div>
+      <div class="step" id="step2-indicator">
+        <div class="step-dot">2</div>
+        <div class="step-label">การชำระเงิน</div>
+      </div>
+    </div>
+
+    <main>
+      <!-- Step 1: Contact Information -->
+      <div class="step-content active" id="step1">
+        <div class="form-card">
+          <h2>📝 ข้อมูลติดต่อ</h2>
+          <p>โปรดกรอกข้อมูลติดต่อของคุณเพื่อดำเนินการต่อ</p>
+
+          <form id="contactForm">
+            <label class="label">
+              ที่อยู่อีเมล
+              <input id="email" type="email" required>
+            </label>
+
+            <label class="label">
+              หมายเลขโทรศัพท์
+              <input id="phone" type="tel">
+            </label>
+
+            <label class="label">
+              จำนวน
+              <input id="qty" type="number" min="1" max="5" value="1" required>
+              <span class="hint">สูงสุด 5 ชิ้นต่อคำสั่งซื้อ (ป้องกันสแปม)</span>
+            </label>
+
+            <div class="button-row">
+              <button type="button" class="btn-secondary" onclick="cancelOrder()">
+                ยกเลิก
+              </button>
+              <button type="button" class="btn-primary" onclick="goToStep2()">
+                ถัดไป →
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Step 2: Payment -->
+      <div class="step-content" id="step2">
+        <div class="form-card">
+          <h2>💸 การชำระเงิน</h2>
+          <p>ทำตามขั้นตอนด้านล่างเพื่อดำเนินการชำระเงิน</p>
+
+          <!-- COLLAPSIBLE PAYMENT INSTRUCTIONS -->
+          <div class="instructions-toggle" id="instructionsToggle" onclick="toggleInstructions()">
+            <div class="instructions-header">
+              <div class="instructions-title">
+                <i data-lucide="help-circle" style="width: 20px; height: 20px;"></i>
+                <span>คำแนะนำการชำระเงิน</span>
+              </div>
+              <i data-lucide="chevron-down" class="chevron-icon" style="width: 20px; height: 20px;"></i>
+            </div>
+            
+            <div class="payment-instructions">
+              <div class="instruction-step">
+                <div class="step-icon">
+                  <i data-lucide="smartphone" style="width: 24px; height: 24px;"></i>
+                </div>
+                <div class="step-text">
+                  <strong>1. ถ่ายภาพหน้าจอ</strong> ของคิวอาร์โค้ดด้านล่าง
+                </div>
+              </div>
+              <div class="instruction-step">
+                <div class="step-icon">
+                  <i data-lucide="building-2" style="width: 24px; height: 24px;"></i>
+                </div>
+                <div class="step-text">
+                  <strong>2. เปิดแอปธนาคาร์มือถือ</strong> (KBank, SCB, ฯลฯ)
+                </div>
+              </div>
+              <div class="instruction-step">
+                <div class="step-icon">
+                  <i data-lucide="camera" style="width: 24px; height: 24px;"></i>
+                </div>
+                <div class="step-text">
+                  <strong>3. เปิดสแกนเนอร์คิวอาร์โค้ด</strong> ในแอปธนาคาร์ของคุณ
+                </div>
+              </div>
+              <div class="instruction-step">
+                <div class="step-icon">
+                  <i data-lucide="upload" style="width: 24px; height: 24px;"></i>
+                </div>
+                <div class="step-text">
+                  <strong>4. อัปโหลดภาพหน้าจอ</strong> หรือสแกนคิวอาร์โค้ดโดยตรง
+                </div>
+              </div>
+              <div class="instruction-step">
+                <div class="step-icon">
+                  <i data-lucide="credit-card" style="width: 24px; height: 24px;"></i>
+                </div>
+                <div class="step-text">
+                  <strong>5. ชำระเงินผ่านแอป</strong> ด้วยจำนวนเงินที่ถูกต้อง
+                </div>
+              </div>
+              <div class="instruction-step">
+                <div class="step-icon">
+                  <i data-lucide="file-image" style="width: 24px; height: 24px;"></i>
+                </div>
+                <div class="step-text">
+                  <strong>6. อัปโหลดสลิปการชำระเงิน</strong> ด้านล่างเพื่อยืนยัน
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PAYMENT -->
+          <div class="payment-box">
+            <h3>สแกนคิวอาร์โค้ด</h3>
+            <div style="margin-top:15px;">
+              <img id="dynamicQR" width="400">
+            </div>
+            <p><strong id="qrTotal"></strong></p>
+          </div>
+
+          <label class="label">
+            อัปโหลดสลิปการชำระเงิน
+            <input id="slip" type="file" accept="image/png, image/jpeg" required>
+            <span class="hint">สูงสุด 5MB • JPG หรือ PNG</span>
+          </label>
+
+          <!-- Cloudflare Turnstile -->
+          <div class="cf-turnstile"
+               data-sitekey="0x4AAAAAACd8YswS-VO9XLfe"
+               data-callback="onTurnstileSuccess">
+          </div>
+
+          <div class="button-row">
+              <button type="button" class="btn-secondary" onclick="cancelOrder()">
+                ยกเลิกคำสั่งซื้อ
+              </button>
+              <button type="button" class="btn-secondary" onclick="goToStep1()">
+                ← ย้อนกลับ
+              </button>
+              <button type="button" class="btn-primary" id="submitBtn" onclick="submitOrder()">
+                <span class="loading-spinner"></span>
+                <span class="btn-text">ส่งคำสั่งซื้อ</span>
+              </button>
+            </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  <script src="app.js"></script>
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+    
+    // Language toggle
+    function toggleLanguage() {
+      window.location.href = 'order.html';
+    }
+    
+    // Dark mode functionality with local time adaptation
+    function toggleTheme() {
+      const html = document.documentElement;
+      const sunIcon = document.querySelector('.sun-icon');
+      const moonIcon = document.querySelector('.moon-icon');
+      
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        sunIcon.style.display = 'block';
+        moonIcon.style.display = 'none';
+        localStorage.setItem('theme', 'light');
+      } else {
+        html.classList.add('dark');
+        sunIcon.style.display = 'none';
+        moonIcon.style.display = 'block';
+        localStorage.setItem('theme', 'dark');
+      }
+    }
+    
+    // Check for saved theme preference and local time
+    function initTheme() {
+      const hour = new Date().getHours();
+      const isNightTime = hour >= 18 || hour < 6; // 6 PM to 6 AM
+      const savedTheme = localStorage.getItem('theme');
+      
+      // Auto-enable dark mode during night hours if no preference saved
+      if (savedTheme === 'dark' || (!savedTheme && isNightTime)) {
+        document.documentElement.classList.add('dark');
+        document.querySelector('.sun-icon').style.display = 'none';
+        document.querySelector('.moon-icon').style.display = 'block';
+      }
+    }
+    
+    // Initialize theme on page load
+    initTheme();
+    
+    // Collapsible instructions
+    function toggleInstructions() {
+      const toggle = document.getElementById('instructionsToggle');
+      toggle.classList.toggle('expanded');
+    }
+  </script>
+</body>
+</html>
