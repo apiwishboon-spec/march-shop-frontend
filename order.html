@@ -181,6 +181,9 @@
             </label>
 
             <div class="button-row">
+              <button type="button" class="btn-secondary" onclick="cancelOrder()">
+                Cancel
+              </button>
               <button type="button" class="btn-primary" onclick="goToStep2()">
                 Next →
               </button>
@@ -222,14 +225,17 @@
           </div>
 
           <div class="button-row">
-            <button type="button" class="btn-secondary" onclick="goToStep1()">
-              ← Back
-            </button>
-            <button type="button" class="btn-primary" id="submitBtn" onclick="submitOrder()">
-              <span class="loading-spinner"></span>
-              <span class="btn-text">Submit Order</span>
-            </button>
-          </div>
+              <button type="button" class="btn-secondary" onclick="cancelOrder()">
+                Cancel Order
+              </button>
+              <button type="button" class="btn-secondary" onclick="goToStep1()">
+                ← Back
+              </button>
+              <button type="button" class="btn-primary" id="submitBtn" onclick="submitOrder()">
+                <span class="loading-spinner"></span>
+                <span class="btn-text">Submit Order</span>
+              </button>
+            </div>
         </div>
       </div>
     </main>
