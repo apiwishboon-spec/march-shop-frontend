@@ -319,7 +319,7 @@
               <i data-lucide="chevron-down" class="chevron-icon" style="width: 20px; height: 20px;"></i>
             </div>
             
-            <div class="payment-instructions">
+            <div class="payment-instructions" style="display: none;">
               <div class="instruction-step">
                 <div class="step-icon">
                   <i data-lucide="smartphone" style="width: 24px; height: 24px;"></i>
@@ -459,7 +459,15 @@
     // Collapsible instructions
     function toggleInstructions() {
       const toggle = document.getElementById('instructionsToggle');
-      toggle.classList.toggle('expanded');
+      const instructions = document.querySelector('.payment-instructions');
+      
+      if (instructions.style.display === 'none' || instructions.style.display === '') {
+        instructions.style.display = 'block';
+        toggle.classList.add('expanded');
+      } else {
+        instructions.style.display = 'none';
+        toggle.classList.remove('expanded');
+      }
     }
   </script>
 </body>
