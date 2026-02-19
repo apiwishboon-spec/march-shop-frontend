@@ -210,7 +210,7 @@
       const newLang = currentLang === 'th' ? 'en' : 'th';
       
       if (newLang === 'th') {
-        window.location.href = 'index-th.html';
+        window.location.href = '/th';
       } else {
         window.location.href = 'index.html';
       }
@@ -225,7 +225,7 @@
       if (currentPath.includes('index.html') && !currentPath.includes('index-th.html') && detectedLang === 'th') {
         // Check if user hasn't manually chosen language before
         if (!localStorage.getItem('manual-lang-choice')) {
-          window.location.href = 'index-th.html';
+          window.location.href = '/th';
         }
       }
     }
