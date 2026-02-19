@@ -123,8 +123,6 @@ function generateQR() {
 
     document.getElementById("qrTotal").textContent =
       "฿" + data.data.total;
-
-    enableDownload(qrUrlWithCache);
   })
   .catch(err => {
     console.error("QR failed:", err.message);
@@ -192,19 +190,6 @@ function expireQR() {
   }
   
   showError("QR code expired. Please refresh to generate a new one.");
-}
-
-// ================================
-// DOWNLOAD BUTTON (FIXED)
-// ================================
-function enableDownload(imageUrl) {
-  // Use existing download button instead of creating new one
-  const downloadBtn = document.getElementById("downloadQR");
-  if (downloadBtn) {
-    downloadBtn.href = imageUrl;
-    downloadBtn.download = "promptpay-qr.png";
-    downloadBtn.style.display = "inline-block";
-  }
 }
 
 // ================================

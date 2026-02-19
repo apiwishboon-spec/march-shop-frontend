@@ -55,8 +55,23 @@ h1 {
 .subtitle {
   font-size: clamp(1rem, 2.5vw, 1.2rem);
   color: #6b7280;
-  margin-bottom: 48px;
+  margin-bottom: 24px;
   font-weight: 400;
+}
+
+.slogan {
+  font-size: clamp(1.1rem, 3vw, 1.4rem);
+  color: #374151;
+  margin-bottom: 48px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.slogan strong {
+  background: linear-gradient(135deg, #f3a6c8 0%, #9ecbff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* =====================
@@ -353,6 +368,55 @@ input:focus {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* =====================
+   PAYMENT INSTRUCTIONS
+===================== */
+.payment-instructions {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 32px;
+}
+
+.instruction-step {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 12px;
+  background: white;
+  border-radius: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.instruction-step:hover {
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.instruction-step:last-child {
+  margin-bottom: 0;
+}
+
+.step-icon {
+  font-size: 1.5rem;
+  margin-right: 16px;
+  min-width: 40px;
+  text-align: center;
+}
+
+.step-text {
+  font-size: 0.95rem;
+  color: #374151;
+  line-height: 1.4;
+}
+
+.step-text strong {
+  color: #1f2937;
+  display: block;
+  margin-bottom: 2px;
 }
 
 /* =====================

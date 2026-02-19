@@ -196,20 +196,55 @@
       <div class="step-content" id="step2">
         <div class="form-card">
           <h2>💸 Payment</h2>
-          <p>Scan the QR code below to complete your payment.</p>
+          <p>Follow the steps below to complete your payment.</p>
+
+          <!-- PAYMENT INSTRUCTIONS -->
+          <div class="payment-instructions">
+            <div class="instruction-step">
+              <div class="step-icon">📱</div>
+              <div class="step-text">
+                <strong>1. Take a screenshot</strong> of the QR code below
+              </div>
+            </div>
+            <div class="instruction-step">
+              <div class="step-icon">🏦</div>
+              <div class="step-text">
+                <strong>2. Open your mobile banking app</strong> (KBank, SCB, etc.)
+              </div>
+            </div>
+            <div class="instruction-step">
+              <div class="step-icon">📷</div>
+              <div class="step-text">
+                <strong>3. Open QR scanner</strong> in your banking app
+              </div>
+            </div>
+            <div class="instruction-step">
+              <div class="step-icon">📤</div>
+              <div class="step-text">
+                <strong>4. Upload screenshot</strong> or scan the QR directly
+              </div>
+            </div>
+            <div class="instruction-step">
+              <div class="step-icon">💳</div>
+              <div class="step-text">
+                <strong>5. Pay via app</strong> with the correct amount
+              </div>
+            </div>
+            <div class="instruction-step">
+              <div class="step-icon">📸</div>
+              <div class="step-text">
+                <strong>6. Upload payment slip</strong> below to confirm
+              </div>
+            </div>
+          </div>
 
           <!-- PAYMENT -->
           <div class="payment-box">
-            <h3>Payment Details</h3>
+            <h3>Scan QR Code</h3>
             <div style="margin-top:15px;">
-              <img id="dynamicQR" width="300">
+              <img id="dynamicQR" width="400">
             </div>
             <p><strong id="qrTotal"></strong></p>
-            
-            <!-- Download Button -->
-            <a id="downloadQR" class="download-btn" style="display:none;">
-              📥 Download QR
-            </a>
           </div>
 
           <label class="label">
