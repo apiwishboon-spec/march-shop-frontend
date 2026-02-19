@@ -1,6 +1,6 @@
 /* =====================
    MODERN MINIMAL DESIGN
-   Inspired by skcardsss.netlify.app
+   Dark Mode + Thai Language Support
 ===================== */
 * {
   box-sizing: border-box;
@@ -11,13 +11,44 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Dark Mode Variables */
+:root {
+  --bg-primary: #fafafa;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f8fafc;
+  --text-primary: #0a0a0a;
+  --text-secondary: #6b7280;
+  --text-tertiary: #374151;
+  --border-primary: #e5e7eb;
+  --border-secondary: #d1d5db;
+  --shadow-light: rgba(0, 0, 0, 0.05);
+  --shadow-medium: rgba(0, 0, 0, 0.1);
+  --gradient-start: #f3a6c8;
+  --gradient-mid: #d9b7ee;
+  --gradient-end: #9ecbff;
+}
+
+.dark {
+  --bg-primary: #111827;
+  --bg-secondary: #1f2937;
+  --bg-tertiary: #374151;
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --text-tertiary: #9ca3af;
+  --border-primary: #374151;
+  --border-secondary: #4b5563;
+  --shadow-light: rgba(0, 0, 0, 0.2);
+  --shadow-medium: rgba(0, 0, 0, 0.3);
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  background: #fafafa;
-  color: #0a0a0a;
+  background: var(--bg-primary);
+  color: var(--text-primary);
   -webkit-tap-highlight-color: transparent;
   line-height: 1.6;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* =====================
@@ -43,9 +74,9 @@ h1 {
   margin: 20px 0 16px;
   background: linear-gradient(
     135deg,
-    #f3a6c8 0%,
-    #d9b7ee 45%,
-    #9ecbff 100%
+    var(--gradient-start) 0%,
+    var(--gradient-mid) 45%,
+    var(--gradient-end) 100%
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -54,21 +85,21 @@ h1 {
 
 .subtitle {
   font-size: clamp(1rem, 2.5vw, 1.2rem);
-  color: #6b7280;
+  color: var(--text-secondary);
   margin-bottom: 24px;
   font-weight: 400;
 }
 
 .slogan {
   font-size: clamp(1.1rem, 3vw, 1.4rem);
-  color: #374151;
+  color: var(--text-primary);
   margin-bottom: 48px;
   font-weight: 500;
   letter-spacing: 0.02em;
 }
 
 .slogan strong {
-  background: linear-gradient(135deg, #f3a6c8 0%, #9ecbff 100%);
+  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -88,8 +119,8 @@ h1 {
    CARDS
 ===================== */
 .card {
-  background: white;
-  border: 1px solid #e5e7eb;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
   border-radius: 16px;
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -99,9 +130,9 @@ h1 {
 .card:hover {
   transform: translateY(-8px);
   box-shadow: 
-    0 20px 40px rgba(0, 0, 0, 0.1),
-    0 8px 16px rgba(0, 0, 0, 0.06);
-  border-color: #d1d5db;
+    0 20px 40px var(--shadow-light),
+    0 8px 16px var(--shadow-medium);
+  border-color: var(--border-secondary);
 }
 
 .card img {
@@ -123,20 +154,20 @@ h1 {
   margin: 0 0 8px;
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 .card p {
   margin: 0 0 16px;
   font-size: 0.95rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   line-height: 1.6;
 }
 
 .card .price {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--text-primary);
   margin-bottom: 20px;
   display: block;
 }
@@ -144,7 +175,7 @@ h1 {
 /* =====================
    BUTTONS
 ===================== */
-button, .btn-primary, .btn-secondary, .btn-outline, .download-btn {
+button, .btn-primary, .btn-secondary, .btn-outline {
   border: none;
   cursor: pointer;
   font-size: 0.95rem;
@@ -159,6 +190,9 @@ button, .btn-primary, .btn-secondary, .btn-outline, .download-btn {
   min-height: 48px;
   position: relative;
   overflow: hidden;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
 }
 
 button:active, .btn-primary:active, .btn-secondary:active, .btn-outline:active {
@@ -166,9 +200,10 @@ button:active, .btn-primary:active, .btn-secondary:active, .btn-outline:active {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #f3a6c8 0%, #9ecbff 100%);
+  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
   color: white;
   box-shadow: 0 4px 14px rgba(243, 166, 200, 0.3);
+  border: none;
 }
 
 .btn-primary:hover {
@@ -177,47 +212,36 @@ button:active, .btn-primary:active, .btn-secondary:active, .btn-outline:active {
 }
 
 .btn-secondary {
-  background: #f3f4f6;
-  color: #374151;
-  border: 1px solid #e5e7eb;
+  background: var(--bg-tertiary);
+  color: var(--text-tertiary);
+  border: 1px solid var(--border-primary);
 }
 
 .btn-secondary:hover {
-  background: #e5e7eb;
+  background: var(--border-primary);
   transform: translateY(-1px);
 }
 
 .btn-outline {
-  background: white;
-  color: #374151;
-  border: 2px solid #e5e7eb;
+  background: var(--bg-secondary);
+  color: var(--text-tertiary);
+  border: 2px solid var(--border-primary);
 }
 
 .btn-outline:hover {
-  background: #f9fafb;
-  border-color: #d1d5db;
-}
-
-.download-btn {
-  background: #6b7280;
-  color: white;
-  text-decoration: none;
-}
-
-.download-btn:hover {
-  background: #4b5563;
-  transform: translateY(-2px);
+  background: var(--bg-tertiary);
+  border-color: var(--border-secondary);
 }
 
 /* =====================
    FORMS
 ===================== */
 .form-card {
-  background: white;
-  border: 1px solid #e5e7eb;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
   border-radius: 20px;
   padding: 40px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 20px var(--shadow-light);
   margin-bottom: 24px;
 }
 
@@ -226,11 +250,11 @@ button:active, .btn-primary:active, .btn-secondary:active, .btn-outline:active {
   margin-bottom: 8px;
   font-size: 1.75rem;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 .form-card > p {
-  color: #6b7280;
+  color: var(--text-secondary);
   margin-bottom: 32px;
   font-size: 1rem;
 }
@@ -239,7 +263,7 @@ label {
   display: block;
   font-size: 0.9rem;
   font-weight: 500;
-  color: #374151;
+  color: var(--text-tertiary);
   margin-bottom: 8px;
 }
 
@@ -248,24 +272,25 @@ input {
   padding: 16px 20px;
   margin-top: 6px;
   border-radius: 12px;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--border-primary);
   font-size: 1rem;
-  background: white;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
   transition: all 0.2s ease;
   font-family: inherit;
 }
 
 input:focus {
   outline: none;
-  border-color: #f3a6c8;
+  border-color: var(--gradient-start);
   box-shadow: 0 0 0 3px rgba(243, 166, 200, 0.1);
-  background: #fafbff;
+  background: var(--bg-primary);
 }
 
 .hint {
   display: block;
   font-size: 0.85rem;
-  color: #9ca3af;
+  color: var(--text-secondary);
   margin-top: 8px;
 }
 
@@ -287,7 +312,7 @@ input:focus {
   transform: translateX(-50%);
   width: 200px;
   height: 2px;
-  background: #e5e7eb;
+  background: var(--border-primary);
   z-index: 0;
 }
 
@@ -304,19 +329,19 @@ input:focus {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: #e5e7eb;
+  background: var(--border-primary);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--text-secondary);
   transition: all 0.3s ease;
   margin-bottom: 12px;
   font-size: 1.1rem;
 }
 
 .step.active .step-dot {
-  background: linear-gradient(135deg, #f3a6c8 0%, #9ecbff 100%);
+  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
   color: white;
   transform: scale(1.1);
   box-shadow: 0 4px 14px rgba(243, 166, 200, 0.3);
@@ -334,12 +359,12 @@ input:focus {
 
 .step-label {
   font-size: 0.9rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
 .step.active .step-label {
-  color: #1f2937;
+  color: var(--text-primary);
   font-weight: 600;
 }
 
@@ -374,8 +399,8 @@ input:focus {
    PAYMENT INSTRUCTIONS
 ===================== */
 .payment-instructions {
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-  border: 1px solid #e2e8f0;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-primary);
   border-radius: 16px;
   padding: 24px;
   margin-bottom: 32px;
@@ -386,14 +411,14 @@ input:focus {
   align-items: center;
   margin-bottom: 16px;
   padding: 12px;
-  background: white;
+  background: var(--bg-secondary);
   border-radius: 12px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .instruction-step:hover {
   transform: translateX(4px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px var(--shadow-light);
 }
 
 .instruction-step:last-child {
@@ -405,16 +430,17 @@ input:focus {
   margin-right: 16px;
   min-width: 40px;
   text-align: center;
+  color: var(--gradient-start);
 }
 
 .step-text {
   font-size: 0.95rem;
-  color: #374151;
+  color: var(--text-primary);
   line-height: 1.4;
 }
 
 .step-text strong {
-  color: #1f2937;
+  color: var(--text-primary);
   display: block;
   margin-bottom: 2px;
 }
@@ -423,8 +449,8 @@ input:focus {
    PAYMENT BOX
 ===================== */
 .payment-box {
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-  border: 1px solid #e2e8f0;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-primary);
   border-radius: 16px;
   padding: 32px;
   margin-bottom: 24px;
@@ -434,19 +460,19 @@ input:focus {
 .payment-box h3 {
   margin-top: 0;
   margin-bottom: 20px;
-  color: #1f2937;
+  color: var(--text-primary);
   font-size: 1.25rem;
 }
 
 .payment-box img {
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px var(--shadow-light);
   margin-bottom: 16px;
 }
 
 .payment-box strong {
   font-size: 1.25rem;
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 /* =====================
@@ -466,7 +492,7 @@ input:focus {
   display: none;
   width: 20px;
   height: 20px;
-  border: 2px solid #f3f4f6;
+  border: 2px solid var(--bg-tertiary);
   border-top: 2px solid currentColor;
   border-radius: 50%;
   animation: spin 1s linear infinite;
@@ -507,14 +533,14 @@ input:focus {
 }
 
 .modal-card {
-  background: white;
+  background: var(--bg-secondary);
   width: 100%;
   max-width: 500px;
   max-height: 80vh;
   overflow-y: auto;
   padding: 32px;
   border-radius: 20px;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 25px 50px var(--shadow-medium);
   animation: modalSlideIn 0.3s ease;
 }
 
@@ -522,7 +548,7 @@ input:focus {
   margin-top: 0;
   margin-bottom: 16px;
   font-size: 1.5rem;
-  background: linear-gradient(135deg, #f3a6c8 0%, #9ecbff 100%);
+  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -532,13 +558,13 @@ input:focus {
   margin-top: 24px;
   margin-bottom: 12px;
   font-size: 1.1rem;
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 .modal-card p {
   margin-bottom: 16px;
   line-height: 1.6;
-  color: #4b5563;
+  color: var(--text-secondary);
 }
 
 .modal-card ul {
@@ -548,7 +574,7 @@ input:focus {
 
 .modal-card li {
   margin-bottom: 8px;
-  color: #4b5563;
+  color: var(--text-secondary);
 }
 
 @keyframes modalSlideIn {
@@ -575,7 +601,7 @@ input:focus {
   position: absolute;
   top: 20px;
   right: -30px;
-  background: linear-gradient(135deg, #f3a6c8 0%, #9ecbff 100%);
+  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
   color: white;
   padding: 8px 40px;
   font-size: 0.8rem;
@@ -591,22 +617,22 @@ input:focus {
   margin-top: 60px;
   padding: 32px 20px;
   text-align: center;
-  border-top: 1px solid #e5e7eb;
-  background: white;
+  border-top: 1px solid var(--border-primary);
+  background: var(--bg-secondary);
   border-radius: 20px;
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }
 
 .privacy-link {
-  color: #f3a6c8;
+  color: var(--gradient-start);
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s ease;
 }
 
 .privacy-link:hover {
-  color: #9ecbff;
+  color: var(--gradient-end);
   text-decoration: underline;
 }
 
@@ -675,3 +701,33 @@ input:focus {
     padding: 24px;
   }
 }
+
+/* =====================
+   THAI LANGUAGE SUPPORT
+===================== */
+[lang="th"] {
+  font-family: 'Sarabun', 'Prompt', 'Kanit', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+[lang="th"] h1,
+[lang="th"] h2,
+[lang="th"] h3 {
+  font-weight: 700;
+}
+
+[lang="th"] .card p,
+[lang="th"] .form-card > p,
+[lang="th"] .step-text {
+  line-height: 1.8;
+}
+
+[lang="th"] .instruction-step {
+  padding: 16px 12px;
+}
+
+[lang="th"] .button-row {
+  gap: 12px;
+}
+
+/* Thai Font Import */
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap');

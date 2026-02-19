@@ -1,10 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ART&INK Shop - Order</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     /* Step Indicator Styles */
     .step-indicator {
@@ -116,28 +120,102 @@
       opacity: 0.7;
     }
     
-    /* Download Button Fix */
-    .download-btn {
-      display: inline-block;
-      background: #6c757d;
-      color: white;
-      padding: 12px 24px;
-      border: none;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 600;
+    /* Dark Mode Toggle */
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: white;
+      border: 2px solid #e5e7eb;
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
       transition: all 0.3s ease;
-      margin-top: 15px;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
     
-    .download-btn:hover {
-      background: #5a6268;
+    .theme-toggle:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+    
+    .dark .theme-toggle {
+      background: #1f2937;
+      border-color: #374151;
+    }
+    
+    /* Collapsible Instructions */
+    .instructions-toggle {
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 24px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .instructions-toggle:hover {
       transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    
+    .instructions-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .instructions-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #1f2937;
+    }
+    
+    .chevron-icon {
+      transition: transform 0.3s ease;
+    }
+    
+    .instructions-toggle.expanded .chevron-icon {
+      transform: rotate(180deg);
+    }
+    
+    .payment-instructions {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    
+    .instructions-toggle.expanded .payment-instructions {
+      max-height: 1000px;
+      margin-top: 20px;
+    }
+    
+    .dark .instructions-toggle {
+      background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+      border-color: #374151;
+    }
+    
+    .dark .instructions-title {
+      color: #f3f4f6;
     }
   </style>
 </head>
 <body>
+  <!-- Dark Mode Toggle -->
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+    <i data-lucide="sun" class="sun-icon"></i>
+    <i data-lucide="moon" class="moon-icon" style="display:none;"></i>
+  </button>
+
   <div class="container">
     <header>
       <h1>ART&INK Shop</h1>
@@ -198,42 +276,64 @@
           <h2>💸 Payment</h2>
           <p>Follow the steps below to complete your payment.</p>
 
-          <!-- PAYMENT INSTRUCTIONS -->
-          <div class="payment-instructions">
-            <div class="instruction-step">
-              <div class="step-icon">📱</div>
-              <div class="step-text">
-                <strong>1. Take a screenshot</strong> of the QR code below
+          <!-- COLLAPSIBLE PAYMENT INSTRUCTIONS -->
+          <div class="instructions-toggle" id="instructionsToggle" onclick="toggleInstructions()">
+            <div class="instructions-header">
+              <div class="instructions-title">
+                <i data-lucide="help-circle" style="width: 20px; height: 20px;"></i>
+                <span>Payment Instructions</span>
               </div>
+              <i data-lucide="chevron-down" class="chevron-icon" style="width: 20px; height: 20px;"></i>
             </div>
-            <div class="instruction-step">
-              <div class="step-icon">🏦</div>
-              <div class="step-text">
-                <strong>2. Open your mobile banking app</strong> (KBank, SCB, etc.)
+            
+            <div class="payment-instructions">
+              <div class="instruction-step">
+                <div class="step-icon">
+                  <i data-lucide="smartphone" style="width: 24px; height: 24px;"></i>
+                </div>
+                <div class="step-text">
+                  <strong>1. Take a screenshot</strong> of the QR code below
+                </div>
               </div>
-            </div>
-            <div class="instruction-step">
-              <div class="step-icon">📷</div>
-              <div class="step-text">
-                <strong>3. Open QR scanner</strong> in your banking app
+              <div class="instruction-step">
+                <div class="step-icon">
+                  <i data-lucide="building-2" style="width: 24px; height: 24px;"></i>
+                </div>
+                <div class="step-text">
+                  <strong>2. Open your mobile banking app</strong> (KBank, SCB, etc.)
+                </div>
               </div>
-            </div>
-            <div class="instruction-step">
-              <div class="step-icon">📤</div>
-              <div class="step-text">
-                <strong>4. Upload screenshot</strong> or scan the QR directly
+              <div class="instruction-step">
+                <div class="step-icon">
+                  <i data-lucide="camera" style="width: 24px; height: 24px;"></i>
+                </div>
+                <div class="step-text">
+                  <strong>3. Open QR scanner</strong> in your banking app
+                </div>
               </div>
-            </div>
-            <div class="instruction-step">
-              <div class="step-icon">💳</div>
-              <div class="step-text">
-                <strong>5. Pay via app</strong> with the correct amount
+              <div class="instruction-step">
+                <div class="step-icon">
+                  <i data-lucide="upload" style="width: 24px; height: 24px;"></i>
+                </div>
+                <div class="step-text">
+                  <strong>4. Upload screenshot</strong> or scan the QR directly
+                </div>
               </div>
-            </div>
-            <div class="instruction-step">
-              <div class="step-icon">📸</div>
-              <div class="step-text">
-                <strong>6. Upload payment slip</strong> below to confirm
+              <div class="instruction-step">
+                <div class="step-icon">
+                  <i data-lucide="credit-card" style="width: 24px; height: 24px;"></i>
+                </div>
+                <div class="step-text">
+                  <strong>5. Pay via app</strong> with the correct amount
+                </div>
+              </div>
+              <div class="instruction-step">
+                <div class="step-icon">
+                  <i data-lucide="file-image" style="width: 24px; height: 24px;"></i>
+                </div>
+                <div class="step-text">
+                  <strong>6. Upload payment slip</strong> below to confirm
+                </div>
               </div>
             </div>
           </div>
@@ -278,5 +378,42 @@
 
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <script src="app.js"></script>
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+    
+    // Dark mode functionality
+    function toggleTheme() {
+      const html = document.documentElement;
+      const sunIcon = document.querySelector('.sun-icon');
+      const moonIcon = document.querySelector('.moon-icon');
+      
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        sunIcon.style.display = 'block';
+        moonIcon.style.display = 'none';
+        localStorage.setItem('theme', 'light');
+      } else {
+        html.classList.add('dark');
+        sunIcon.style.display = 'none';
+        moonIcon.style.display = 'block';
+        localStorage.setItem('theme', 'dark');
+      }
+    }
+    
+    // Check for saved theme preference
+    if (localStorage.getItem('theme') === 'dark' || 
+        (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+      document.querySelector('.sun-icon').style.display = 'none';
+      document.querySelector('.moon-icon').style.display = 'block';
+    }
+    
+    // Collapsible instructions
+    function toggleInstructions() {
+      const toggle = document.getElementById('instructionsToggle');
+      toggle.classList.toggle('expanded');
+    }
+  </script>
 </body>
 </html>
