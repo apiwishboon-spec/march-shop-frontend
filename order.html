@@ -382,7 +382,7 @@
     // Initialize Lucide icons
     lucide.createIcons();
     
-    // Dark mode functionality
+    // Dark mode functionality with local time adaptation
     function toggleTheme() {
       const html = document.documentElement;
       const sunIcon = document.querySelector('.sun-icon');
@@ -401,13 +401,22 @@
       }
     }
     
-    // Check for saved theme preference
-    if (localStorage.getItem('theme') === 'dark' || 
-        (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      document.documentElement.classList.add('dark');
-      document.querySelector('.sun-icon').style.display = 'none';
-      document.querySelector('.moon-icon').style.display = 'block';
+    // Check for saved theme preference and local time
+    function initTheme() {
+      const hour = new Date().getHours();
+      const isNightTime = hour >= 18 || hour < 6; // 6 PM to 6 AM
+      const savedTheme = localStorage.getItem('theme');
+      
+      // Auto-enable dark mode during night hours if no preference saved
+      if (savedTheme === 'dark' || (!savedTheme && isNightTime)) {
+        document.documentElement.classList.add('dark');
+        document.querySelector('.sun-icon').style.display = 'none';
+        document.querySelector('.moon-icon').style.display = 'block';
+      }
     }
+    
+    // Initialize theme on page load
+    initTheme();
     
     // Collapsible instructions
     function toggleInstructions() {

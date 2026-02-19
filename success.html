@@ -7,12 +7,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body>
+  <!-- Dark Mode Toggle -->
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+    <i data-lucide="sun" class="sun-icon"></i>
+    <i data-lucide="moon" class="moon-icon" style="display:none;"></i>
+  </button>
+
   <canvas id="confetti"></canvas>
 
-  <div class="container center">
+  <div class="container center success-container">
 
     <h1 class="brand">
       <span class="brand-gradient">Order submitted 🎉</span>
@@ -35,6 +42,45 @@
   <script>
     document.getElementById("code").textContent =
       new URLSearchParams(location.search).get("id");
+    
+    // Initialize Lucide icons
+    lucide.createIcons();
+    
+    // Dark mode functionality with local time adaptation
+    function toggleTheme() {
+      const html = document.documentElement;
+      const sunIcon = document.querySelector('.sun-icon');
+      const moonIcon = document.querySelector('.moon-icon');
+      
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        sunIcon.style.display = 'block';
+        moonIcon.style.display = 'none';
+        localStorage.setItem('theme', 'light');
+      } else {
+        html.classList.add('dark');
+        sunIcon.style.display = 'none';
+        moonIcon.style.display = 'block';
+        localStorage.setItem('theme', 'dark');
+      }
+    }
+    
+    // Check for saved theme preference and local time
+    function initTheme() {
+      const hour = new Date().getHours();
+      const isNightTime = hour >= 18 || hour < 6; // 6 PM to 6 AM
+      const savedTheme = localStorage.getItem('theme');
+      
+      // Auto-enable dark mode during night hours if no preference saved
+      if (savedTheme === 'dark' || (!savedTheme && isNightTime)) {
+        document.documentElement.classList.add('dark');
+        document.querySelector('.sun-icon').style.display = 'none';
+        document.querySelector('.moon-icon').style.display = 'block';
+      }
+    }
+    
+    // Initialize theme on page load
+    initTheme();
   </script>
   
   <script>

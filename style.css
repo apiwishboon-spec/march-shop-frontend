@@ -643,6 +643,9 @@ input:focus {
   text-align: center;
   max-width: 600px;
   margin: auto;
+  position: relative;
+  z-index: 10;
+  padding: 40px 20px;
 }
 
 .success-icon {
@@ -656,6 +659,17 @@ input:focus {
   margin: 0 auto 24px;
   font-size: 2rem;
   color: white;
+}
+
+/* Confetti Canvas */
+#confetti {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
 }
 
 /* =====================
@@ -723,10 +737,44 @@ input:focus {
 
 [lang="th"] .instruction-step {
   padding: 16px 12px;
+  margin-bottom: 12px;
+}
+
+[lang="th"] .instruction-step .step-icon {
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+[lang="th"] .instruction-step .step-text {
+  flex: 1;
+  font-size: 0.9rem;
+}
+
+[lang="th"] .instruction-step .step-text strong {
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+  color: var(--text-primary);
 }
 
 [lang="th"] .button-row {
   gap: 12px;
+}
+
+[lang="th"] .form-card {
+  padding: 32px 24px;
+}
+
+[lang="th"] .payment-instructions {
+  padding: 20px;
+}
+
+[lang="th"] .instructions-toggle {
+  padding: 16px 20px;
+}
+
+[lang="th"] .instructions-title {
+  font-size: 1rem;
+  gap: 10px;
 }
 
 /* Thai Font Import */
