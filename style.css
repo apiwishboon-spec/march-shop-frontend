@@ -717,6 +717,67 @@ input:focus {
 }
 
 /* =====================
+   LANGUAGE TOGGLE
+===================== */
+.lang-toggle {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-primary);
+  border-radius: 25px;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 1000;
+  box-shadow: 0 2px 10px var(--shadow-light);
+}
+
+.lang-toggle:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 20px var(--shadow-medium);
+}
+
+.dark .lang-toggle {
+  background: var(--bg-tertiary);
+  border-color: var(--border-primary);
+  color: var(--text-primary);
+}
+
+/* =====================
+   THEME TOGGLE
+===================== */
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-primary);
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 1000;
+  box-shadow: 0 2px 10px var(--shadow-light);
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 20px var(--shadow-medium);
+}
+
+.dark .theme-toggle {
+  background: var(--bg-tertiary);
+  border-color: var(--border-primary);
+}
+
+/* =====================
    THAI LANGUAGE SUPPORT
 ===================== */
 [lang="th"] {

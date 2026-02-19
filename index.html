@@ -10,6 +10,35 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Language Toggle */
+    .lang-toggle {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: white;
+      border: 2px solid #e5e7eb;
+      border-radius: 25px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .lang-toggle:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+    
+    .dark .lang-toggle {
+      background: #1f2937;
+      border-color: #374151;
+      color: white;
+    }
+  </style>
 </head>
 
 <body>
@@ -17,6 +46,11 @@
   <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
     <i data-lucide="sun" class="sun-icon"></i>
     <i data-lucide="moon" class="moon-icon" style="display:none;"></i>
+  </button>
+
+  <!-- Language Toggle -->
+  <button class="lang-toggle" onclick="toggleLanguage()" aria-label="Toggle language">
+    <span class="lang-text">TH</span>
   </button>
 
   <div class="container center">
@@ -163,6 +197,49 @@
   <!-- ===== SCRIPT ===== -->
   <script>
     // =========================
+    // LANGUAGE DETECTION & TOGGLE
+    // =========================
+    function detectLanguage() {
+      const browserLang = navigator.language || navigator.userLanguage;
+      const thaiLangs = ['th', 'th-TH', 'th-th'];
+      return thaiLangs.some(lang => browserLang.startsWith(lang)) ? 'th' : 'en';
+    }
+    
+    function toggleLanguage() {
+      const currentLang = document.documentElement.lang;
+      const newLang = currentLang === 'th' ? 'en' : 'th';
+      
+      if (newLang === 'th') {
+        window.location.href = 'index-th.html';
+      } else {
+        window.location.href = 'index.html';
+      }
+    }
+    
+    // Auto-redirect based on browser language
+    function autoRedirect() {
+      const detectedLang = detectLanguage();
+      const currentPath = window.location.pathname;
+      
+      // Only redirect if on index.html and not already on Thai version
+      if (currentPath.includes('index.html') && !currentPath.includes('index-th.html') && detectedLang === 'th') {
+        // Check if user hasn't manually chosen language before
+        if (!localStorage.getItem('manual-lang-choice')) {
+          window.location.href = 'index-th.html';
+        }
+      }
+    }
+    
+    // =========================
+    // NAVIGATION
+    // =========================
+    function goOrder(item, itemPrice) {
+      localStorage.setItem("item", item);
+      localStorage.setItem("price", itemPrice);
+      window.location.href = "order.html";
+    }
+
+    // =========================
     // ORDER FUNCTION (FIX)
     // =========================
     function goOrder(itemName, itemPrice) {
@@ -220,6 +297,9 @@
     
     // Initialize theme on page load
     initTheme();
+    
+    // Auto-redirect on page load
+    autoRedirect();
   </script>
 
 </body>
