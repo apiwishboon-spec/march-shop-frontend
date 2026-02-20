@@ -52,9 +52,6 @@
       <path d="M12 2v2"/>
       <path d="M12 20v2"/>
       <path d="m4.93 4.93 1.41 1.41"/>
-      <path d="M12 2v2"/>
-      <path d="M12 20v2"/>
-      <path d="m4.93 4.93 1.41 1.41"/>
       <path d="m17.66 17.66 1.41 1.41"/>
       <path d="M2 12h2"/>
       <path d="M20 12h2"/>
@@ -88,24 +85,69 @@
         Continue shopping
       </button>
       <button class="btn-primary" onclick="viewReceipt()">
-        <i data-lucide="receipt" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; margin-right: 8px; vertical-align: middle;">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/>
+          <path d="M16 8H8a2 2 0 0 0-2-2v4a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/>
+        </svg>
         View Receipt
       </button>
       <button class="btn-secondary" onclick="downloadSlip()">
-        <i data-lucide="download" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; margin-right: 8px; vertical-align: middle;">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15"/>
+        </svg>
         Download Slip
       </button>
     </div>
   </div>
 
   <script>
-    // Get order code from URL parameters
+    // Get order code from URL parameters with fallback
     const urlParams = new URLSearchParams(window.location.search);
-    const orderId = urlParams.get('id') || 'ORD-' + Date.now();
+    let orderId = urlParams.get('id');
+    
+    // If no ID in URL, try to get from localStorage or generate one
+    if (!orderId) {
+      orderId = localStorage.getItem('lastOrderId') || 'ORD-' + Date.now();
+    }
+    
+    // Save to localStorage for receipt functions
+    localStorage.setItem('lastOrderId', orderId);
+    
+    // Set the order code display
     document.getElementById("code").textContent = orderId;
     
-    // Initialize Lucide icons
-    lucide.createIcons();
+    // Initialize theme
+    function toggleTheme() {
+      const html = document.documentElement;
+      const sunIcon = document.querySelector('.sun-icon');
+      const moonIcon = document.querySelector('.moon-icon');
+      
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        sunIcon.style.display = 'block';
+        moonIcon.style.display = 'none';
+        localStorage.setItem('theme', 'light');
+      } else {
+        html.classList.add('dark');
+        sunIcon.style.display = 'none';
+        moonIcon.style.display = 'block';
+        localStorage.setItem('theme', 'dark');
+      }
+    }
+    
+    // Initialize theme on page load
+    function initTheme() {
+      const hour = new Date().getHours();
+      const isNightTime = hour >= 18 || hour < 6;
+      const savedTheme = localStorage.getItem('theme');
+      
+      if (savedTheme === 'dark' || (!savedTheme && isNightTime)) {
+        document.documentElement.classList.add('dark');
+        document.querySelector('.sun-icon').style.display = 'none';
+        document.querySelector('.moon-icon').style.display = 'block';
+      }
+    }
     
     // View Receipt function
     function viewReceipt() {
@@ -133,40 +175,7 @@
       window.open(slipUrl, '_blank');
     }
     
-    // Dark mode functionality with local time adaptation
-    function toggleTheme() {
-      const html = document.documentElement;
-      const sunIcon = document.querySelector('.sun-icon');
-      const moonIcon = document.querySelector('.moon-icon');
-      
-      if (html.classList.contains('dark')) {
-        html.classList.remove('dark');
-        sunIcon.style.display = 'block';
-        moonIcon.style.display = 'none';
-        localStorage.setItem('theme', 'light');
-      } else {
-        html.classList.add('dark');
-        sunIcon.style.display = 'none';
-        moonIcon.style.display = 'block';
-        localStorage.setItem('theme', 'dark');
-      }
-    }
-    
-    // Check for saved theme preference and local time
-    function initTheme() {
-      const hour = new Date().getHours();
-      const isNightTime = hour >= 18 || hour < 6; // 6 PM to 6 AM
-      const savedTheme = localStorage.getItem('theme');
-      
-      // Auto-enable dark mode during night hours if no preference saved
-      if (savedTheme === 'dark' || (!savedTheme && isNightTime)) {
-        document.documentElement.classList.add('dark');
-        document.querySelector('.sun-icon').style.display = 'none';
-        document.querySelector('.moon-icon').style.display = 'block';
-      }
-    }
-    
-    // Initialize theme on page load
+    // Initialize on page load
     initTheme();
   </script>
   
