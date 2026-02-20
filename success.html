@@ -34,9 +34,19 @@
 
     <br>
 
-    <button class="btn-outline" onclick="location.href='index.html'">
-      Continue shopping
-    </button>
+    <div class="button-row">
+      <button class="btn-outline" onclick="location.href='index.html'">
+        Continue shopping
+      </button>
+      <button class="btn-primary" onclick="viewReceipt()">
+        <i data-lucide="receipt" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+        View Receipt
+      </button>
+      <button class="btn-secondary" onclick="downloadSlip()">
+        <i data-lucide="download" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+        Download Slip
+      </button>
+    </div>
   </div>
 
   <script>
@@ -45,6 +55,34 @@
     
     // Initialize Lucide icons
     lucide.createIcons();
+    
+    // View Receipt function
+    function viewReceipt() {
+      const orderId = new URLSearchParams(location.search).get("id");
+      const email = localStorage.getItem('receipt-email') || 'customer@artink.com';
+      const item = localStorage.getItem('receipt-item') || 'ART&INK Product';
+      const quantity = localStorage.getItem('receipt-qty') || '1';
+      const total = localStorage.getItem('receipt-total') || '฿590';
+      const date = new Date().toLocaleString();
+      
+      // Open professional slip page
+      const slipUrl = `slip.html?id=${orderId}&email=${encodeURIComponent(email)}&item=${encodeURIComponent(item)}&qty=${quantity}&total=${encodeURIComponent(total)}&date=${encodeURIComponent(date)}`;
+      window.open(slipUrl, '_blank', 'width=800,height=900,scrollbars=yes,resizable=yes');
+    }
+    
+    // Download Slip function
+    function downloadSlip() {
+      const orderId = new URLSearchParams(location.search).get("id");
+      const email = localStorage.getItem('receipt-email') || 'customer@artink.com';
+      const item = localStorage.getItem('receipt-item') || 'ART&INK Product';
+      const quantity = localStorage.getItem('receipt-qty') || '1';
+      const total = localStorage.getItem('receipt-total') || '฿590';
+      const date = new Date().toLocaleString();
+      
+      // Create download link for slip
+      const slipUrl = `slip.html?id=${orderId}&email=${encodeURIComponent(email)}&item=${encodeURIComponent(item)}&qty=${quantity}&total=${encodeURIComponent(total)}&date=${encodeURIComponent(date)}`;
+      window.open(slipUrl, '_blank');
+    }
     
     // Dark mode functionality with local time adaptation
     function toggleTheme() {

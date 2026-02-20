@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ART&INK - Payment Slip</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .slip-container {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 30px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    .slip-header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    
+    .slip-header h1 {
+      margin: 0;
+      font-size: 28px;
+      background: linear-gradient(135deg, #f3a6c8 0%, #9ecbff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .slip-header p {
+      margin: 10px 0 0;
+      color: #6b7280;
+      font-size: 14px;
+    }
+    
+    .slip-content {
+      margin-bottom: 30px;
+    }
+    
+    .slip-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      padding: 15px;
+      background: #f8fafc;
+      border-radius: 8px;
+    }
+    
+    .slip-label {
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 5px;
+    }
+    
+    .slip-value {
+      font-weight: 500;
+      color: #1f2937;
+    }
+    
+    .slip-footer {
+      text-align: center;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 2px solid #e5e7eb;
+    }
+    
+    .slip-footer p {
+      margin: 0;
+      color: #6b7280;
+      font-size: 14px;
+    }
+    
+    .button-row {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+    
+    .dark .slip-container {
+      background: #1f2937;
+      color: #f3f4f6;
+    }
+    
+    .dark .slip-row {
+      background: #374151;
+    }
+    
+    .dark .slip-label {
+      color: #d1d5db;
+    }
+    
+    .dark .slip-value {
+      color: #f3f4f6;
+    }
+    
+    .dark .slip-header,
+    .dark .slip-footer {
+      border-color: #374151;
+    }
+    
+    .dark .slip-header p,
+    .dark .slip-footer p {
+      color: #d1d5db;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Dark Mode Toggle -->
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+    <i data-lucide="sun" class="sun-icon"></i>
+    <i data-lucide="moon" class="moon-icon" style="display:none;"></i>
+  </button>
+
+  <!-- Language Toggle -->
+  <button class="lang-toggle" onclick="toggleLanguage()" aria-label="Toggle language">
+    <span class="lang-text">TH</span>
+  </button>
+
+  <div class="slip-container">
+    <div class="slip-header">
+      <h1>ART&INK STUDIO</h1>
+      <p>Payment Receipt</p>
+    </div>
+    
+    <div class="slip-content">
+      <div class="slip-row">
+        <div>
+          <div class="slip-label">Order ID</div>
+          <div class="slip-value" id="orderId">-</div>
+        </div>
+        <div>
+          <div class="slip-label">Date & Time</div>
+          <div class="slip-value" id="dateTime">-</div>
+        </div>
+      </div>
+      
+      <div class="slip-row">
+        <div>
+          <div class="slip-label">Customer Email</div>
+          <div class="slip-value" id="customerEmail">-</div>
+        </div>
+        <div>
+          <div class="slip-label">Payment Method</div>
+          <div class="slip-value">PromptPay QR</div>
+        </div>
+      </div>
+      
+      <div class="slip-row">
+        <div>
+          <div class="slip-label">Item</div>
+          <div class="slip-value" id="itemName">-</div>
+        </div>
+        <div>
+          <div class="slip-label">Quantity</div>
+          <div class="slip-value" id="itemQty">-</div>
+        </div>
+      </div>
+      
+      <div class="slip-row">
+        <div>
+          <div class="slip-label">Unit Price</div>
+          <div class="slip-value" id="unitPrice">-</div>
+        </div>
+        <div>
+          <div class="slip-label">Total Amount</div>
+          <div class="slip-value" id="totalAmount" style="font-size: 18px; font-weight: 600; color: #059669;">-</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="slip-footer">
+      <p>Thank you for your order! Your payment has been received and is being processed.</p>
+    </div>
+    
+    <div class="button-row">
+      <button class="btn-primary" onclick="window.print()">
+        <i data-lucide="printer" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+        Print Receipt
+      </button>
+      <button class="btn-secondary" onclick="downloadPDF()">
+        <i data-lucide="download" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+        Download PDF
+      </button>
+      <button class="btn-outline" onclick="window.close()">
+        Close
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+    
+    // Load receipt data from URL parameters or localStorage
+    function loadReceiptData() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const orderId = urlParams.get('id') || localStorage.getItem('receipt-orderId') || 'ORD-' + Date.now();
+      const email = urlParams.get('email') || localStorage.getItem('receipt-email') || 'customer@artink.com';
+      const item = urlParams.get('item') || localStorage.getItem('receipt-item') || 'ART&INK Product';
+      const qty = urlParams.get('qty') || localStorage.getItem('receipt-qty') || '1';
+      const total = urlParams.get('total') || localStorage.getItem('receipt-total') || '฿590';
+      const date = urlParams.get('date') || new Date().toLocaleString();
+      
+      // Update DOM elements
+      document.getElementById('orderId').textContent = orderId;
+      document.getElementById('dateTime').textContent = date;
+      document.getElementById('customerEmail').textContent = email;
+      document.getElementById('itemName').textContent = item;
+      document.getElementById('itemQty').textContent = qty;
+      document.getElementById('unitPrice').textContent = '฿' + (parseInt(total.replace('฿', '')) / parseInt(qty));
+      document.getElementById('totalAmount').textContent = total;
+      
+      // Update page title
+      document.title = `Receipt - ${orderId} | ART&INK`;
+    }
+    
+    // Dark mode functionality
+    function toggleTheme() {
+      const html = document.documentElement;
+      const sunIcon = document.querySelector('.sun-icon');
+      const moonIcon = document.querySelector('.moon-icon');
+      
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        sunIcon.style.display = 'block';
+        moonIcon.style.display = 'none';
+        localStorage.setItem('theme', 'light');
+      } else {
+        html.classList.add('dark');
+        sunIcon.style.display = 'none';
+        moonIcon.style.display = 'block';
+        localStorage.setItem('theme', 'dark');
+      }
+    }
+    
+    // Language toggle
+    function toggleLanguage() {
+      window.location.href = 'success-th.html';
+    }
+    
+    // Download PDF function
+    function downloadPDF() {
+      window.print(); // For now, use print dialog
+    }
+    
+    // Initialize theme on page load
+    function initTheme() {
+      const hour = new Date().getHours();
+      const isNightTime = hour >= 18 || hour < 6;
+      const savedTheme = localStorage.getItem('theme');
+      
+      if (savedTheme === 'dark' || (!savedTheme && isNightTime)) {
+        document.documentElement.classList.add('dark');
+        document.querySelector('.sun-icon').style.display = 'none';
+        document.querySelector('.moon-icon').style.display = 'block';
+      }
+    }
+    
+    // Initialize on page load
+    initTheme();
+    loadReceiptData();
+    lucide.createIcons();
+  </script>
+</body>
+</html>

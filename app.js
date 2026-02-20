@@ -251,8 +251,19 @@ function submitOrder() {
       }
 
       const orderId = data.data?.orderId || Date.now();
-      localStorage.clear();
-      location.href = "success.html?id=" + orderId;
+      const email = document.getElementById("email").value.trim();
+      const item = localStorage.getItem("item");
+      const qty = document.getElementById("qty").value;
+      const total = parseFloat(localStorage.getItem("price")) * qty;
+
+      // Save receipt data
+      localStorage.setItem('receipt-email', email);
+      localStorage.setItem('receipt-item', item);
+      localStorage.setItem('receipt-qty', qty);
+      localStorage.setItem('receipt-total', '฿' + total);
+
+      // Redirect to success page with order ID
+      window.location.href = "success.html?id=" + data.orderId;
 
     })
     .catch(err => {
