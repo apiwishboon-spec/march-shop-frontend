@@ -50,15 +50,16 @@
   </div>
 
   <script>
-    document.getElementById("code").textContent =
-      new URLSearchParams(location.search).get("id");
+    // Get order code from URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderId = urlParams.get('id') || 'ORD-' + Date.now();
+    document.getElementById("code").textContent = orderId;
     
     // Initialize Lucide icons
     lucide.createIcons();
     
     // View Receipt function
     function viewReceipt() {
-      const orderId = new URLSearchParams(location.search).get("id");
       const email = localStorage.getItem('receipt-email') || 'customer@artink.com';
       const item = localStorage.getItem('receipt-item') || 'ART&INK Product';
       const quantity = localStorage.getItem('receipt-qty') || '1';
@@ -72,7 +73,6 @@
     
     // Download Slip function
     function downloadSlip() {
-      const orderId = new URLSearchParams(location.search).get("id");
       const email = localStorage.getItem('receipt-email') || 'customer@artink.com';
       const item = localStorage.getItem('receipt-item') || 'ART&INK Product';
       const quantity = localStorage.getItem('receipt-qty') || '1';

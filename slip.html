@@ -112,6 +112,49 @@
     .dark .slip-footer p {
       color: #d1d5db;
     }
+    
+    /* Print-specific styles */
+    @media print {
+      body {
+        margin: 0;
+        padding: 0;
+        background: white;
+      }
+      
+      .slip-container {
+        margin: 0;
+        padding: 20px;
+        box-shadow: none;
+        border: 1px solid #ccc;
+        border-radius: 0;
+        max-width: 100%;
+      }
+      
+      .button-row {
+        display: none;
+      }
+      
+      .theme-toggle,
+      .lang-toggle {
+        display: none;
+      }
+      
+      .slip-header h1 {
+        background: #333;
+        -webkit-text-fill-color: white;
+        color: white;
+      }
+      
+      .slip-row {
+        background: #f5f5f5;
+        border: 1px solid #ddd;
+      }
+      
+      .slip-label,
+      .slip-value {
+        color: #333;
+      }
+    }
   </style>
 </head>
 
@@ -120,11 +163,6 @@
   <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
     <i data-lucide="sun" class="sun-icon"></i>
     <i data-lucide="moon" class="moon-icon" style="display:none;"></i>
-  </button>
-
-  <!-- Language Toggle -->
-  <button class="lang-toggle" onclick="toggleLanguage()" aria-label="Toggle language">
-    <span class="lang-text">TH</span>
   </button>
 
   <div class="slip-container">
@@ -241,29 +279,6 @@
         sunIcon.style.display = 'none';
         moonIcon.style.display = 'block';
         localStorage.setItem('theme', 'dark');
-      }
-    }
-    
-    // Language toggle
-    function toggleLanguage() {
-      window.location.href = 'success-th.html';
-    }
-    
-    // Download PDF function
-    function downloadPDF() {
-      window.print(); // For now, use print dialog
-    }
-    
-    // Initialize theme on page load
-    function initTheme() {
-      const hour = new Date().getHours();
-      const isNightTime = hour >= 18 || hour < 6;
-      const savedTheme = localStorage.getItem('theme');
-      
-      if (savedTheme === 'dark' || (!savedTheme && isNightTime)) {
-        document.documentElement.classList.add('dark');
-        document.querySelector('.sun-icon').style.display = 'none';
-        document.querySelector('.moon-icon').style.display = 'block';
       }
     }
     

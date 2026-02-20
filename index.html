@@ -48,11 +48,6 @@
     <i data-lucide="moon" class="moon-icon" style="display:none;"></i>
   </button>
 
-  <!-- Language Toggle -->
-  <button class="lang-toggle" onclick="toggleLanguage()" aria-label="Toggle language">
-    <span class="lang-text">TH</span>
-  </button>
-
   <div class="container center">
 
     <!-- BRAND -->
@@ -197,43 +192,6 @@
   <!-- ===== SCRIPT ===== -->
   <script>
     // =========================
-    // LANGUAGE DETECTION & TOGGLE
-    // =========================
-    function detectLanguage() {
-      const browserLang = navigator.language || navigator.userLanguage;
-      const thaiLangs = ['th', 'th-TH', 'th-th'];
-      return thaiLangs.some(lang => browserLang.startsWith(lang)) ? 'th' : 'en';
-    }
-    
-    function toggleLanguage() {
-      const currentLang = document.documentElement.lang;
-      const newLang = currentLang === 'th' ? 'en' : 'th';
-      
-      // Save manual language choice
-      localStorage.setItem('manual-lang-choice', 'true');
-      
-      if (newLang === 'th') {
-        window.location.href = '/th/';
-      } else {
-        window.location.href = 'index.html';
-      }
-    }
-    
-    // Auto-redirect based on browser language
-    function autoRedirect() {
-      const detectedLang = detectLanguage();
-      const currentPath = window.location.pathname;
-      
-      // Only redirect if on index.html and not already on Thai version
-      if (currentPath.includes('index.html') && !currentPath.includes('index-th.html') && detectedLang === 'th') {
-        // Check if user hasn't manually chosen language before
-        if (!localStorage.getItem('manual-lang-choice')) {
-          window.location.href = '/th/';
-        }
-      }
-    }
-    
-    // =========================
     // NAVIGATION
     // =========================
     function goOrder(item, itemPrice) {
@@ -301,13 +259,17 @@
     // Initialize theme on page load
     initTheme();
     
-    // Auto-redirect on page load
-    autoRedirect();
-    
     // Re-initialize Lucide icons after DOM is ready
     document.addEventListener('DOMContentLoaded', function() {
       lucide.createIcons();
+      // Ensure theme icons are visible
+      setTimeout(() => {
+        lucide.createIcons();
+      }, 100);
     });
+    
+    // Initialize Lucide icons immediately
+    lucide.createIcons();
   </script>
 
 </body>
