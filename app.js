@@ -250,11 +250,14 @@ function submitOrder() {
         throw new Error(data.message);
       }
 
-      const orderId = data.data?.orderId || Date.now();
+      const orderId = data.data?.orderId || data.orderId || 'ORD-' + Date.now();
       const email = document.getElementById("email").value.trim();
       const item = localStorage.getItem("item");
       const qty = document.getElementById("qty").value;
       const total = parseFloat(localStorage.getItem("price")) * qty;
+
+      // Save order ID to localStorage for success page
+      localStorage.setItem('lastOrderId', orderId);
 
       // Save receipt data
       localStorage.setItem('receipt-email', email);
@@ -263,7 +266,7 @@ function submitOrder() {
       localStorage.setItem('receipt-total', '฿' + total);
 
       // Redirect to success page with order ID
-      window.location.href = "success.html?id=" + data.orderId;
+      window.location.href = "success.html?id=" + orderId;
 
     })
     .catch(err => {
