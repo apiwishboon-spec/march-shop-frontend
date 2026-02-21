@@ -447,6 +447,17 @@
               <span class="label">Size:</span>
               <span class="value" id="summary-size">M</span>
             </div>
+            <div class="summary-item">
+              <span class="label">Selected Size:</span>
+              <div class="size-selector">
+                <div class="size-options">
+                  <button type="button" class="size-btn" data-size="S" onclick="selectOrderSize('S')">S</button>
+                  <button type="button" class="size-btn" data-size="M" onclick="selectOrderSize('M')">M</button>
+                  <button type="button" class="size-btn" data-size="L" onclick="selectOrderSize('L')">L</button>
+                  <button type="button" class="size-btn" data-size="XL" onclick="selectOrderSize('XL')">XL</button>
+                </div>
+              </div>
+            </div>
             <div class="summary-item discount-row">
               <span class="label">Discount Code:</span>
               <div class="discount-input">
@@ -646,6 +657,28 @@
     
     // Initialize theme on page load
     initTheme();
+    
+    // Size Selection
+    function selectOrderSize(size) {
+      selectedSize = size;
+      
+      // Update button states
+      document.querySelectorAll('.size-btn').forEach(btn => {
+        btn.classList.toggle('selected', btn.dataset.size === size);
+      });
+      
+      // Update summary display
+      document.getElementById('summary-size').textContent = size;
+      
+      // Save to localStorage
+      localStorage.setItem('selectedSize', size);
+    }
+
+    // Initialize size selection
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedSize = localStorage.getItem('selectedSize') || 'M';
+      selectOrderSize(savedSize);
+    });
     
     // Collapsible instructions
     function toggleInstructions() {

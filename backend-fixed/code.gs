@@ -20,6 +20,7 @@ function doPost(e) {
     const item = String(e.parameter.item || "").trim();
     const price = Number(e.parameter.price);
     const quantity = Number(e.parameter.quantity || 1);
+    const size = String(e.parameter.size || "M").trim();
     const base64Image = e.parameter.base64Image;
     const turnstileToken = e.parameter.turnstileToken;
 
@@ -84,12 +85,13 @@ function doPost(e) {
       quantity,  // 7
       total,     // 8
       status,    // 9
-      slipUrl    // 10
+      slipUrl,   // 10
+      size       // 11 - NEW: Add size column
     ]);
 
     sendOrderConfirmation(email, {
       orderId,
-      item,
+      item: item + " (Size: " + size + ")",
       quantity,
       total
     });

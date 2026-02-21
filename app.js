@@ -343,6 +343,7 @@ function submitOrder() {
     formData.append("item", localStorage.getItem("item"));
     formData.append("price", localStorage.getItem("price"));
     formData.append("quantity", document.getElementById("qty").value);
+    formData.append("size", localStorage.getItem("selectedSize") || 'M');
     formData.append("base64Image", base64Image);
     formData.append("turnstileToken", turnstileToken);
 
