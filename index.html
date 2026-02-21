@@ -43,26 +43,18 @@
       height: 24px;
       color: var(--text-primary);
     }
+    
+    .theme-icon {
+      font-size: 20px;
+      line-height: 1;
+    }
   </style>
 </head>
 
 <body>
   <!-- Dark Mode Toggle -->
   <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
-    <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="12" r="4"/>
-      <path d="M12 2v2"/>
-      <path d="M12 20v2"/>
-      <path d="m4.93 4.93 1.41 1.41"/>
-      <path d="m17.66 17.66 1.41 1.41"/>
-      <path d="M2 12h2"/>
-      <path d="M20 12h2"/>
-      <path d="m6.34 17.66-1.41 1.41"/>
-      <path d="m19.07 4.93-1.41 1.41"/>
-    </svg>
-    <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
-      <path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/>
-    </svg>
+    <span class="theme-icon">☀️</span>
   </button>
 
   <div class="container center">
@@ -242,20 +234,17 @@
     // =========================
     function toggleTheme() {
       const html = document.documentElement;
-      const sunIcon = document.querySelector('.sun-icon');
-      const moonIcon = document.querySelector('.moon-icon');
+      const themeIcon = document.querySelector('.theme-icon');
       
       if (html.classList.contains('dark')) {
         html.classList.remove('dark');
-        sunIcon.style.display = 'block';
-        moonIcon.style.display = 'none';
+        themeIcon.textContent = '☀️';
         localStorage.setItem('theme', 'light');
         // Show light mode emoji
         showThemeEmoji('☀️');
       } else {
         html.classList.add('dark');
-        sunIcon.style.display = 'none';
-        moonIcon.style.display = 'block';
+        themeIcon.textContent = '🌙';
         localStorage.setItem('theme', 'dark');
         // Show dark mode emoji
         showThemeEmoji('🌙');
@@ -300,11 +289,13 @@
       const hour = new Date().getHours();
       const isNightTime = hour >= 18 || hour < 6;
       const savedTheme = localStorage.getItem('theme');
+      const themeIcon = document.querySelector('.theme-icon');
       
       if (savedTheme === 'dark' || (!savedTheme && isNightTime)) {
         document.documentElement.classList.add('dark');
-        document.querySelector('.sun-icon').style.display = 'none';
-        document.querySelector('.moon-icon').style.display = 'block';
+        themeIcon.textContent = '🌙';
+      } else {
+        themeIcon.textContent = '☀️';
       }
     }
     
