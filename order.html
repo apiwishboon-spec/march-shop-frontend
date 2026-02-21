@@ -43,7 +43,156 @@
       color: var(--text-primary);
     }
     
-    /* Step Indicator Styles */
+    /* Order Summary Styles */
+    .order-summary {
+      background: var(--bg-tertiary);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-primary);
+    }
+    
+    .summary-item:last-child {
+      border-bottom: none;
+    }
+    
+    .discount-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+    }
+    
+    .discount-input {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    
+    .discount-input input {
+      flex: 1;
+      padding: 10px;
+      border: 2px solid var(--border-primary);
+      border-radius: 8px;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+    
+    .btn-small {
+      padding: 10px 20px;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    
+    .total-row {
+      background: var(--bg-secondary);
+      margin: 0 -20px;
+      padding: 15px 20px;
+      margin-top: 10px;
+      border-radius: 0 0 12px 12px;
+    }
+    
+    .total-price {
+      font-size: 20px;
+      font-weight: bold;
+      color: var(--text-primary);
+    }
+    
+    /* Payment Method Styles */
+    .payment-methods {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    
+    .payment-option {
+      border: 2px solid var(--border-primary);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .payment-option:hover {
+      border-color: var(--text-primary);
+    }
+    
+    .payment-option input[type="radio"] {
+      display: none;
+    }
+    
+    .payment-label {
+      display: flex;
+      align-items: center;
+      padding: 20px;
+      cursor: pointer;
+      gap: 15px;
+    }
+    
+    .payment-option input[type="radio"]:checked + .payment-label {
+      background: var(--bg-tertiary);
+    }
+    
+    .payment-icon {
+      font-size: 32px;
+      width: 50px;
+      text-align: center;
+    }
+    
+    .payment-info {
+      flex: 1;
+    }
+    
+    .payment-info strong {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--text-primary);
+    }
+    
+    .payment-info span {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+    
+    .cash-info {
+      background: var(--bg-tertiary);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+    
+    .info-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-primary);
+    }
+    
+    .info-item:last-child {
+      border-bottom: none;
+    }
+    
+    .info-item strong {
+      color: var(--text-primary);
+    }
+    
+    @media (max-width: 768px) {
+      .payment-label {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+      }
+      
+      .payment-icon {
+        width: auto;
+      }
+    }
     .step-indicator {
       display: flex;
       justify-content: center;
@@ -280,21 +429,46 @@
     </div>
 
     <main>
-      <!-- Step 1: Contact Information -->
+      <!-- Step 1: Order Details -->
       <div class="step-content active" id="step1">
         <div class="form-card">
-          <h2>📝 Contact Information</h2>
-          <p>Please provide your contact details to continue.</p>
+          <h2>� Order Details</h2>
+          
+          <div class="order-summary">
+            <div class="summary-item">
+              <span class="label">Product:</span>
+              <span class="value" id="summary-product">-</span>
+            </div>
+            <div class="summary-item">
+              <span class="label">Price:</span>
+              <span class="value">฿<span id="summary-price">-</span></span>
+            </div>
+            <div class="summary-item">
+              <span class="label">Size:</span>
+              <span class="value" id="summary-size">M</span>
+            </div>
+            <div class="summary-item discount-row">
+              <span class="label">Discount Code:</span>
+              <div class="discount-input">
+                <input type="text" id="discountCode" placeholder="Enter code" maxlength="20">
+                <button type="button" class="btn-small" onclick="applyDiscount()">Apply</button>
+              </div>
+            </div>
+            <div class="summary-item total-row">
+              <span class="label">Total:</span>
+              <span class="value total-price">฿<span id="summary-total">-</span></span>
+            </div>
+          </div>
 
-          <form id="contactForm">
+          <form id="orderForm">
             <label class="label">
-              Email address
-              <input id="email" type="email" required>
+              Email
+              <input id="email" type="email" placeholder="your@email.com" required>
             </label>
 
             <label class="label">
-              Phone number
-              <input id="phone" type="tel">
+              Phone (optional)
+              <input id="phone" type="tel" placeholder="08x-xxx-xxxx">
             </label>
 
             <label class="label">
@@ -318,71 +492,81 @@
       <!-- Step 2: Payment -->
       <div class="step-content" id="step2">
         <div class="form-card">
-          <h2>💸 Payment</h2>
-          <p>Follow the steps below to complete your payment.</p>
+          <h2>💸 Payment Method</h2>
+          
+          <div class="payment-methods">
+            <div class="payment-option">
+              <input type="radio" id="promptpay" name="paymentMethod" value="promptpay" checked>
+              <label for="promptpay" class="payment-label">
+                <div class="payment-icon">📱</div>
+                <div class="payment-info">
+                  <strong>PromptPay QR</strong>
+                  <span>Scan QR code with mobile banking app</span>
+                </div>
+              </label>
+            </div>
+            
+            <div class="payment-option">
+              <input type="radio" id="cash" name="paymentMethod" value="cash">
+              <label for="cash" class="payment-label">
+                <div class="payment-icon">💵</div>
+                <div class="payment-info">
+                  <strong>Cash on Delivery</strong>
+                  <span>Pay when you receive your order</span>
+                </div>
+              </label>
+            </div>
+          </div>
 
-          <!-- COLLAPSIBLE PAYMENT INSTRUCTIONS -->
-          <div class="instructions-toggle" id="instructionsToggle" onclick="toggleInstructions()">
-            <div class="instructions-header">
-              <div class="instructions-title">
-                <i data-lucide="help-circle" style="width: 20px; height: 20px;"></i>
-                <span>Payment Instructions</span>
+          <div id="promptpay-section">
+            <h3>📱 PromptPay Payment</h3>
+            <p>Follow the steps below to complete your payment.</p>
+
+            <!-- COLLAPSIBLE PAYMENT INSTRUCTIONS -->
+            <div class="instructions-toggle" id="instructionsToggle" onclick="toggleInstructions()">
+              <div class="instructions-header">
+                <div class="instructions-title">
+                  <span>Payment Instructions</span>
+                </div>
+                <span class="chevron-icon">▼</span>
               </div>
-              <i data-lucide="chevron-down" class="chevron-icon" style="width: 20px; height: 20px;"></i>
             </div>
             
             <div class="payment-instructions" style="display: none;">
               <div class="instruction-step">
-                <div class="step-icon">
-                  <i data-lucide="smartphone" style="width: 24px; height: 24px;"></i>
-                </div>
+                <div class="step-icon">📸</div>
                 <div class="step-text">
-                  <strong>1. Take a screenshot</strong> of the QR code below
+                  <strong>1. Take a screenshot</strong> of QR code below
                 </div>
               </div>
               <div class="instruction-step">
-                <div class="step-icon">
-                  <i data-lucide="building-2" style="width: 24px; height: 24px;"></i>
-                </div>
+                <div class="step-icon">🏦</div>
                 <div class="step-text">
                   <strong>2. Open your mobile banking app</strong> (KBank, SCB, etc.)
                 </div>
               </div>
               <div class="instruction-step">
-                <div class="step-icon">
-                  <i data-lucide="camera" style="width: 24px; height: 24px;"></i>
-                </div>
+                <div class="step-icon">💳</div>
                 <div class="step-text">
-                  <strong>3. Open QR scanner</strong> in your banking app
+                  <strong>3. Scan QR code</strong> and confirm payment
                 </div>
               </div>
               <div class="instruction-step">
-                <div class="step-icon">
-                  <i data-lucide="upload" style="width: 24px; height: 24px;"></i>
-                </div>
+                <div class="step-icon">📤</div>
                 <div class="step-text">
-                  <strong>4. Upload screenshot</strong> or scan the QR directly
-                </div>
-              </div>
-              <div class="instruction-step">
-                <div class="step-icon">
-                  <i data-lucide="credit-card" style="width: 24px; height: 24px;"></i>
-                </div>
-                <div class="step-text">
-                  <strong>5. Pay via app</strong> with the correct amount
-                </div>
-              </div>
-              <div class="instruction-step">
-                <div class="step-icon">
-                  <i data-lucide="file-image" style="width: 24px; height: 24px;"></i>
-                </div>
-                <div class="step-text">
-                  <strong>6. Upload payment slip</strong> below to confirm
+                  <strong>4. Upload payment slip</strong> below to complete order
                 </div>
               </div>
             </div>
-          </div>
 
+            <div class="qr-section">
+              <div class="qr-container">
+                <img id="dynamicQR" src="" alt="Payment QR Code">
+                <div id="qrTotal" class="qr-total">฿0</div>
+              </div>
+              <div id="qrTimer" class="qr-timer" style="display: none;">
+                ⏰ QR expires in: <span id="timerMinutes">5</span>:<span id="timerSeconds">00</span>
+              </div>
           <!-- PAYMENT -->
           <div class="payment-box">
             <h3>Scan QR Code</h3>

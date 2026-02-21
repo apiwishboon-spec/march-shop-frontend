@@ -6,6 +6,8 @@ let turnstileToken = null;
 let generatedPayload = null;
 let qrTimer = null;
 let qrExpiryTime = null;
+let discountAmount = 0;
+let selectedPaymentMethod = 'promptpay';
 
 const API_URL = "https://script.google.com/macros/s/AKfycbxENBG6cKm3ImJd_6gjvxCUnM-hG0xeNhPhjLUleDCyh0JsXhkkG7wOwkBjRW43j-88mg/exec";
 
@@ -13,6 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const item = localStorage.getItem("item");
   const price = parseFloat(localStorage.getItem("price"));
+  const selectedSize = localStorage.getItem("selectedSize") || 'M';
 
   if (!item || !price) {
     location.href = "index.html";
@@ -20,8 +23,95 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Initialize step 1
-  updateTotal();
+  updateOrderSummary(item, price, selectedSize);
+  
+  // Setup payment method listeners
+  setupPaymentMethods();
 });
+
+// ================================
+// ORDER SUMMARY & DISCOUNT
+// ================================
+function updateOrderSummary(item, price, size) {
+  document.getElementById('summary-product').textContent = item;
+  document.getElementById('summary-price').textContent = price;
+  document.getElementById('summary-size').textContent = size;
+  updateTotalPrice(price);
+}
+
+function updateTotalPrice(basePrice) {
+  const qty = Number(document.getElementById("qty").value);
+  const discountedPrice = basePrice - discountAmount;
+  const total = discountedPrice * qty;
+  document.getElementById('summary-total').textContent = total.toFixed(2);
+}
+
+function applyDiscount() {
+  const code = document.getElementById('discountCode').value.trim().toUpperCase();
+  
+  if (!code) {
+    showError('Please enter a discount code');
+    return;
+  }
+  
+  // Simple discount codes (you can expand this)
+  const discounts = {
+    'SAVE10': 10,
+    'SAVE20': 20,
+    'WELCOME': 15,
+    'ARTINK10': 10
+  };
+  
+  if (discounts[code]) {
+    discountAmount = discounts[code];
+    showSuccess(`Discount code applied! -฿${discountAmount} off`);
+    document.getElementById('discountCode').disabled = true;
+    updateTotalPrice(parseFloat(localStorage.getItem("price")));
+  } else {
+    showError('Invalid discount code');
+    discountAmount = 0;
+  }
+}
+
+// ================================
+// PAYMENT METHODS
+// ================================
+function setupPaymentMethods() {
+  const promptpayRadio = document.getElementById('promptpay');
+  const cashRadio = document.getElementById('cash');
+  
+  promptpayRadio.addEventListener('change', () => {
+    if (promptpayRadio.checked) {
+      selectedPaymentMethod = 'promptpay';
+      showPromptPaySection();
+    }
+  });
+  
+  cashRadio.addEventListener('change', () => {
+    if (cashRadio.checked) {
+      selectedPaymentMethod = 'cash';
+      showCashSection();
+    }
+  });
+}
+
+function showPromptPaySection() {
+  document.getElementById('promptpay-section').style.display = 'block';
+  document.getElementById('cash-section').style.display = 'none';
+  updateTotalPrice(parseFloat(localStorage.getItem("price")));
+}
+
+function showCashSection() {
+  document.getElementById('promptpay-section').style.display = 'none';
+  document.getElementById('cash-section').style.display = 'block';
+  
+  const price = parseFloat(localStorage.getItem("price"));
+  const qty = Number(document.getElementById("qty").value);
+  const deliveryFee = 50; // Bangkok rate
+  const total = (price - discountAmount) * qty + deliveryFee;
+  
+  document.getElementById('cashTotal').textContent = total.toFixed(2);
+}
 
 // ================================
 // STEP NAVIGATION
@@ -203,33 +293,50 @@ function onTurnstileSuccess(token) {
 // SUBMIT ORDER (WITH LOADING)
 // ================================
 function submitOrder() {
+  const email = document.getElementById("email").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const item = localStorage.getItem("item");
+  const price = parseFloat(localStorage.getItem("price"));
+  const qty = Number(document.getElementById("qty").value);
+  const size = localStorage.getItem("selectedSize") || 'M';
 
-  if (!turnstileToken)
-    return showError("Please verify you are human.");
+  if (!item || price <= 0 || qty < 1) {
+    showError("Invalid order data");
+    return;
+  }
 
-  const slipInput = document.getElementById("slip");
+  if (!email) {
+    showError("Email is required");
+    return;
+  }
 
-  if (!slipInput.files.length)
-    return showError("Upload payment slip.");
-
-  const file = slipInput.files[0];
-
-  if (file.size > 5 * 1024 * 1024)
-    return showError("Slip too large (max 5MB).");
-
+  const submitBtn = event.target;
+  const btnText = submitBtn.querySelector("span") || submitBtn;
+  
   // Show loading state
-  const submitBtn = document.getElementById("submitBtn");
-  const btnText = submitBtn.querySelector(".btn-text");
   submitBtn.classList.add("btn-loading");
   submitBtn.disabled = true;
-  btnText.textContent = "Submitting...";
+  if (btnText) btnText.textContent = "Processing...";
 
-  const reader = new FileReader();
-
-  reader.onload = function () {
-
-    const base64Image = reader.result.split(",")[1];
-
+  if (selectedPaymentMethod === 'cash') {
+    // Cash on Delivery - skip QR generation
+    const total = (price - discountAmount) * qty + 50; // Add delivery fee
+    const orderId = 'ORD-' + Date.now();
+    
+    // Save order data
+    localStorage.setItem('receipt-email', email);
+    localStorage.setItem('receipt-item', `${item} (Size: ${size})`);
+    localStorage.setItem('receipt-qty', qty);
+    localStorage.setItem('receipt-total', '฿' + total);
+    localStorage.setItem('lastOrderId', orderId);
+    
+    // Simulate order submission (in real app, this would call backend)
+    setTimeout(() => {
+      showSuccess('Order submitted successfully! You will receive cash on delivery.');
+      window.location.href = `success.html?id=${orderId}`;
+    }, 1500);
+  } else {
+    // PromptPay QR - generate QR code
     const formData = new URLSearchParams();
     formData.append("email", document.getElementById("email").value.trim());
     formData.append("phone", document.getElementById("phone").value.trim());
@@ -250,20 +357,20 @@ function submitOrder() {
         throw new Error(data.message);
       }
 
-      const orderId = data.data?.orderId || data.orderId || 'ORD-' + Date.now();
+      const orderId = data.data?.orderId || Date.now();
       const email = document.getElementById("email").value.trim();
       const item = localStorage.getItem("item");
       const qty = document.getElementById("qty").value;
       const total = parseFloat(localStorage.getItem("price")) * qty;
-
-      // Save order ID to localStorage for success page
-      localStorage.setItem('lastOrderId', orderId);
 
       // Save receipt data
       localStorage.setItem('receipt-email', email);
       localStorage.setItem('receipt-item', item);
       localStorage.setItem('receipt-qty', qty);
       localStorage.setItem('receipt-total', '฿' + total);
+
+      // Save order ID to localStorage for success page
+      localStorage.setItem('lastOrderId', orderId);
 
       // Redirect to success page with order ID
       window.location.href = "success.html?id=" + orderId;
@@ -276,9 +383,7 @@ function submitOrder() {
       btnText.textContent = "Submit Order";
       showError(err.message || "Submission failed");
     });
-  };
-
-  reader.readAsDataURL(file);
+  }
 }
 
 // ================================

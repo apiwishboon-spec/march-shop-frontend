@@ -48,6 +48,218 @@
       font-size: 20px;
       line-height: 1;
     }
+    
+    /* Product Popup Styles */
+    .product-popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .product-popup.hidden {
+      display: none;
+    }
+    
+    .popup-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+    }
+    
+    .popup-content {
+      position: relative;
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      max-width: 900px;
+      max-height: 90vh;
+      width: 90%;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .popup-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: var(--bg-tertiary);
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      font-size: 20px;
+      cursor: pointer;
+      z-index: 1;
+      transition: all 0.3s ease;
+    }
+    
+    .popup-close:hover {
+      background: var(--text-primary);
+      color: var(--bg-secondary);
+    }
+    
+    .popup-gallery {
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-primary);
+    }
+    
+    .main-image {
+      position: relative;
+      width: 100%;
+      height: 400px;
+      overflow: hidden;
+    }
+    
+    .main-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .image-nav {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 10px 20px;
+      border-radius: 25px;
+      color: white;
+    }
+    
+    .image-nav button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 5px;
+    }
+    
+    .thumbnail-grid {
+      display: flex;
+      gap: 10px;
+      padding: 15px;
+      overflow-x: auto;
+    }
+    
+    .thumbnail {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 8px;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+      border: 2px solid transparent;
+    }
+    
+    .thumbnail:hover,
+    .thumbnail.active {
+      opacity: 1;
+      border-color: var(--text-primary);
+    }
+    
+    .popup-details {
+      padding: 30px;
+      flex: 1;
+    }
+    
+    .popup-details h2 {
+      margin: 0 0 10px 0;
+      color: var(--text-primary);
+    }
+    
+    .price-tag {
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--text-primary);
+      margin: 15px 0;
+    }
+    
+    .size-selector {
+      margin: 20px 0;
+    }
+    
+    .size-selector label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    .size-options {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .size-btn {
+      background: var(--bg-tertiary);
+      border: 2px solid var(--border-primary);
+      border-radius: 8px;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 600;
+    }
+    
+    .size-btn:hover {
+      background: var(--border-primary);
+    }
+    
+    .size-btn.selected {
+      background: var(--text-primary);
+      color: var(--bg-secondary);
+      border-color: var(--text-primary);
+    }
+    
+    .description {
+      margin: 20px 0;
+    }
+    
+    .description h3 {
+      margin: 0 0 10px 0;
+      color: var(--text-primary);
+    }
+    
+    .description p {
+      line-height: 1.6;
+      color: var(--text-secondary);
+    }
+    
+    .popup-actions {
+      margin-top: 30px;
+    }
+    
+    @media (max-width: 768px) {
+      .popup-content {
+        flex-direction: column;
+        max-height: 95vh;
+      }
+      
+      .main-image {
+        height: 250px;
+      }
+      
+      .popup-details {
+        padding: 20px;
+      }
+    }
   </style>
 </head>
 
@@ -77,9 +289,11 @@
           <h3>Abstract Line Art Tee</h3>
           <p>Minimalist line artwork. Screen-printed on premium cotton.</p>
           <strong>฿590</strong><br><br>
-          <button class="btn-primary"
-            onclick="goOrder('Abstract Line Art Tee', 590)">
+          <button class="btn-primary" onclick="goOrder('Abstract Line Art Tee', 590)"></button>
             Order
+          </button>
+          <button class="btn-secondary" onclick="showProductPopup('Abstract Line Art Tee', 590, 'https://images.unsplash.com/photo-1520975916090-3105956dac38', 'Minimalist line artwork with clean, precise lines. Screen-printed on premium 100% cotton for durability and comfort. This design embodies the less-is-more philosophy, featuring elegant geometric patterns that create visual interest without overwhelming the senses. Perfect for both casual and formal settings.', ['S', 'M', 'L', 'XL'])">
+            ℹ️ Info
           </button>
         </div>
       </div>
@@ -90,9 +304,11 @@
           <h3>Cyber Geometry Tee</h3>
           <p>Futuristic geometric artwork. Hand-finished print.</p>
           <strong>฿650</strong><br><br>
-          <button class="btn-primary"
-            onclick="goOrder('Cyber Geometry Tee', 650)">
+          <button class="btn-primary" onclick="goOrder('Cyber Geometry Tee', 650)">
             Order
+          </button>
+          <button class="btn-secondary" onclick="showProductPopup('Cyber Geometry Tee', 650, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlSRyksxG3i0jBPHPqV_b_xvskjtITO3QkYg&s', 'Modern geometric patterns that fuse mathematical precision with artistic creativity. Bold color combinations create a striking visual impact. Made from premium cotton blend with a comfortable regular fit. Features advanced printing techniques that ensure long-lasting color vibrancy and pattern clarity.', ['S', 'M', 'L', 'XL'])">
+            ℹ️ Info
           </button>
         </div>
       </div>
@@ -198,15 +414,148 @@
     </div>
   </div>
 
+  <!-- Product Popup Modal -->
+  <div id="product-popup" class="product-popup hidden">
+    <div class="popup-overlay" onclick="closeProductPopup()"></div>
+    <div class="popup-content">
+      <button class="popup-close" onclick="closeProductPopup()">✕</button>
+      
+      <div class="popup-gallery">
+        <div class="main-image">
+          <img id="popup-main-image" src="" alt="Product">
+          <div class="image-nav">
+            <button onclick="previousImage()">‹</button>
+            <span id="image-counter">1 / 1</span>
+            <button onclick="nextImage()">›</button>
+          </div>
+        </div>
+        <div class="thumbnail-grid">
+          <img class="thumbnail" onclick="selectImage(0)" src="" alt="Thumbnail 1">
+        </div>
+      </div>
+      
+      <div class="popup-details">
+        <h2 id="popup-title"></h2>
+        <div class="price-tag">฿<span id="popup-price"></span></div>
+        
+        <div class="size-selector">
+          <label>Size:</label>
+          <div class="size-options">
+            <button class="size-btn" data-size="S" onclick="selectSize('S')">S</button>
+            <button class="size-btn" data-size="M" onclick="selectSize('M')">M</button>
+            <button class="size-btn" data-size="L" onclick="selectSize('L')">L</button>
+            <button class="size-btn" data-size="XL" onclick="selectSize('XL')">XL</button>
+          </div>
+        </div>
+        
+        <div class="description">
+          <h3>Product Details</h3>
+          <p id="popup-description"></p>
+        </div>
+        
+        <div class="popup-actions">
+          <button class="btn-primary" onclick="orderFromPopup()">
+            Order Now
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ===== SCRIPT ===== -->
   <script>
     // =========================
-    // NAVIGATION
+    // PRODUCT POPUP
     // =========================
-    function goOrder(item, itemPrice) {
-      localStorage.setItem("item", item);
-      localStorage.setItem("price", itemPrice);
-      window.location.href = "order.html";
+    let currentProduct = null;
+    let currentImageIndex = 0;
+    let selectedSize = 'M';
+    
+    function showProductPopup(name, price, image, description, sizes) {
+      currentProduct = {
+        name: name,
+        price: price,
+        images: [image], // Can be extended with multiple images
+        description: description,
+        sizes: sizes
+      };
+      
+      // Set popup content
+      document.getElementById('popup-title').textContent = name;
+      document.getElementById('popup-price').textContent = price;
+      document.getElementById('popup-description').textContent = description;
+      document.getElementById('popup-main-image').src = image;
+      
+      // Set thumbnail
+      const thumbnail = document.querySelector('.thumbnail');
+      thumbnail.src = image;
+      thumbnail.classList.add('active');
+      
+      // Reset size selection
+      resetSizeSelection();
+      if (sizes.includes('M')) selectSize('M');
+      
+      // Show popup
+      document.getElementById('product-popup').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    function closeProductPopup() {
+      document.getElementById('product-popup').classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+    
+    function selectImage(index) {
+      if (currentProduct && currentProduct.images[index]) {
+        currentImageIndex = index;
+        document.getElementById('popup-main-image').src = currentProduct.images[index];
+        
+        // Update thumbnail selection
+        document.querySelectorAll('.thumbnail').forEach((thumb, i) => {
+          thumb.classList.toggle('active', i === index);
+        });
+        
+        // Update counter
+        document.getElementById('image-counter').textContent = 
+          `${index + 1} / ${currentProduct.images.length}`;
+      }
+    }
+    
+    function previousImage() {
+      if (currentProduct && currentImageIndex > 0) {
+        selectImage(currentImageIndex - 1);
+      }
+    }
+    
+    function nextImage() {
+      if (currentProduct && currentImageIndex < currentProduct.images.length - 1) {
+        selectImage(currentImageIndex + 1);
+      }
+    }
+    
+    function selectSize(size) {
+      selectedSize = size;
+      
+      // Update button states
+      document.querySelectorAll('.size-btn').forEach(btn => {
+        btn.classList.toggle('selected', btn.dataset.size === size);
+      });
+    }
+    
+    function resetSizeSelection() {
+      document.querySelectorAll('.size-btn').forEach(btn => {
+        btn.classList.remove('selected');
+      });
+    }
+    
+    function orderFromPopup() {
+      if (currentProduct) {
+        localStorage.setItem('item', currentProduct.name);
+        localStorage.setItem('price', currentProduct.price);
+        localStorage.setItem('selectedSize', selectedSize);
+        closeProductPopup();
+        window.location.href = 'order.html';
+      }
     }
 
     // =========================
