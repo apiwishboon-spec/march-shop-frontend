@@ -237,10 +237,9 @@
       document.getElementById("privacy-overlay").classList.add("hidden");
     }
     
-    // Initialize Lucide icons
-    lucide.createIcons();
-    
-    // Dark mode functionality with local time adaptation
+    // =========================
+    // THEME TOGGLE
+    // =========================
     function toggleTheme() {
       const html = document.documentElement;
       const sunIcon = document.querySelector('.sun-icon');
@@ -259,13 +258,12 @@
       }
     }
     
-    // Check for saved theme preference and local time
+    // Initialize theme on page load
     function initTheme() {
       const hour = new Date().getHours();
-      const isNightTime = hour >= 18 || hour < 6; // 6 PM to 6 AM
+      const isNightTime = hour >= 18 || hour < 6;
       const savedTheme = localStorage.getItem('theme');
       
-      // Auto-enable dark mode during night hours if no preference saved
       if (savedTheme === 'dark' || (!savedTheme && isNightTime)) {
         document.documentElement.classList.add('dark');
         document.querySelector('.sun-icon').style.display = 'none';
@@ -273,21 +271,8 @@
       }
     }
     
-    // Initialize theme on page load
+    // Initialize on page load
     initTheme();
-    
-    // Re-initialize Lucide icons after DOM is ready
-    document.addEventListener('DOMContentLoaded', function() {
-      lucide.createIcons();
-      // Ensure theme icons are visible
-      setTimeout(() => {
-        lucide.createIcons();
-      }, 100);
-    });
-    
-    // Initialize Lucide icons immediately
-    lucide.createIcons();
   </script>
-
 </body>
 </html>
