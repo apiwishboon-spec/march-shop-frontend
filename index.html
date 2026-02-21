@@ -250,12 +250,49 @@
         sunIcon.style.display = 'block';
         moonIcon.style.display = 'none';
         localStorage.setItem('theme', 'light');
+        // Show light mode emoji
+        showThemeEmoji('☀️');
       } else {
         html.classList.add('dark');
         sunIcon.style.display = 'none';
         moonIcon.style.display = 'block';
         localStorage.setItem('theme', 'dark');
+        // Show dark mode emoji
+        showThemeEmoji('🌙');
       }
+    }
+    
+    // Show emoji notification
+    function showThemeEmoji(emoji) {
+      const notification = document.createElement('div');
+      notification.textContent = emoji;
+      notification.style.cssText = `
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        font-size: 24px;
+        z-index: 1001;
+        animation: fadeInOut 1.5s ease-in-out;
+      `;
+      
+      // Add animation
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes fadeInOut {
+          0% { opacity: 0; transform: translateY(-10px); }
+          50% { opacity: 1; transform: translateY(0); }
+          100% { opacity: 0; transform: translateY(-10px); }
+        }
+      `;
+      document.head.appendChild(style);
+      
+      document.body.appendChild(notification);
+      
+      // Remove after animation
+      setTimeout(() => {
+        notification.remove();
+        style.remove();
+      }, 1500);
     }
     
     // Initialize theme on page load
