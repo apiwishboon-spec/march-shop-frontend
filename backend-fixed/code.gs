@@ -448,7 +448,11 @@ function validateDiscountCode(code) {
     'SUMMER20': 20,
     'VIP15': 15,
     'NEWYEAR50': 50,
-    'FREESHIP': 50
+    'FREESHIP': 50,
+    'LOYALTY20': 20,
+    'FLASH30': 30,
+    'STUDENT15': 15,
+    'BIRTHDAY25': 25
   };
   
   Logger.log("Discount code validation attempt: " + code);
