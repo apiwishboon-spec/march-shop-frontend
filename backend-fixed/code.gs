@@ -23,6 +23,21 @@ function doPost(e) {
     const size = String(e.parameter.size || "M").trim();
     const base64Image = e.parameter.base64Image;
     const turnstileToken = e.parameter.turnstileToken;
+    const action = String(e.parameter.action || "").trim();
+
+    // =================================================
+    // DISCOUNT CODE VALIDATION
+    // =================================================
+    if (action === "validateDiscount") {
+      const code = String(e.parameter.code || "").trim().toUpperCase();
+      const discount = validateDiscountCode(code);
+      
+      if (discount > 0) {
+        return jsonSuccess({ discount: discount });
+      } else {
+        return jsonError("Invalid discount code");
+      }
+    }
 
     if (!item || price <= 0 || quantity < 1 || quantity > 5) {
       return jsonError("Invalid order data: Maximum 5 items allowed per order");
@@ -419,6 +434,32 @@ function testTurnstileVerification() {
   }
   
   return secret ? "CONFIGURED" : "NOT CONFIGURED";
+}
+
+function validateDiscountCode(code) {
+  // Discount codes stored securely in backend
+  const discounts = {
+    'SAVE10': 10,
+    'SAVE20': 20,
+    'WELCOME': 15,
+    'ARTINK10': 10,
+    'SPECIAL25': 25,
+    'FIRSTORDER': 30,
+    'SUMMER20': 20,
+    'VIP15': 15,
+    'NEWYEAR50': 50,
+    'FREESHIP': 50
+  };
+  
+  Logger.log("Discount code validation attempt: " + code);
+  
+  if (discounts[code]) {
+    Logger.log("Valid discount code: " + code + " - ฿" + discounts[code] + " off");
+    return discounts[code];
+  } else {
+    Logger.log("Invalid discount code: " + code);
+    return 0;
+  }
 }
 
 function jsonSuccess(data) {

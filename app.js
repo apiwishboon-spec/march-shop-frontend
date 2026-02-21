@@ -54,23 +54,35 @@ function applyDiscount() {
     return;
   }
   
-  // Simple discount codes (you can expand this)
-  const discounts = {
-    'SAVE10': 10,
-    'SAVE20': 20,
-    'WELCOME': 15,
-    'ARTINK10': 10
-  };
+  // Send discount code to backend for validation
+  validateDiscountCode(code);
+}
+
+function validateDiscountCode(code) {
+  const formData = new URLSearchParams();
+  formData.append("action", "validateDiscount");
+  formData.append("code", code);
   
-  if (discounts[code]) {
-    discountAmount = discounts[code];
-    showSuccess(`Discount code applied! -฿${discountAmount} off`);
-    document.getElementById('discountCode').disabled = true;
-    updateTotalPrice(parseFloat(localStorage.getItem("price")));
-  } else {
-    showError('Invalid discount code');
+  fetch(API_URL, {
+    method: "POST",
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success && data.discount) {
+      discountAmount = data.discount;
+      showSuccess(`Discount code applied! -฿${discountAmount} off`);
+      document.getElementById('discountCode').disabled = true;
+      updateTotalPrice(parseFloat(localStorage.getItem("price")));
+    } else {
+      showError('Invalid discount code');
+      discountAmount = 0;
+    }
+  })
+  .catch(err => {
+    showError('Error validating discount code');
     discountAmount = 0;
-  }
+  });
 }
 
 // ================================
