@@ -9,46 +9,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <style>
-    /* Theme Toggle */
-    .theme-toggle {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: var(--bg-secondary);
-      border: 2px solid var(--border-primary);
-      border-radius: 50%;
-      width: 48px;
-      height: 48px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      z-index: 1000;
-      box-shadow: 0 2px 10px var(--shadow-light);
-    }
-    
-    .theme-toggle:hover {
-      transform: scale(1.1);
-      box-shadow: 0 4px 20px var(--shadow-medium);
-    }
-    
-    .dark .theme-toggle {
-      background: var(--bg-tertiary);
-      border-color: var(--border-primary);
-    }
-    
-    .theme-toggle svg {
-      width: 24px;
-      height: 24px;
-      color: var(--text-primary);
-    }
-    
-    .theme-icon {
-      font-size: 20px;
-      line-height: 1;
-    }
-    
     /* Product Popup Styles */
     .product-popup {
       position: fixed;
@@ -264,11 +224,6 @@
 </head>
 
 <body>
-  <!-- Dark Mode Toggle -->
-  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
-    <span class="theme-icon">☀️</span>
-  </button>
-
   <div class="container center">
 
     <!-- BRAND -->
@@ -581,78 +536,7 @@
       document.getElementById("privacy-overlay").classList.add("hidden");
     }
     
-    // =========================
-    // THEME TOGGLE
-    // =========================
-    function toggleTheme() {
-      const html = document.documentElement;
-      const themeIcon = document.querySelector('.theme-icon');
-      
-      if (html.classList.contains('dark')) {
-        html.classList.remove('dark');
-        themeIcon.textContent = '☀️';
-        localStorage.setItem('theme', 'light');
-        // Show light mode emoji
-        showThemeEmoji('☀️');
-      } else {
-        html.classList.add('dark');
-        themeIcon.textContent = '🌙';
-        localStorage.setItem('theme', 'dark');
-        // Show dark mode emoji
-        showThemeEmoji('🌙');
-      }
-    }
-    
-    // Show emoji notification
-    function showThemeEmoji(emoji) {
-      const notification = document.createElement('div');
-      notification.textContent = emoji;
-      notification.style.cssText = `
-        position: fixed;
-        top: 80px;
-        right: 20px;
-        font-size: 24px;
-        z-index: 1001;
-        animation: fadeInOut 1.5s ease-in-out;
-      `;
-      
-      // Add animation
-      const style = document.createElement('style');
-      style.textContent = `
-        @keyframes fadeInOut {
-          0% { opacity: 0; transform: translateY(-10px); }
-          50% { opacity: 1; transform: translateY(0); }
-          100% { opacity: 0; transform: translateY(-10px); }
-        }
-      `;
-      document.head.appendChild(style);
-      
-      document.body.appendChild(notification);
-      
-      // Remove after animation
-      setTimeout(() => {
-        notification.remove();
-        style.remove();
-      }, 1500);
-    }
-    
-    // Initialize theme on page load
-    function initTheme() {
-      const hour = new Date().getHours();
-      const isNightTime = hour >= 18 || hour < 6;
-      const savedTheme = localStorage.getItem('theme');
-      const themeIcon = document.querySelector('.theme-icon');
-      
-      if (savedTheme === 'dark' || (!savedTheme && isNightTime)) {
-        document.documentElement.classList.add('dark');
-        themeIcon.textContent = '🌙';
-      } else {
-        themeIcon.textContent = '☀️';
-      }
-    }
-    
     // Initialize on page load
-    initTheme();
   </script>
 </body>
 </html>

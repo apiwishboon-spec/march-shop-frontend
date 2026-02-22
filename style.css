@@ -11,7 +11,7 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Enhanced Dark Mode Variables */
+/* Light Mode Variables Only */
 :root {
   --bg-primary: #fafafa;
   --bg-secondary: #ffffff;
@@ -34,25 +34,6 @@ html {
   --warning-color: #f39c12;
   --border-radius: 12px;
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.dark {
-  --bg-primary: #111827;
-  --bg-secondary: #1f2937;
-  --bg-tertiary: #374151;
-  --text-primary: #f9fafb;
-  --text-secondary: #d1d5db;
-  --text-tertiary: #9ca3af;
-  --border-primary: #374151;
-  --border-secondary: #4b5563;
-  --shadow-light: rgba(0, 0, 0, 0.2);
-  --shadow-medium: rgba(0, 0, 0, 0.3);
-  --shadow-large: rgba(0, 0, 0, 0.4);
-  --primary-color: #3498db;
-  --primary-hover: #5dade2;
-  --success-color: #27ae60;
-  --error-color: #e74c3c;
-  --warning-color: #f39c12;
 }
 
 body {
@@ -768,11 +749,10 @@ input:focus {
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(12px);
+  z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999;
-  padding: 20px;
 }
 
 .overlay.hidden {
@@ -780,7 +760,6 @@ input:focus {
 }
 
 .modal-card {
-  background: var(--bg-secondary);
   width: 100%;
   max-width: 500px;
   max-height: 80vh;
@@ -987,18 +966,12 @@ input:focus {
   box-shadow: 0 4px 20px var(--shadow-medium);
 }
 
-.dark .lang-toggle {
-  background: var(--bg-tertiary);
-  border-color: var(--border-primary);
-  color: var(--text-primary);
-}
-
 /* =====================
-   THEME TOGGLE
+   LANG TOGGLE (MOBILE)
 ===================== */
-.theme-toggle {
+.lang-toggle {
   position: fixed;
-  top: 20px;
+  bottom: 20px;
   right: 20px;
   background: var(--bg-secondary);
   border: 2px solid var(--border-primary);
@@ -1011,17 +984,7 @@ input:focus {
   cursor: pointer;
   transition: all 0.3s ease;
   z-index: 1000;
-  box-shadow: 0 2px 10px var(--shadow-light);
-}
-
-.theme-toggle:hover {
-  transform: scale(1.1);
   box-shadow: 0 4px 20px var(--shadow-medium);
-}
-
-.dark .theme-toggle {
-  background: var(--bg-tertiary);
-  border-color: var(--border-primary);
 }
 
 /* =====================
