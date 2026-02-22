@@ -102,9 +102,12 @@
   </div>
 
   <script>
+    // Make orderId globally accessible
+    let orderId;
+    
     // Get order code from URL parameters with fallback
     const urlParams = new URLSearchParams(window.location.search);
-    let orderId = urlParams.get('id');
+    orderId = urlParams.get('id');
     
     // If no ID in URL, try to get from localStorage or generate one
     if (!orderId) {
