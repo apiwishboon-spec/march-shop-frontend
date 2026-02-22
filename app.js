@@ -70,35 +70,12 @@ function updateTotalPrice(basePrice) {
 // PAYMENT METHODS
 // ================================
 function setupPaymentMethods() {
-  const promptpayRadio = document.getElementById('promptpay');
-  const cashRadio = document.getElementById('cash');
-  
-  promptpayRadio.addEventListener('change', () => {
-    if (promptpayRadio.checked) {
-      selectedPaymentMethod = 'promptpay';
-      showPromptPaySection();
-    }
-  });
-  
-  cashRadio.addEventListener('change', () => {
-    if (cashRadio.checked) {
-      selectedPaymentMethod = 'cash';
-      showCashSection();
-    }
-  });
+  // Only PromptPay now - no payment method switching needed
+  showPromptPaySection();
 }
 
 function showPromptPaySection() {
   document.getElementById('promptpay-section').style.display = 'block';
-  document.getElementById('cash-section').style.display = 'none';
-  
-  // Show regular total, hide cash total
-  const cashTotalRow = document.getElementById('cashTotalRow');
-  const summaryTotal = document.getElementById('summary-total').parentElement.parentElement;
-  if (cashTotalRow && summaryTotal) {
-    cashTotalRow.style.display = 'none';
-    summaryTotal.style.display = 'flex';
-  }
   
   // Show slip upload
   const slipLabel = document.getElementById('slipLabel');
@@ -359,51 +336,51 @@ function submitOrder() {
   }
     
     // Convert image to base64
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      const base64Image = e.target.result.split(',')[1]; // Remove data URL prefix
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const base64Image = e.target.result.split(',')[1]; // Remove data URL prefix
+    
+    const formData = new URLSearchParams();
+    formData.append("email", document.getElementById("email").value.trim());
+    formData.append("phone", document.getElementById("phone").value.trim());
+    formData.append("item", localStorage.getItem("item"));
+    formData.append("price", localStorage.getItem("price"));
+    formData.append("quantity", document.getElementById("qty").value);
+    formData.append("size", localStorage.getItem("selectedSize") || 'M');
+    formData.append("base64Image", base64Image);
+    formData.append("turnstileToken", turnstileToken);
+    
+    console.log('Sending to backend:', formData.toString());
+    
+    // Add timeout to prevent hanging
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+    
+    fetch(API_URL, {
+      method: "POST",
+      body: formData,
+      signal: controller.signal
+    })
+    .then(res => {
+      clearTimeout(timeoutId);
+      console.log('Backend response status:', res.status);
+      return res.json();
+    })
+    .then(data => {
+      console.log('Backend response:', data);
       
-      const formData = new URLSearchParams();
-      formData.append("email", document.getElementById("email").value.trim());
-      formData.append("phone", document.getElementById("phone").value.trim());
-      formData.append("item", localStorage.getItem("item"));
-      formData.append("price", localStorage.getItem("price"));
-      formData.append("quantity", document.getElementById("qty").value);
-      formData.append("size", localStorage.getItem("selectedSize") || 'M');
-      formData.append("base64Image", base64Image);
-      formData.append("turnstileToken", turnstileToken);
-      
-      console.log('Sending to backend:', formData.toString());
-      
-      // Add timeout to prevent hanging
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
-      
-      fetch(API_URL, {
-        method: "POST",
-        body: formData,
-        signal: controller.signal
-      })
-      .then(res => {
-        clearTimeout(timeoutId);
-        console.log('Backend response status:', res.status);
-        return res.json();
-      })
-      .then(data => {
-        console.log('Backend response:', data);
-        
-        // Reset button state
-        const submitBtn = document.getElementById("submitBtn");
-        submitBtn.classList.remove("btn-loading");
-        submitBtn.disabled = false;
-        submitBtn.querySelector("span").textContent = "Submit Order";
+      // Reset button state
+      const submitBtn = document.getElementById("submitBtn");
+      submitBtn.classList.remove("btn-loading");
+      submitBtn.disabled = false;
+      submitBtn.querySelector("span").textContent = "Submit Order";
 
-        if (!data.success) {
-          throw new Error(data.message || 'Order submission failed');
-        }
+      if (!data.success) {
+        throw new Error(data.message || 'Order submission failed');
+      }
 
-        const orderId = data.data?.orderId || Date.now();
-        const email = document.getElementById("email").value.trim();
+      const orderId = data.data?.orderId || Date.now();
+      const email = document.getElementById("email").value.trim();
       const item = localStorage.getItem("item");
       const qty = document.getElementById("qty").value;
       const total = parseFloat(localStorage.getItem("price")) * qty;
@@ -419,45 +396,29 @@ function submitOrder() {
 
       // Redirect to success page with order ID
       window.location.href = "success.html?id=" + orderId;
-      })
-      .catch(err => {
-        clearTimeout(timeoutId);
-        console.error('Submission error:', err);
-        
-        // Reset button state on error
-        const submitBtn = document.getElementById("submitBtn");
-        submitBtn.classList.remove("btn-loading");
-        submitBtn.disabled = false;
-        submitBtn.querySelector("span").textContent = "Submit Order";
-        
-        if (err.name === 'AbortError') {
-          showError('Request timed out. Please try again.');
-        } else {
-          showError(err.message || "Submission failed");
-        }
-      });
-    };
-    
-    reader.readAsDataURL(slipFile);
-    
-    // Add error handling for file reading
-    reader.onerror = function() {
+    })
+    .catch(err => {
       clearTimeout(timeoutId);
+      console.error('Submission error:', err);
+      
+      // Reset button state on error
       const submitBtn = document.getElementById("submitBtn");
       submitBtn.classList.remove("btn-loading");
       submitBtn.disabled = false;
       submitBtn.querySelector("span").textContent = "Submit Order";
-      showError('Failed to read payment slip image');
-    };
-  }
-
-
-// ================================
-function cancelOrder() {
-  localStorage.clear();
-  location.href = "index.html";
+      
+      if (err.name === 'AbortError') {
+        showError('Request timed out. Please try again.');
+      } else {
+        showError(err.message || "Submission failed");
+      }
+    });
+  };
+  
+  reader.readAsDataURL(slipFile);
 }
 
+// ================================
 function showError(message) {
   // Create or update error message
   let errorElement = document.getElementById("error");
