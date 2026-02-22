@@ -492,8 +492,8 @@ input:focus {
   display: none;
   width: 20px;
   height: 20px;
-  border: 2px solid var(--bg-tertiary);
-  border-top: 2px solid currentColor;
+  border: 2px solid #f3f4f6;
+  border-top: 2px solid #3498db;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-right: 8px;
@@ -506,6 +506,34 @@ input:focus {
 .btn-loading {
   pointer-events: none;
   opacity: 0.7;
+}
+
+/* Custom Loader */
+.loader {
+  width: 50px;
+  aspect-ratio: 1;
+  display: grid;
+  animation: l14 4s infinite;
+}
+
+.loader::before,
+.loader::after {    
+  content: "";
+  grid-area: 1/1;
+  border: 8px solid;
+  border-radius: 50%;
+  border-color: #3498db #ffffff;
+  mix-blend-mode: darken;
+  animation: l14 1s infinite linear;
+}
+
+.loader::after {
+  border-color: #ffffff #3498db;
+  animation-direction: reverse;
+}
+
+@keyframes l14{ 
+  100%{transform: rotate(1turn)}
 }
 
 @keyframes spin {
