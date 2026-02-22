@@ -717,42 +717,32 @@ input:focus {
   opacity: 0.7;
 }
 
-/* Modern Dots Loader */
+/* Grid Loader */
 .loader {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
+  width: 50px;
+  aspect-ratio: 1;
+  display: grid;
+  animation: l14 4s infinite;
 }
 
 .loader::before,
-.loader::after {
-  content: '';
-  width: 12px;
-  height: 12px;
+.loader::after {    
+  content: "";
+  grid-area: 1/1;
+  border: 8px solid;
   border-radius: 50%;
-  background: var(--primary-color);
-  animation: loader-bounce 1.4s infinite ease-in-out both;
-}
-
-.loader::before {
-  animation-delay: -0.32s;
+  border-color: var(--primary-color) var(--primary-color) #0000 #0000;
+  mix-blend-mode: darken;
+  animation: l14 1s infinite linear;
 }
 
 .loader::after {
-  animation-delay: 0.16s;
+  border-color: #0000 #0000 var(--primary-color) var(--primary-color);
+  animation-direction: reverse;
 }
 
-@keyframes loader-bounce {
-  0%, 80%, 100% {
-    transform: scale(0);
-    opacity: 0.5;
-  }
-  40% {
-    transform: scale(1);
-    opacity: 1;
-  }
+@keyframes l14{ 
+  100%{transform: rotate(1turn)}
 }
 
 /* =====================
