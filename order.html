@@ -477,7 +477,7 @@
             </label>
 
             <label class="label">
-              Phone (required)
+              Phone
               <input id="phone" type="tel" placeholder="xxx-xxx-xxxx" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required>
               <span class="hint">Format: xxx-xxx-xxxx</span>
             </label>
@@ -503,7 +503,7 @@
       <!-- Step 2: Payment -->
       <div class="step-content" id="step2">
         <div class="form-card">
-          <h2>💸 Payment Method</h2>
+          <h2>Payment</h2>
           
           <div class="payment-methods">
             <div class="payment-option">
@@ -519,20 +519,7 @@
           </div>
 
           <div id="promptpay-section">
-            <h3>📱 PromptPay Payment</h3>
-            <p>Follow the steps below to complete your payment.</p>
-
-            <!-- COLLAPSIBLE PAYMENT INSTRUCTIONS -->
-            <div class="instructions-toggle" id="instructionsToggle" onclick="toggleInstructions()">
-              <div class="instructions-header">
-                <div class="instructions-title">
-                  <span>Payment Instructions</span>
-                </div>
-                <span class="chevron-icon">▼</span>
-              </div>
-            </div>
-            
-            <div class="payment-instructions" style="display: none;">
+            <div class="qr-section">
               <div class="qr-card">
                 <img id="dynamicQR" src="" alt="Payment QR Code" style="max-width: 200px; border-radius: 8px; margin-bottom: 16px;">
                 <div class="qr-info">
@@ -542,42 +529,6 @@
                     ⏰ QR expires in: <span id="timerMinutes">5</span>:<span id="timerSeconds">00</span>
                   </div>
                 </div>
-              </div>
-              
-              <div class="instruction-steps">
-                <div class="instruction-step">
-                  <div class="step-icon">�</div>
-                  <div class="step-text">
-                    <strong>Step 1:</strong> Open your mobile banking app
-                  </div>
-                </div>
-                <div class="instruction-step">
-                  <div class="step-icon">📸</div>
-                  <div class="step-text">
-                    <strong>Step 2:</strong> Scan the QR code above
-                  </div>
-                </div>
-                <div class="instruction-step">
-                  <div class="step-icon">�</div>
-                  <div class="step-text">
-                    <strong>Step 3:</strong> Confirm payment amount
-                  </div>
-                </div>
-                <div class="instruction-step">
-                  <div class="step-icon">📤</div>
-                  <div class="step-text">
-                    <strong>Step 4:</strong> Upload payment slip below
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="qr-section">
-              <div class="qr-container">
-                <div id="qrTotal" class="qr-total">฿0</div>
-              </div>
-              <div id="qrTimer" class="qr-timer" style="display: none;">
-                ⏰ QR expires in: <span id="timerMinutes">5</span>:<span id="timerSeconds">00</span>
               </div>
             </div>
 
