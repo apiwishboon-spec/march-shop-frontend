@@ -59,16 +59,23 @@ function applyDiscount() {
 }
 
 function validateDiscountCode(code) {
+  console.log('Validating discount code:', code);
   const formData = new URLSearchParams();
   formData.append("action", "validateDiscount");
   formData.append("code", code);
+  
+  console.log('Sending to backend:', formData.toString());
   
   fetch(API_URL, {
     method: "POST",
     body: formData
   })
-  .then(res => res.json())
+  .then(res => {
+    console.log('Response status:', res.status);
+    return res.json();
+  })
   .then(data => {
+    console.log('Backend response:', data);
     if (data.success && data.discount) {
       discountAmount = data.discount;
       showSuccess(`Discount code applied! -฿${discountAmount} off`);
@@ -80,6 +87,7 @@ function validateDiscountCode(code) {
     }
   })
   .catch(err => {
+    console.error('Discount validation error:', err);
     showError('Error validating discount code');
     discountAmount = 0;
   });

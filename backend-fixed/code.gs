@@ -30,11 +30,18 @@ function doPost(e) {
     // =================================================
     if (action === "validateDiscount") {
       const code = String(e.parameter.code || "").trim().toUpperCase();
+      Logger.log("=== DISCOUNT VALIDATION REQUEST ===");
+      Logger.log("Received code: " + code);
+      Logger.log("Action: " + action);
+      
       const discount = validateDiscountCode(code);
+      Logger.log("Discount result: " + discount);
       
       if (discount > 0) {
+        Logger.log("✅ Returning success with discount: " + discount);
         return jsonSuccess({ discount: discount });
       } else {
+        Logger.log("❌ Returning error: Invalid discount code");
         return jsonError("Invalid discount code");
       }
     }
