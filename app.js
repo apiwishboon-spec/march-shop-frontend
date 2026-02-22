@@ -450,7 +450,7 @@ function submitOrder() {
       showError('Failed to read payment slip image');
     };
   }
-}
+
 
 // ================================
 function cancelOrder() {
