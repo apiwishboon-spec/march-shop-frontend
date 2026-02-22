@@ -10,13 +10,15 @@ let selectedPaymentMethod = 'promptpay';
 
 const API_URL = "https://script.google.com/macros/s/AKfycbxENBG6cKm3ImJd_6gjvxCUnM-hG0xeNhPhjLUleDCyh0JsXhkkG7wOwkBjRW43j-88mg/exec";
 
-document.addEventListener("DOMContentLoaded", () => {
-
+document.addEventListener("DOMContentLoaded", function() {
   const item = localStorage.getItem("item");
   const price = parseFloat(localStorage.getItem("price"));
   const selectedSize = localStorage.getItem("selectedSize") || 'M';
 
+  console.log('Loading order page with:', { item, price, selectedSize });
+
   if (!item || !price) {
+    console.log('Missing item or price, redirecting to index');
     location.href = "index.html";
     return;
   }
@@ -32,8 +34,36 @@ document.addEventListener("DOMContentLoaded", () => {
 // ORDER SUMMARY & DISCOUNT
 // ================================
 function updateOrderSummary(item, price, size) {
-  document.getElementById('summary-product').textContent = item;
-  document.getElementById('summary-size').textContent = size;
+  console.log('Updating order summary with:', { item, price, size });
+  
+  const productElement = document.getElementById('summary-product');
+  const priceElement = document.getElementById('summary-price');
+  const sizeElement = document.getElementById('summary-size');
+  
+  console.log('Found elements:', { productElement, priceElement, sizeElement });
+  
+  if (productElement) {
+    productElement.textContent = item;
+    console.log('Set product to:', item);
+  }
+  
+  if (priceElement) {
+    priceElement.textContent = price;
+    console.log('Set price to:', price);
+  }
+  
+  if (sizeElement) {
+    sizeElement.textContent = size;
+    console.log('Set size to:', size);
+  }
+  
+  updateTotalPrice(price);
+}
+
+function updateTotalPrice(basePrice) {
+  const qty = Number(document.getElementById("qty").value);
+  const total = basePrice * qty;
+  document.getElementById('summary-total').textContent = total.toFixed(2);
 }
 
 // ================================
@@ -41,18 +71,34 @@ function updateOrderSummary(item, price, size) {
 // ================================
 function setupPaymentMethods() {
   const promptpayRadio = document.getElementById('promptpay');
+  const cashRadio = document.getElementById('cash');
   
   promptpayRadio.addEventListener('change', () => {
-    selectedPaymentMethod = 'promptpay';
-    showPromptPaySection();
+    if (promptpayRadio.checked) {
+      selectedPaymentMethod = 'promptpay';
+      showPromptPaySection();
+    }
   });
   
-  // Initialize with PromptPay selected
-  showPromptPaySection();
+  cashRadio.addEventListener('change', () => {
+    if (cashRadio.checked) {
+      selectedPaymentMethod = 'cash';
+      showCashSection();
+    }
+  });
 }
 
 function showPromptPaySection() {
   document.getElementById('promptpay-section').style.display = 'block';
+  document.getElementById('cash-section').style.display = 'none';
+  
+  // Show regular total, hide cash total
+  const cashTotalRow = document.getElementById('cashTotalRow');
+  const summaryTotal = document.getElementById('summary-total').parentElement.parentElement;
+  if (cashTotalRow && summaryTotal) {
+    cashTotalRow.style.display = 'none';
+    summaryTotal.style.display = 'flex';
+  }
   
   // Show slip upload
   const slipLabel = document.getElementById('slipLabel');
@@ -71,6 +117,8 @@ function showPromptPaySection() {
   if (buttonRow) {
     buttonRow.style.display = 'flex';
   }
+  
+  updateTotalPrice(parseFloat(localStorage.getItem("price")));
 }
 
 // ================================
