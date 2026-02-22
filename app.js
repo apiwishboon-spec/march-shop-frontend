@@ -99,64 +99,6 @@ function showPromptPaySection() {
   updateTotalPrice(parseFloat(localStorage.getItem("price")));
 }
 
-function showCashSection() {
-  console.log('=== SHOW CASH SECTION CALLED ===');
-  
-  document.getElementById('promptpay-section').style.display = 'none';
-  document.getElementById('cash-section').style.display = 'block';
-  
-  // Hide slip upload for cash on delivery
-  const slipLabel = document.getElementById('slipLabel');
-  if (slipLabel) {
-    slipLabel.style.display = 'none';
-    console.log('Slip label hidden');
-  }
-  
-  // Hide turnstile for cash orders
-  const turnstile = document.querySelector('.cf-turnstile');
-  if (turnstile) {
-    turnstile.style.display = 'none';
-    console.log('Turnstile hidden');
-  }
-  
-  // Show cash total row, hide regular total
-  const cashTotalRow = document.getElementById('cashTotalRow');
-  const summaryTotal = document.getElementById('summary-total').parentElement.parentElement;
-  if (cashTotalRow && summaryTotal) {
-    cashTotalRow.style.display = 'flex';
-    summaryTotal.style.display = 'none';
-    console.log('Cash total shown, regular total hidden');
-  }
-  
-  // Find and show buttons - try multiple selectors
-  let buttonRow = document.querySelector('.button-row');
-  if (!buttonRow) {
-    buttonRow = document.querySelector('#cash-section .button-row');
-  }
-  if (!buttonRow) {
-    buttonRow = document.querySelector('div.button-row');
-  }
-  
-  console.log('Button row found:', buttonRow);
-  
-  if (buttonRow) {
-    buttonRow.style.display = 'flex';
-    buttonRow.style.visibility = 'visible';
-    buttonRow.style.opacity = '1';
-    console.log('Button row made visible');
-  } else {
-    console.error('Button row not found!');
-  }
-  
-  const price = parseFloat(localStorage.getItem("price"));
-  const qty = Number(document.getElementById("qty").value);
-  const deliveryFee = 50; // Bangkok rate
-  const total = price * qty + deliveryFee;
-  
-  document.getElementById('cashTotal').textContent = total.toFixed(2);
-  console.log('Cash section setup complete');
-}
-
 // ================================
 // STEP NAVIGATION
 // ================================
@@ -369,48 +311,30 @@ function submitOrder() {
   submitBtn.disabled = true;
   if (btnText) btnText.textContent = "Processing...";
 
-  if (selectedPaymentMethod === 'cash') {
-    // Cash on Delivery - skip QR generation
-    const total = price * qty + 50; // Add delivery fee
-    const orderId = 'ORD-' + Date.now();
-    
-    // Save order data
-    localStorage.setItem('receipt-email', email);
-    localStorage.setItem('receipt-item', `${item} (Size: ${size})`);
-    localStorage.setItem('receipt-qty', qty);
-    localStorage.setItem('receipt-total', '฿' + total);
-    localStorage.setItem('lastOrderId', orderId);
-    
-    // Simulate order submission (in real app, this would call backend)
-    setTimeout(() => {
-      showSuccess('Order submitted successfully! You will receive cash on delivery.');
-      window.location.href = `success.html?id=${orderId}`;
-    }, 1500);
-  } else {
-    // PromptPay QR - generate QR code
-    console.log('Starting PromptPay order submission...');
-    
-    // Check if we have the required data
-    const slipFile = document.getElementById("slip").files[0];
-    if (!slipFile) {
-      showError('Please upload a payment slip image');
-      // Reset button state
-      const submitBtn = document.getElementById("submitBtn");
-      submitBtn.classList.remove("btn-loading");
-      submitBtn.disabled = false;
-      submitBtn.querySelector("span").textContent = "Submit Order";
-      return;
-    }
-    
-    if (!turnstileToken) {
-      showError('Please complete the bot verification');
-      // Reset button state
-      const submitBtn = document.getElementById("submitBtn");
-      submitBtn.classList.remove("btn-loading");
-      submitBtn.disabled = false;
-      submitBtn.querySelector("span").textContent = "Submit Order";
-      return;
-    }
+  // PromptPay QR - generate QR code
+  console.log('Starting PromptPay order submission...');
+  
+  // Check if we have the required data
+  const slipFile = document.getElementById("slip").files[0];
+  if (!slipFile) {
+    showError('Please upload a payment slip image');
+    // Reset button state
+    const submitBtn = document.getElementById("submitBtn");
+    submitBtn.classList.remove("btn-loading");
+    submitBtn.disabled = false;
+    submitBtn.querySelector("span").textContent = "Submit Order";
+    return;
+  }
+  
+  if (!turnstileToken) {
+    showError('Please complete the bot verification');
+    // Reset button state
+    const submitBtn = document.getElementById("submitBtn");
+    submitBtn.classList.remove("btn-loading");
+    submitBtn.disabled = false;
+    submitBtn.querySelector("span").textContent = "Submit Order";
+    return;
+  }
     
     // Convert image to base64
     const reader = new FileReader();
