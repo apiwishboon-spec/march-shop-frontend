@@ -387,26 +387,15 @@
       <p>Complete your order</p>
     </header>
 
-    <!-- Enhanced Step Indicator -->
+    <!-- Simple Step Indicator -->
     <div class="step-indicator">
       <div class="step active" id="step1-indicator">
-        <div class="step-dot">
-          <span class="step-number">1</span>
-          <svg class="step-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20 6L9 17l-5-5"/>
-          </svg>
-        </div>
+        <div class="step-dot">1</div>
         <div class="step-label">Contact</div>
         <div class="step-description">Your information</div>
       </div>
       <div class="step" id="step2-indicator">
-        <div class="step-dot">
-          <span class="step-number">2</span>
-          <svg class="step-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
-            <line x1="1" y1="10" x2="23" y2="10"/>
-          </svg>
-        </div>
+        <div class="step-dot">2</div>
         <div class="step-label">Payment</div>
         <div class="step-description">PromptPay QR</div>
       </div>
@@ -455,8 +444,9 @@
             </label>
 
             <label class="label">
-              Phone (optional)
-              <input id="phone" type="tel" placeholder="08x-xxx-xxxx">
+              Phone (required)
+              <input id="phone" type="tel" placeholder="xxx-xxx-xxxx" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required>
+              <span class="hint">Format: xxx-xxx-xxxx</span>
             </label>
 
             <label class="label">
@@ -616,6 +606,24 @@
     
     // Initialize theme on page load
     initTheme();
+    
+    // Phone number formatting
+    document.getElementById('phone').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, '');
+      let formattedValue = '';
+      
+      if (value.length > 0) {
+        formattedValue = value.substring(0, 3);
+      }
+      if (value.length > 3) {
+        formattedValue += '-' + value.substring(3, 6);
+      }
+      if (value.length > 6) {
+        formattedValue += '-' + value.substring(6, 10);
+      }
+      
+      e.target.value = formattedValue;
+    });
     
     // Size Selection
     function selectOrderSize(size) {

@@ -449,8 +449,8 @@ input:focus {
 }
 
 /* =====================
-   ENHANCED STEP INDICATOR
-   Modern Progress with Icons
+   STEP INDICATOR
+   Simple Clean Design
 ===================== */
 .step-indicator {
   display: flex;
@@ -458,18 +458,6 @@ input:focus {
   margin-bottom: 48px;
   position: relative;
   padding: 0 20px;
-}
-
-.step-indicator::before {
-  content: '';
-  position: absolute;
-  top: 35px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 200px;
-  height: 2px;
-  background: linear-gradient(90deg, var(--primary-color) 0%, var(--border-primary) 100%);
-  z-index: 1;
 }
 
 .step {
@@ -484,8 +472,8 @@ input:focus {
 }
 
 .step-dot {
-  width: 70px;
-  height: 70px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   background: var(--bg-tertiary);
   border: 3px solid var(--border-primary);
@@ -494,42 +482,45 @@ input:focus {
   justify-content: center;
   position: relative;
   transition: var(--transition);
-  margin-bottom: 16px;
-  box-shadow: var(--shadow-light);
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
 }
 
 .step.active .step-dot {
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+  background: var(--primary-color);
   border-color: var(--primary-color);
-  box-shadow: 
-    0 4px 14px rgba(52, 152, 219, 0.3),
-    0 0 0 6px rgba(52, 152, 219, 0.1);
-  transform: scale(1.1);
+  color: white;
 }
 
 .step.completed .step-dot {
   background: var(--success-color);
   border-color: var(--success-color);
-  box-shadow: 0 4px 14px rgba(39, 174, 96, 0.3);
-}
-
-.step-number {
-  font-size: 1.2rem;
+  color: white;
 }
 
 .step-label {
-  font-size: 0.9rem;
+  font-weight: 600;
   color: var(--text-secondary);
-  font-weight: 500;
+  font-size: 0.9rem;
+  margin-bottom: 4px;
 }
 
 .step.active .step-label {
-  color: var(--text-primary);
-  font-weight: 600;
+  color: var(--primary-color);
+  font-size: 1rem;
 }
 
-.step.completed .step-label {
-  color: #10b981;
+.step-description {
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+  line-height: 1.4;
+  max-width: 120px;
+}
+
+.step.active .step-description {
+  color: var(--text-primary);
+  font-weight: 500;
 }
 
 /* =====================
