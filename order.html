@@ -93,7 +93,40 @@
       transform: scale(1.05);
     }
     
-    /* Payment Method Styles */
+    /* QR Card Styles */
+    .qr-card {
+      background: var(--bg-secondary);
+      border: 2px solid var(--border-primary);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-light);
+      text-align: center;
+    }
+    
+    .qr-info h3 {
+      margin: 0 0 12px 0;
+      color: var(--primary-color);
+      font-size: 1.2rem;
+    }
+    
+    .qr-info p {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+    
+    .instruction-steps {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    
+    @media (min-width: 768px) {
+      .instruction-steps {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
     .payment-methods {
       display: flex;
       flex-direction: column;
@@ -500,28 +533,40 @@
             </div>
             
             <div class="payment-instructions" style="display: none;">
-              <div class="instruction-step">
-                <div class="step-icon">📸</div>
-                <div class="step-text">
-                  <strong>1. Take a screenshot</strong> of QR code below
+              <div class="qr-card">
+                <div id="qrImage" style="text-align: center; margin-bottom: 20px;">
+                  <!-- QR code will be generated here -->
+                </div>
+                <div class="qr-info">
+                  <h3>📸 Scan QR Code</h3>
+                  <p>Use your mobile banking app to scan this QR code and complete the payment.</p>
                 </div>
               </div>
-              <div class="instruction-step">
-                <div class="step-icon">🏦</div>
-                <div class="step-text">
-                  <strong>2. Open your mobile banking app</strong> (KBank, SCB, etc.)
+              
+              <div class="instruction-steps">
+                <div class="instruction-step">
+                  <div class="step-icon">�</div>
+                  <div class="step-text">
+                    <strong>Step 1:</strong> Open your mobile banking app
+                  </div>
                 </div>
-              </div>
-              <div class="instruction-step">
-                <div class="step-icon">💳</div>
-                <div class="step-text">
-                  <strong>3. Scan QR code</strong> and confirm payment
+                <div class="instruction-step">
+                  <div class="step-icon">📸</div>
+                  <div class="step-text">
+                    <strong>Step 2:</strong> Scan the QR code above
+                  </div>
                 </div>
-              </div>
-              <div class="instruction-step">
-                <div class="step-icon">📤</div>
-                <div class="step-text">
-                  <strong>4. Upload payment slip</strong> below to complete order
+                <div class="instruction-step">
+                  <div class="step-icon">�</div>
+                  <div class="step-text">
+                    <strong>Step 3:</strong> Confirm payment amount
+                  </div>
+                </div>
+                <div class="instruction-step">
+                  <div class="step-icon">📤</div>
+                  <div class="step-text">
+                    <strong>Step 4:</strong> Upload payment slip below
+                  </div>
                 </div>
               </div>
             </div>
@@ -654,12 +699,12 @@
       
       if (instructions.style.display === 'none' || instructions.style.display === '') {
         instructions.style.display = 'block';
-        toggle.classList.add('expanded');
+        toggle.querySelector('.chevron-icon').textContent = '▲';
       } else {
         instructions.style.display = 'none';
-        toggle.classList.remove('expanded');
+        toggle.querySelector('.chevron-icon').textContent = '▼';
       }
     }
-  </script>
+</script>
 </body>
 </html>
