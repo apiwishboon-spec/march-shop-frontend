@@ -255,11 +255,15 @@
     function loadReceiptData() {
       const urlParams = new URLSearchParams(window.location.search);
       const orderId = urlParams.get('id') || localStorage.getItem('receipt-orderId') || 'ORD-' + Date.now();
-      const email = urlParams.get('email') || localStorage.getItem('receipt-email') || 'customer@artink.com';
-      const item = urlParams.get('item') || localStorage.getItem('receipt-item') || 'ART&INK Product';
+      const email = decodeURIComponent(urlParams.get('email') || '') || localStorage.getItem('receipt-email') || 'customer@artink.com';
+      const item = decodeURIComponent(urlParams.get('item') || '') || localStorage.getItem('receipt-item') || 'ART&INK Product';
       const qty = urlParams.get('qty') || localStorage.getItem('receipt-qty') || '1';
-      const total = urlParams.get('total') || localStorage.getItem('receipt-total') || '฿590';
-      const date = urlParams.get('date') || new Date().toLocaleString();
+      const total = decodeURIComponent(urlParams.get('total') || '') || localStorage.getItem('receipt-total') || '฿590';
+      const date = decodeURIComponent(urlParams.get('date') || '') || new Date().toLocaleString();
+      
+      console.log('URL Parameters:', {
+        orderId, email, item, qty, total, date
+      });
       
       // Update DOM elements
       document.getElementById('orderId').textContent = orderId;
