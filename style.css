@@ -708,11 +708,6 @@ input:focus {
   display: inline-block;
 }
 
-.btn-loading {
-  pointer-events: none;
-  opacity: 0.7;
-}
-
 /* Grid Loader */
 .loader {
   width: 50px;
