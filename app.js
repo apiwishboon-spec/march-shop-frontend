@@ -84,6 +84,18 @@ function showPromptPaySection() {
     slipLabel.style.display = 'block';
   }
   
+  // Show turnstile for PromptPay orders
+  const turnstile = document.querySelector('.cf-turnstile');
+  if (turnstile) {
+    turnstile.style.display = 'block';
+  }
+  
+  // Ensure buttons are visible
+  const buttonRow = document.querySelector('.button-row');
+  if (buttonRow) {
+    buttonRow.style.display = 'flex';
+  }
+  
   updateTotalPrice(parseFloat(localStorage.getItem("price")));
 }
 
@@ -97,12 +109,24 @@ function showCashSection() {
     slipLabel.style.display = 'none';
   }
   
+  // Hide turnstile for cash orders
+  const turnstile = document.querySelector('.cf-turnstile');
+  if (turnstile) {
+    turnstile.style.display = 'none';
+  }
+  
   // Show cash total row, hide regular total
   const cashTotalRow = document.getElementById('cashTotalRow');
   const summaryTotal = document.getElementById('summary-total').parentElement.parentElement;
   if (cashTotalRow && summaryTotal) {
     cashTotalRow.style.display = 'flex';
     summaryTotal.style.display = 'none';
+  }
+  
+  // Ensure buttons are visible
+  const buttonRow = document.querySelector('.button-row');
+  if (buttonRow) {
+    buttonRow.style.display = 'flex';
   }
   
   const price = parseFloat(localStorage.getItem("price"));
