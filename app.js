@@ -33,15 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // ================================
 function updateOrderSummary(item, price, size) {
   document.getElementById('summary-product').textContent = item;
-  document.getElementById('summary-price').textContent = price;
   document.getElementById('summary-size').textContent = size;
-  updateTotalPrice(price);
-}
-
-function updateTotalPrice(basePrice) {
-  const qty = Number(document.getElementById("qty").value);
-  const total = basePrice * qty;
-  document.getElementById('summary-total').textContent = total.toFixed(2);
 }
 
 // ================================
@@ -49,34 +41,18 @@ function updateTotalPrice(basePrice) {
 // ================================
 function setupPaymentMethods() {
   const promptpayRadio = document.getElementById('promptpay');
-  const cashRadio = document.getElementById('cash');
   
   promptpayRadio.addEventListener('change', () => {
-    if (promptpayRadio.checked) {
-      selectedPaymentMethod = 'promptpay';
-      showPromptPaySection();
-    }
+    selectedPaymentMethod = 'promptpay';
+    showPromptPaySection();
   });
   
-  cashRadio.addEventListener('change', () => {
-    if (cashRadio.checked) {
-      selectedPaymentMethod = 'cash';
-      showCashSection();
-    }
-  });
+  // Initialize with PromptPay selected
+  showPromptPaySection();
 }
 
 function showPromptPaySection() {
   document.getElementById('promptpay-section').style.display = 'block';
-  document.getElementById('cash-section').style.display = 'none';
-  
-  // Show regular total, hide cash total
-  const cashTotalRow = document.getElementById('cashTotalRow');
-  const summaryTotal = document.getElementById('summary-total').parentElement.parentElement;
-  if (cashTotalRow && summaryTotal) {
-    cashTotalRow.style.display = 'none';
-    summaryTotal.style.display = 'flex';
-  }
   
   // Show slip upload
   const slipLabel = document.getElementById('slipLabel');
@@ -95,8 +71,6 @@ function showPromptPaySection() {
   if (buttonRow) {
     buttonRow.style.display = 'flex';
   }
-  
-  updateTotalPrice(parseFloat(localStorage.getItem("price")));
 }
 
 // ================================
