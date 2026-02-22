@@ -134,11 +134,33 @@ function showCashSection() {
   console.log('Button row current style:', buttonRow ? buttonRow.style.cssText : 'NOT FOUND');
   
   if (buttonRow) {
-    buttonRow.style.display = 'flex';
-    buttonRow.style.visibility = 'visible';
-    buttonRow.style.opacity = '1';
-    buttonRow.style.position = 'static';
-    console.log('Button row made visible');
+    // Force visibility with multiple properties
+    buttonRow.style.display = 'flex !important';
+    buttonRow.style.visibility = 'visible !important';
+    buttonRow.style.opacity = '1 !important';
+    buttonRow.style.position = 'static !important';
+    buttonRow.style.height = 'auto !important';
+    buttonRow.style.width = '100% !important';
+    buttonRow.style.margin = '32px 0 0 0 !important';
+    buttonRow.style.padding = '0 !important';
+    buttonRow.style.zIndex = '9999 !important';
+    
+    // Also try inline style as backup
+    buttonRow.setAttribute('style', `
+      display: flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      position: static !important;
+      height: auto !important;
+      width: 100% !important;
+      margin: 32px 0 0 0 !important;
+      padding: 0 !important;
+      z-index: 9999 !important;
+      gap: 16px;
+    `);
+    
+    console.log('Button row forced visible with styles');
+    console.log('Button row final style:', buttonRow.style.cssText);
   }
   
   const price = parseFloat(localStorage.getItem("price"));
@@ -148,6 +170,29 @@ function showCashSection() {
   
   document.getElementById('cashTotal').textContent = total.toFixed(2);
   console.log('Cash section setup complete');
+  
+  // Force buttons to appear with timeout
+  setTimeout(() => {
+    const buttonRow = document.querySelector('.button-row');
+    if (buttonRow) {
+      console.log('Timeout: Forcing button visibility');
+      buttonRow.style.display = 'flex !important';
+      buttonRow.style.visibility = 'visible !important';
+      buttonRow.style.opacity = '1 !important';
+      buttonRow.style.position = 'static !important';
+      buttonRow.style.height = 'auto !important';
+      buttonRow.style.width = '100% !important';
+      buttonRow.style.margin = '32px 0 0 0 !important';
+      buttonRow.style.padding = '0 !important';
+      buttonRow.style.zIndex = '9999 !important';
+      
+      // Add red border for debugging
+      buttonRow.style.border = '2px solid red !important';
+      buttonRow.style.backgroundColor = 'yellow !important';
+      
+      console.log('Timeout: Buttons forced visible with debug border');
+    }
+  }, 100);
 }
 
 // ================================
