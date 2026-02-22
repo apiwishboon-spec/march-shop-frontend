@@ -100,6 +100,8 @@ function showPromptPaySection() {
 }
 
 function showCashSection() {
+  console.log('=== SHOW CASH SECTION CALLED ===');
+  
   document.getElementById('promptpay-section').style.display = 'none';
   document.getElementById('cash-section').style.display = 'block';
   
@@ -107,12 +109,14 @@ function showCashSection() {
   const slipLabel = document.getElementById('slipLabel');
   if (slipLabel) {
     slipLabel.style.display = 'none';
+    console.log('Slip label hidden');
   }
   
   // Hide turnstile for cash orders
   const turnstile = document.querySelector('.cf-turnstile');
   if (turnstile) {
     turnstile.style.display = 'none';
+    console.log('Turnstile hidden');
   }
   
   // Show cash total row, hide regular total
@@ -121,12 +125,20 @@ function showCashSection() {
   if (cashTotalRow && summaryTotal) {
     cashTotalRow.style.display = 'flex';
     summaryTotal.style.display = 'none';
+    console.log('Cash total shown, regular total hidden');
   }
   
   // Ensure buttons are visible
   const buttonRow = document.querySelector('.button-row');
+  console.log('Button row element:', buttonRow);
+  console.log('Button row current style:', buttonRow ? buttonRow.style.cssText : 'NOT FOUND');
+  
   if (buttonRow) {
     buttonRow.style.display = 'flex';
+    buttonRow.style.visibility = 'visible';
+    buttonRow.style.opacity = '1';
+    buttonRow.style.position = 'static';
+    console.log('Button row made visible');
   }
   
   const price = parseFloat(localStorage.getItem("price"));
@@ -135,6 +147,7 @@ function showCashSection() {
   const total = price * qty + deliveryFee;
   
   document.getElementById('cashTotal').textContent = total.toFixed(2);
+  console.log('Cash section setup complete');
 }
 
 // ================================
