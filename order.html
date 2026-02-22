@@ -594,6 +594,19 @@
                   <span class="info-value">1-3 business days</span>
                 </div>
               </div>
+              
+              <div class="button-row">
+                <button type="button" class="btn-secondary" onclick="cancelOrder()">
+                  Cancel Order
+                </button>
+                <button type="button" class="btn-secondary" onclick="goToStep1()">
+                  ← Back
+                </button>
+                <button type="button" class="btn-primary" id="submitBtn" onclick="submitOrder()">
+                  <span class="loading-spinner"></span>
+                  <span class="btn-text">Submit Order</span>
+                </button>
+              </div>
             </div>
 
           <label class="label" id="slipLabel">
@@ -607,19 +620,6 @@
                data-sitekey="0x4AAAAAACd8YswS-VO9XLfe"
                data-callback="onTurnstileSuccess">
           </div>
-
-          <div class="button-row">
-              <button type="button" class="btn-secondary" onclick="cancelOrder()">
-                Cancel Order
-              </button>
-              <button type="button" class="btn-secondary" onclick="goToStep1()">
-                ← Back
-              </button>
-              <button type="button" class="btn-primary" id="submitBtn" onclick="submitOrder()">
-                <span class="loading-spinner"></span>
-                <span class="btn-text">Submit Order</span>
-              </button>
-            </div>
         </div>
       </div>
     </main>
