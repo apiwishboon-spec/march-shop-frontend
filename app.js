@@ -6,7 +6,6 @@ let turnstileToken = null;
 let generatedPayload = null;
 let qrTimer = null;
 let qrExpiryTime = null;
-let discountAmount = 0;
 let selectedPaymentMethod = 'promptpay';
 
 const API_URL = "https://script.google.com/macros/s/AKfycbxENBG6cKm3ImJd_6gjvxCUnM-hG0xeNhPhjLUleDCyh0JsXhkkG7wOwkBjRW43j-88mg/exec";
@@ -41,96 +40,8 @@ function updateOrderSummary(item, price, size) {
 
 function updateTotalPrice(basePrice) {
   const qty = Number(document.getElementById("qty").value);
-  const discountedPrice = basePrice - discountAmount;
-  const total = discountedPrice * qty;
+  const total = basePrice * qty;
   document.getElementById('summary-total').textContent = total.toFixed(2);
-}
-
-function applyDiscount() {
-  const code = document.getElementById('discountCode').value.trim().toUpperCase();
-  
-  if (!code) {
-    showError('Please enter a discount code');
-    return;
-  }
-  
-  // Send discount code to backend for validation
-  validateDiscountCode(code);
-}
-
-function validateDiscountCode(code) {
-  console.log('Validating discount code:', code);
-  
-  // Fallback discount codes (temporary solution)
-  const fallbackDiscounts = {
-    'SAVE10': 10,
-    'SAVE20': 20,
-    'WELCOME': 15,
-    'ARTINK10': 10,
-    'SPECIAL25': 25,
-    'FIRSTORDER': 30,
-    'SUMMER20': 20,
-    'VIP15': 15,
-    'NEWYEAR50': 50,
-    'FREESHIP': 50,
-    'LOYALTY20': 20,
-    'FLASH30': 30,
-    'STUDENT15': 15,
-    'BIRTHDAY25': 25
-  };
-  
-  // Check fallback first
-  if (fallbackDiscounts[code]) {
-    discountAmount = fallbackDiscounts[code];
-    showSuccess(`Discount code applied! -฿${discountAmount} off`);
-    document.getElementById('discountCode').disabled = true;
-    updateTotalPrice(parseFloat(localStorage.getItem("price")));
-    return;
-  }
-  
-  // If not in fallback, try backend (with timeout)
-  const formData = new URLSearchParams();
-  formData.append("action", "validateDiscount");
-  formData.append("code", code);
-  
-  console.log('Sending to backend:', formData.toString());
-  
-  // Add timeout to prevent hanging
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
-  
-  fetch(API_URL, {
-    method: "POST",
-    body: formData,
-    signal: controller.signal
-  })
-  .then(res => {
-    clearTimeout(timeoutId);
-    console.log('Response status:', res.status);
-    return res.json();
-  })
-  .then(data => {
-    console.log('Backend response:', data);
-    if (data.success && data.discount) {
-      discountAmount = data.discount;
-      showSuccess(`Discount code applied! -฿${discountAmount} off`);
-      document.getElementById('discountCode').disabled = true;
-      updateTotalPrice(parseFloat(localStorage.getItem("price")));
-    } else {
-      showError('Invalid discount code');
-      discountAmount = 0;
-    }
-  })
-  .catch(err => {
-    clearTimeout(timeoutId);
-    console.error('Discount validation error:', err);
-    if (err.name === 'AbortError') {
-      showError('Request timed out. Using fallback validation.');
-    } else {
-      showError('Error validating discount code');
-    }
-    discountAmount = 0;
-  });
 }
 
 // ================================
@@ -197,7 +108,7 @@ function showCashSection() {
   const price = parseFloat(localStorage.getItem("price"));
   const qty = Number(document.getElementById("qty").value);
   const deliveryFee = 50; // Bangkok rate
-  const total = (price - discountAmount) * qty + deliveryFee;
+  const total = price * qty + deliveryFee;
   
   document.getElementById('cashTotal').textContent = total.toFixed(2);
 }
@@ -416,7 +327,7 @@ function submitOrder() {
 
   if (selectedPaymentMethod === 'cash') {
     // Cash on Delivery - skip QR generation
-    const total = (price - discountAmount) * qty + 50; // Add delivery fee
+    const total = price * qty + 50; // Add delivery fee
     const orderId = 'ORD-' + Date.now();
     
     // Save order data
