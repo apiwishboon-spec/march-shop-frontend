@@ -694,13 +694,13 @@ input:focus {
   height: 100%;
   border: 8px solid;
   border-radius: 50%;
-  border-color: var(--primary-color) var(--primary-color) #0000 #0000;
+  border-color: red red #0000 #0000;
   mix-blend-mode: darken;
   animation: l14 1s infinite linear;
 }
 
 .loading-spinner::after {
-  border-color: #0000 #0000 var(--primary-color) var(--primary-color);
+  border-color: #0000 #0000 blue blue;
   animation-direction: reverse;
 }
 
@@ -722,13 +722,13 @@ input:focus {
   grid-area: 1/1;
   border: 8px solid;
   border-radius: 50%;
-  border-color: var(--primary-color) var(--primary-color) #0000 #0000;
+  border-color: red red #0000 #0000;
   mix-blend-mode: darken;
   animation: l14 1s infinite linear;
 }
 
 .loader::after {
-  border-color: #0000 #0000 var(--primary-color) var(--primary-color);
+  border-color: #0000 #0000 blue blue;
   animation-direction: reverse;
 }
 
