@@ -158,12 +158,41 @@ function setupPaymentMethods() {
 function showPromptPaySection() {
   document.getElementById('promptpay-section').style.display = 'block';
   document.getElementById('cash-section').style.display = 'none';
+  
+  // Show regular total, hide cash total
+  const cashTotalRow = document.getElementById('cashTotalRow');
+  const summaryTotal = document.getElementById('summary-total').parentElement.parentElement;
+  if (cashTotalRow && summaryTotal) {
+    cashTotalRow.style.display = 'none';
+    summaryTotal.style.display = 'flex';
+  }
+  
+  // Show slip upload
+  const slipLabel = document.getElementById('slipLabel');
+  if (slipLabel) {
+    slipLabel.style.display = 'block';
+  }
+  
   updateTotalPrice(parseFloat(localStorage.getItem("price")));
 }
 
 function showCashSection() {
   document.getElementById('promptpay-section').style.display = 'none';
   document.getElementById('cash-section').style.display = 'block';
+  
+  // Hide slip upload for cash on delivery
+  const slipLabel = document.getElementById('slipLabel');
+  if (slipLabel) {
+    slipLabel.style.display = 'none';
+  }
+  
+  // Show cash total row, hide regular total
+  const cashTotalRow = document.getElementById('cashTotalRow');
+  const summaryTotal = document.getElementById('summary-total').parentElement.parentElement;
+  if (cashTotalRow && summaryTotal) {
+    cashTotalRow.style.display = 'flex';
+    summaryTotal.style.display = 'none';
+  }
   
   const price = parseFloat(localStorage.getItem("price"));
   const qty = Number(document.getElementById("qty").value);
@@ -342,6 +371,13 @@ function expireQR() {
   showError("QR code expired. Please refresh to generate a new one.");
 }
 
+function cancelOrder() {
+  if (confirm('Are you sure you want to cancel this order?')) {
+    localStorage.clear();
+    window.location.href = 'index.html';
+  }
+}
+
 // ================================
 // TURNSTILE CALLBACK
 // ================================
@@ -370,7 +406,7 @@ function submitOrder() {
     return;
   }
 
-  const submitBtn = event.target;
+  const submitBtn = document.getElementById("submitBtn");
   const btnText = submitBtn.querySelector("span") || submitBtn;
   
   // Show loading state

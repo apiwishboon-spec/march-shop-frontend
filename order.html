@@ -469,6 +469,10 @@
               <span class="label">Total:</span>
               <span class="value total-price">฿<span id="summary-total">-</span></span>
             </div>
+            <div class="summary-item total-row" id="cashTotalRow" style="display: none;">
+              <span class="label">Total (incl. delivery):</span>
+              <span class="value total-price">฿<span id="cashTotal">0</span></span>
+            </div>
           </div>
 
           <form id="orderForm">
@@ -580,7 +584,26 @@
               </div>
             </div>
 
-          <label class="label">
+            <div id="cash-section" style="display: none;">
+              <h3>💵 Cash on Delivery</h3>
+              <p>Pay when you receive your order. No additional fees.</p>
+              <div class="cash-info">
+                <div class="info-item">
+                  <span class="info-label">📍 Delivery Location:</span>
+                  <span class="info-value">2nd floor OpenLab, Building 4</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">💰 Payment Method:</span>
+                  <span class="info-value">Cash upon delivery</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">⏰ Delivery Time:</span>
+                  <span class="info-value">1-3 business days</span>
+                </div>
+              </div>
+            </div>
+
+          <label class="label" id="slipLabel">
             Upload payment slip
             <input id="slip" type="file" accept="image/png, image/jpeg" required>
             <span class="hint">Max 5MB • JPG or PNG</span>
