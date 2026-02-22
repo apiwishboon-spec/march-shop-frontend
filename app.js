@@ -344,29 +344,76 @@ function submitOrder() {
     }, 1500);
   } else {
     // PromptPay QR - generate QR code
-    const formData = new URLSearchParams();
-    formData.append("email", document.getElementById("email").value.trim());
-    formData.append("phone", document.getElementById("phone").value.trim());
-    formData.append("item", localStorage.getItem("item"));
-    formData.append("price", localStorage.getItem("price"));
-    formData.append("quantity", document.getElementById("qty").value);
-    formData.append("size", localStorage.getItem("selectedSize") || 'M');
-    formData.append("base64Image", base64Image);
-    formData.append("turnstileToken", turnstileToken);
+    console.log('Starting PromptPay order submission...');
+    
+    // Check if we have the required data
+    const slipFile = document.getElementById("slip").files[0];
+    if (!slipFile) {
+      showError('Please upload a payment slip image');
+      // Reset button state
+      const submitBtn = document.getElementById("submitBtn");
+      submitBtn.classList.remove("btn-loading");
+      submitBtn.disabled = false;
+      submitBtn.querySelector("span").textContent = "Submit Order";
+      return;
+    }
+    
+    if (!turnstileToken) {
+      showError('Please complete the bot verification');
+      // Reset button state
+      const submitBtn = document.getElementById("submitBtn");
+      submitBtn.classList.remove("btn-loading");
+      submitBtn.disabled = false;
+      submitBtn.querySelector("span").textContent = "Submit Order";
+      return;
+    }
+    
+    // Convert image to base64
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const base64Image = e.target.result.split(',')[1]; // Remove data URL prefix
+      
+      const formData = new URLSearchParams();
+      formData.append("email", document.getElementById("email").value.trim());
+      formData.append("phone", document.getElementById("phone").value.trim());
+      formData.append("item", localStorage.getItem("item"));
+      formData.append("price", localStorage.getItem("price"));
+      formData.append("quantity", document.getElementById("qty").value);
+      formData.append("size", localStorage.getItem("selectedSize") || 'M');
+      formData.append("base64Image", base64Image);
+      formData.append("turnstileToken", turnstileToken);
+      
+      console.log('Sending to backend:', formData.toString());
+      
+      // Add timeout to prevent hanging
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+      
+      fetch(API_URL, {
+        method: "POST",
+        body: formData,
+        signal: controller.signal
+      })
+      .then(res => {
+        clearTimeout(timeoutId);
+        console.log('Backend response status:', res.status);
+        return res.json();
+      })
+      .then(data => {
+        console.log('Backend response:', data);
+        
+        // Reset button state
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.classList.remove("btn-loading");
+        submitBtn.disabled = false;
+        submitBtn.querySelector("span").textContent = "Submit Order";
 
-    fetch(API_URL, {
-      method: "POST",
-      body: formData
-    })
-    .then(res => res.json())
-    .then(data => {
+        if (!data.success) {
+          throw new Error(data.message || 'Order submission failed');
+        }
 
-      if (!data.success) {
-        throw new Error(data.message);
-      }
-
-      const orderId = data.data?.orderId || Date.now();
-      const email = document.getElementById("email").value.trim();
+        const orderId = data.data?.orderId || Date.now();
+        const email = document.getElementById("email").value.trim();
       const item = localStorage.getItem("item");
       const qty = document.getElementById("qty").value;
       const total = parseFloat(localStorage.getItem("price")) * qty;
@@ -382,15 +429,36 @@ function submitOrder() {
 
       // Redirect to success page with order ID
       window.location.href = "success.html?id=" + orderId;
-
-    })
-    .catch(err => {
-      // Reset button state on error
+      })
+      .catch(err => {
+        clearTimeout(timeoutId);
+        console.error('Submission error:', err);
+        
+        // Reset button state on error
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.classList.remove("btn-loading");
+        submitBtn.disabled = false;
+        submitBtn.querySelector("span").textContent = "Submit Order";
+        
+        if (err.name === 'AbortError') {
+          showError('Request timed out. Please try again.');
+        } else {
+          showError(err.message || "Submission failed");
+        }
+      });
+    };
+    
+    reader.readAsDataURL(slipFile);
+    
+    // Add error handling for file reading
+    reader.onerror = function() {
+      clearTimeout(timeoutId);
+      const submitBtn = document.getElementById("submitBtn");
       submitBtn.classList.remove("btn-loading");
       submitBtn.disabled = false;
-      btnText.textContent = "Submit Order";
-      showError(err.message || "Submission failed");
-    });
+      submitBtn.querySelector("span").textContent = "Submit Order";
+      showError('Failed to read payment slip image');
+    };
   }
 }
 
