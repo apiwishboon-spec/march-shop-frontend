@@ -510,30 +510,43 @@ input:focus {
 
 /* Custom Loader */
 .loader {
-  width: 50px;
+  width: 4px;
+  color: #3498db;
   aspect-ratio: 1;
-  display: grid;
-  animation: l14 4s infinite;
-}
-
-.loader::before,
-.loader::after {    
-  content: "";
-  grid-area: 1/1;
-  border: 8px solid;
   border-radius: 50%;
-  border-color: #3498db #ffffff;
-  mix-blend-mode: darken;
-  animation: l14 1s infinite linear;
+  box-shadow: 
+    19px -19px 0 0px, 38px -19px 0 0px, 57px -19px 0 0px,
+    19px 0     0 5px, 38px 0     0 5px, 57px 0     0 5px,
+    19px 19px  0 0px, 38px 19px  0 0px, 57px 19px  0 0px;
+  transform: translateX(-38px);
+  animation: l26 2s infinite linear;
 }
 
-.loader::after {
-  border-color: #ffffff #3498db;
-  animation-direction: reverse;
-}
-
-@keyframes l14{ 
-  100%{transform: rotate(1turn)}
+@keyframes l26 {
+  12.5% {box-shadow: 
+    19px -19px 0 0px, 38px -19px 0 0px, 57px -19px 0 5px,
+    19px 0     0 5px, 38px 0     0 0px, 57px 0     0 5px,
+    19px 19px  0 0px, 38px 19px  0 0px, 57px 19px  0 0px}
+  25%   {box-shadow: 
+    19px -19px 0 5px, 38px -19px 0 0px, 57px -19px 0 5px,
+    19px 0     0 0px, 38px 0     0 0px, 57px 0     0 0px,
+    19px 19px  0 0px, 38px 19px  0 5px, 57px 19px  0 0px}
+  50%   {box-shadow: 
+    19px -19px 0 5px, 38px -19px 0 5px, 57px -19px 0 0px,
+    19px 0     0 0px, 38px 0     0 0px, 57px 0     0 0px,
+    19px 19px  0 0px, 38px 19px  0 0px, 57px 19px  0 5px}
+  62.5% {box-shadow: 
+    19px -19px 0 0px, 38px -19px 0 0px, 57px -19px 0 0px,
+    19px 0     0 5px, 38px 0     0 0px, 57px 0     0 0px,
+    19px 19px  0 0px, 38px 19px  0 5px, 57px 19px  0 5px}
+  75%   {box-shadow: 
+    19px -19px 0 0px, 38px -19px 0 5px, 57px -19px 0 0px,
+    19px 0     0 0px, 38px 0     0 0px, 57px 0     0 5px,
+    19px 19px  0 0px, 38px 19px  0 0px, 57px 19px  0 5px}
+  87.5% {box-shadow: 
+    19px -19px 0 0px, 38px -19px 0 5px, 57px -19px 0 0px,
+    19px 0     0 0px, 38px 0     0 5px, 57px 0     0 0px,
+    19px 19px  0 5px, 38px 19px  0 0px, 57px 19px  0 0px}
 }
 
 @keyframes spin {
