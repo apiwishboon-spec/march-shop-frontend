@@ -534,12 +534,13 @@
             
             <div class="payment-instructions" style="display: none;">
               <div class="qr-card">
-                <div id="qrImage" style="text-align: center; margin-bottom: 20px;">
-                  <!-- QR code will be generated here -->
-                </div>
+                <img id="dynamicQR" src="" alt="Payment QR Code" style="max-width: 200px; border-radius: 8px; margin-bottom: 16px;">
                 <div class="qr-info">
                   <h3>📸 Scan QR Code</h3>
                   <p>Use your mobile banking app to scan this QR code and complete the payment.</p>
+                  <div id="qrTimer" class="qr-timer" style="display: block; margin-top: 16px; padding: 12px; background: var(--bg-tertiary); border-radius: 8px; text-align: center;">
+                    ⏰ QR expires in: <span id="timerMinutes">5</span>:<span id="timerSeconds">00</span>
+                  </div>
                 </div>
               </div>
               
@@ -573,7 +574,6 @@
 
             <div class="qr-section">
               <div class="qr-container">
-                <img id="dynamicQR" src="" alt="Payment QR Code">
                 <div id="qrTotal" class="qr-total">฿0</div>
               </div>
               <div id="qrTimer" class="qr-timer" style="display: none;">
