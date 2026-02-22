@@ -60,17 +60,52 @@ function applyDiscount() {
 
 function validateDiscountCode(code) {
   console.log('Validating discount code:', code);
+  
+  // Fallback discount codes (temporary solution)
+  const fallbackDiscounts = {
+    'SAVE10': 10,
+    'SAVE20': 20,
+    'WELCOME': 15,
+    'ARTINK10': 10,
+    'SPECIAL25': 25,
+    'FIRSTORDER': 30,
+    'SUMMER20': 20,
+    'VIP15': 15,
+    'NEWYEAR50': 50,
+    'FREESHIP': 50,
+    'LOYALTY20': 20,
+    'FLASH30': 30,
+    'STUDENT15': 15,
+    'BIRTHDAY25': 25
+  };
+  
+  // Check fallback first
+  if (fallbackDiscounts[code]) {
+    discountAmount = fallbackDiscounts[code];
+    showSuccess(`Discount code applied! -฿${discountAmount} off`);
+    document.getElementById('discountCode').disabled = true;
+    updateTotalPrice(parseFloat(localStorage.getItem("price")));
+    return;
+  }
+  
+  // If not in fallback, try backend (with timeout)
   const formData = new URLSearchParams();
   formData.append("action", "validateDiscount");
   formData.append("code", code);
   
   console.log('Sending to backend:', formData.toString());
   
+  // Add timeout to prevent hanging
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+  
   fetch(API_URL, {
     method: "POST",
-    body: formData
+    body: formData,
+    signal: controller.signal
   })
   .then(res => {
+    clearTimeout(timeoutId);
     console.log('Response status:', res.status);
     return res.json();
   })
@@ -87,8 +122,13 @@ function validateDiscountCode(code) {
     }
   })
   .catch(err => {
+    clearTimeout(timeoutId);
     console.error('Discount validation error:', err);
-    showError('Error validating discount code');
+    if (err.name === 'AbortError') {
+      showError('Request timed out. Using fallback validation.');
+    } else {
+      showError('Error validating discount code');
+    }
     discountAmount = 0;
   });
 }
