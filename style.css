@@ -690,6 +690,8 @@ input:focus {
   gap: 16px;
   margin-top: 32px;
   flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
 }
 
 /* =====================
