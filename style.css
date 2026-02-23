@@ -817,6 +817,7 @@ input:focus {
   padding: 32px;
   border-radius: 20px;
   box-shadow: 0 25px 50px var(--shadow-medium);
+  background: white; /* White background for readability */
 }
 
 .modal-card h2 {
@@ -1009,7 +1010,10 @@ input[type="file"] {
   }
   
   .modal-card {
-    padding: 24px;
+    padding: 20px;
+    background: white; /* Ensure white background on mobile */
+    margin: 16px; /* Add margin for mobile */
+    max-width: calc(100vw - 32px); /* Ensure it fits screen */
   }
 }
 
