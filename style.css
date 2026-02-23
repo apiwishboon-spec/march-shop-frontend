@@ -751,8 +751,11 @@ body.page-loading {
 /* Story Button */
 .story-button-container {
   text-align: center;
-  margin: 40px 0;
+  margin: 40px auto;
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .story-btn {
