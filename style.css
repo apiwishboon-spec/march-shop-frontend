@@ -310,7 +310,7 @@ h1 {
 button, .btn-primary, .btn-secondary, .btn-outline {
   border: none;
   cursor: pointer;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 600;
   padding: 14px 28px;
   border-radius: var(--border-radius);
@@ -443,7 +443,7 @@ input:focus {
 
 .hint {
   display: block;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: var(--text-secondary);
   margin-top: 8px;
 }
@@ -512,7 +512,7 @@ input:focus {
 }
 
 .step-description {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: var(--text-tertiary);
   line-height: 1.4;
   max-width: 120px;
@@ -685,6 +685,67 @@ input:focus {
 
 @keyframes l14{ 
   100%{transform: rotate(1turn)}
+}
+
+/* =====================
+   MOBILE OPTIMIZATIONS
+   Better Mobile Performance
+===================== */
+@media (max-width: 768px) {
+  /* Increase font sizes for mobile readability */
+  body {
+    font-size: 16px; /* Ensure base font is at least 16px */
+  }
+  
+  .hint {
+    font-size: 1rem;
+  }
+  
+  .step-description {
+    font-size: 1rem;
+  }
+  
+  .step-label {
+    font-size: 1rem;
+  }
+  
+  .step-text {
+    font-size: 1rem;
+  }
+  
+  .payment-info span {
+    font-size: 1rem;
+  }
+  
+  .instruction-step .step-text {
+    font-size: 1rem;
+  }
+  
+  /* Improve touch targets */
+  button, .btn-primary, .btn-secondary, .btn-outline {
+    font-size: 1.1rem;
+    padding: 16px 32px;
+    min-height: 48px; /* Minimum touch target size */
+  }
+  
+  .size-btn {
+    font-size: 1rem;
+    padding: 12px 20px;
+    min-height: 44px;
+  }
+  
+  /* Improve spacing */
+  .step-indicator {
+    margin-bottom: 32px;
+  }
+  
+  .form-card {
+    padding: 24px 20px;
+  }
+  
+  .qr-card {
+    padding: 20px;
+  }
 }
 
 /* =====================
