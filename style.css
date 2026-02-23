@@ -746,6 +746,8 @@ body.page-loading {
 .page-loader-overlay .loading-spinner {
   display: block;
   transform: translateX(-38px) scale(2); /* Make it bigger for full page */
+  position: relative;
+  left: 38px; /* Offset the translateX to center */
 }
 
 /* Story Button */
