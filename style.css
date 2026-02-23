@@ -984,6 +984,11 @@ body.page-loading {
   background: rgba(255, 255, 255, 0.2);
 }
 
+.card-content {
+  flex: 1;
+  min-width: 0;
+}
+
 .story-card h3 {
   font-size: 1.5rem;
   font-weight: 700;
@@ -1031,6 +1036,10 @@ body.page-loading {
   border-radius: 20px;
   text-align: center;
   transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
 }
 
 .value-item:hover {
@@ -1040,7 +1049,11 @@ body.page-loading {
 
 .value-icon {
   font-size: 3rem;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+}
+
+.value-content {
+  text-align: center;
 }
 
 .value-item h4 {
