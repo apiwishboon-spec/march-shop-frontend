@@ -518,7 +518,7 @@ function subscribeNewsletter(event) {
 // Admin Functions
 function showAdminLogin() {
   const password = prompt('Enter admin password:');
-  if (password === 'YOUR_ADMIN_PASSWORD') {
+  if (password === 'adminboon5127') {
     window.location.href = 'admin.html';
   } else if (password !== null) {
     showError('Invalid password');

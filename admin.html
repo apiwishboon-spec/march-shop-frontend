@@ -6,189 +6,244 @@
   <title>Admin Dashboard - ART&INK</title>
   <link rel="icon" type="image/png" href="art-ink-icon.png">
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://unpkg.com/recharts@2.12.7/umd/Recharts.js"></script>
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="min-h-screen bg-black text-white">
-  <div id="root"></div>
+<body class="admin-dashboard">
+  <div class="admin-container">
+    <header class="admin-header">
+      <h1>🎨 ART&INK Admin Dashboard</h1>
+      <div class="admin-nav">
+        <button onclick="loadData()" class="admin-nav-btn active">Dashboard</button>
+        <button onclick="sendNewsletter()" class="admin-nav-btn">Send Newsletter</button>
+      </div>
+    </header>
+
+    <main class="admin-main">
+      <!-- Stats Cards -->
+      <section class="stats-section">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">🛍️</div>
+            <div class="stat-content">
+              <h3 id="total-orders">0</h3>
+              <p>Total Orders</p>
+              <span class="stat-change positive">+14%</span>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon">💳</div>
+            <div class="stat-content">
+              <h3 id="total-revenue">฿0</h3>
+              <p>Total Revenue</p>
+              <span class="stat-change positive">+8%</span>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon">📦</div>
+            <div class="stat-content">
+              <h3 id="products-sold">0</h3>
+              <p>Products Sold</p>
+              <span class="stat-change negative">-2%</span>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-content">
+              <h3 id="new-customers">0</h3>
+              <p>New Customers</p>
+              <span class="stat-change positive">+22%</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Charts Section -->
+      <section class="charts-section">
+        <div class="charts-grid">
+          <div class="chart-card">
+            <h3>Daily Sales Trend</h3>
+            <div class="chart-container">
+              <canvas id="salesChart"></canvas>
+            </div>
+          </div>
+          
+          <div class="chart-card">
+            <h3>Sales by Category</h3>
+            <div class="chart-container">
+              <canvas id="categoryChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Newsletter Section -->
+      <section class="newsletter-section">
+        <div class="newsletter-card">
+          <h3>Newsletter Subscribers</h3>
+          <div class="newsletter-stats">
+            <div class="subscriber-count">
+              <span id="subscriber-count">0</span>
+              <p>Total Subscribers</p>
+            </div>
+            <button onclick="sendNewsletter()" class="newsletter-send-btn">
+              📧 Send Newsletter
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
 
   <script>
-    const { useState, useEffect } = React;
-    const { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } = Recharts;
-    const { ShoppingBag, CreditCard, Package, Users, TrendingUp } = lucide;
+    // Admin password check
+    const ADMIN_PASSWORD = 'adminboon5127';
+    
+    // Check if password is in URL or session
+    const urlParams = new URLSearchParams(window.location.search);
+    const password = urlParams.get('password') || sessionStorage.getItem('adminAuth');
+    
+    if (!password || password !== ADMIN_PASSWORD) {
+      const enteredPassword = prompt('Enter admin password:');
+      if (enteredPassword === ADMIN_PASSWORD) {
+        sessionStorage.setItem('adminAuth', ADMIN_PASSWORD);
+        window.location.href = 'admin.html?password=' + ADMIN_PASSWORD;
+      } else {
+        alert('Invalid password');
+        window.location.href = 'index.html';
+      }
+    }
 
-    const categoryData = [
-      { name: 'Electronics', value: 4500, color: '#3b82f6' },
-      { name: 'Fashion', value: 3200, color: '#10b981' },
-      { name: 'Home & Kitchen', value: 2100, color: '#f59e0b' },
-      { name: 'Beauty', value: 1500, color: '#f43f5e' },
-    ];
+    // API URL
+    const API_URL = "https://script.google.com/macros/s/AKfycbxENBG6cKm3ImJd_6gjvxCUnM-hG0xeNhPhjLUleDCyh0JsXhkkG7wOwkBjRW43j-88mg/exec";
 
-    const salesData = [
-      { day: 'Mon', sales: 4000 },
-      { day: 'Tue', sales: 3000 },
-      { day: 'Wed', sales: 2000 },
-      { day: 'Thu', sales: 2780 },
-      { day: 'Fri', sales: 1890 },
-      { day: 'Sat', sales: 2390 },
-      { day: 'Sun', sales: 3490 },
-    ];
+    // Load dashboard data
+    function loadData() {
+      fetch(API_URL + '?action=adminData')
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            updateStats(data.data);
+            updateCharts(data.data);
+          } else {
+            alert('Failed to load data: ' + data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error loading data:', error);
+          alert('Error loading dashboard data');
+        });
+    }
 
-    function EcommerceDashboard() {
-      const [orders, setOrders] = useState(1284);
-      const [revenue, setRevenue] = useState(42930);
-      const [productsSold, setProductsSold] = useState(5432);
-      const [newCustomers, setNewCustomers] = useState(342);
-      const [subscribers, setSubscribers] = useState(0);
+    // Update stats display
+    function updateStats(data) {
+      document.getElementById('total-orders').textContent = data.orders.toLocaleString();
+      document.getElementById('total-revenue').textContent = '฿' + data.revenue.toLocaleString();
+      document.getElementById('products-sold').textContent = data.productsSold.toLocaleString();
+      document.getElementById('new-customers').textContent = data.newCustomers.toLocaleString();
+      document.getElementById('subscriber-count').textContent = data.subscribers.toLocaleString();
+    }
 
-      useEffect(() => {
-        // Load data from Google Sheets
-        fetch('YOUR_GOOGLE_SCRIPT_URL?action=adminData')
-          .then(response => response.json())
-          .then(data => {
-            if (data.orders) setOrders(data.orders);
-            if (data.revenue) setRevenue(data.revenue);
-            if (data.productsSold) setProductsSold(data.productsSold);
-            if (data.newCustomers) setNewCustomers(data.newCustomers);
-            if (data.subscribers) setSubscribers(data.subscribers);
-          });
-      }, []);
+    // Update charts
+    function updateCharts(data) {
+      // Sales Chart
+      const salesCtx = document.getElementById('salesChart').getContext('2d');
+      new Chart(salesCtx, {
+        type: 'bar',
+        data: {
+          labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          datasets: [{
+            label: 'Sales',
+            data: [4000, 3000, 2000, 2780, 1890, 2390, 3490],
+            backgroundColor: '#3b82f6',
+            borderColor: '#3b82f6',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: {
+                color: '#374151'
+              },
+              ticks: {
+                color: '#9ca3af'
+              }
+            },
+            x: {
+              grid: {
+                display: false
+              },
+              ticks: {
+                color: '#9ca3af'
+              }
+            }
+          }
+        }
+      });
 
-      const sendNewsletter = () => {
-        fetch('YOUR_GOOGLE_SCRIPT_URL?action=sendNewsletter', {
+      // Category Chart
+      const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+      new Chart(categoryCtx, {
+        type: 'pie',
+        data: {
+          labels: ['Fashion', 'Electronics', 'Home & Kitchen', 'Beauty'],
+          datasets: [{
+            data: [3200, 4500, 2100, 1500],
+            backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#f43f5e'],
+            borderWidth: 2,
+            borderColor: '#111827'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                color: '#9ca3af',
+                padding: 20
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Send newsletter
+    function sendNewsletter() {
+      if (confirm('Send newsletter to all subscribers?')) {
+        fetch(API_URL + '?action=sendNewsletter', {
           method: 'POST'
         })
         .then(response => response.json())
         .then(data => {
           if (data.success) {
-            alert('Newsletter sent successfully!');
+            alert('Newsletter sent successfully to ' + data.sentTo + ' subscribers!');
+          } else {
+            alert('Failed to send newsletter: ' + data.message);
           }
+        })
+        .catch(error => {
+          console.error('Error sending newsletter:', error);
+          alert('Error sending newsletter');
         });
-      };
-
-      return React.createElement('div', { className: "min-h-screen bg-black text-white p-8 pt-32" }, [
-        React.createElement('div', { className: "max-w-7xl mx-auto" }, [
-          React.createElement('div', { className: "flex justify-between items-end mb-10" }, [
-            React.createElement('div', null, [
-              React.createElement('h1', { className: "text-4xl font-bold mb-2" }, "E-commerce Sales"),
-              React.createElement('p', { className: "text-zinc-400" }, "Real-time overview of your store performance.")
-            ]),
-            React.createElement('div', { className: "flex gap-4" }, [
-              React.createElement('button', { className: "bg-zinc-800 hover:bg-zinc-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors" }, "7 Days"),
-              React.createElement('button', { className: "bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg text-sm font-medium transition-colors" }, "30 Days")
-            ])
-          ]),
-
-          React.createElement('div', { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10" }, [
-            React.createElement('div', { className: "bg-zinc-900 border border-zinc-800 p-6 rounded-2xl" }, [
-              React.createElement('div', { className: "flex items-center gap-4 mb-4" }, [
-                React.createElement('div', { className: "w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center" }, 
-                  React.createElement(ShoppingBag, { className: "w-5 h-5 text-blue-500" })
-                ),
-                React.createElement('p', { className: "text-zinc-400 text-sm" }, "Total Orders")
-              ]),
-              React.createElement('h3', { className: "text-2xl font-bold" }, orders.toLocaleString()),
-              React.createElement('p', { className: "text-emerald-500 text-xs mt-2" }, "+14% from last week")
-            ]),
-            React.createElement('div', { className: "bg-zinc-900 border border-zinc-800 p-6 rounded-2xl" }, [
-              React.createElement('div', { className: "flex items-center gap-4 mb-4" }, [
-                React.createElement('div', { className: "w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center" }, 
-                  React.createElement(CreditCard, { className: "w-5 h-5 text-emerald-500" })
-                ),
-                React.createElement('p', { className: "text-zinc-400 text-sm" }, "Revenue")
-              ]),
-              React.createElement('h3', { className: "text-2xl font-bold" }, `$${revenue.toLocaleString()}`),
-              React.createElement('p', { className: "text-emerald-500 text-xs mt-2" }, "+8% from last week")
-            ]),
-            React.createElement('div', { className: "bg-zinc-900 border border-zinc-800 p-6 rounded-2xl" }, [
-              React.createElement('div', { className: "flex items-center gap-4 mb-4" }, [
-                React.createElement('div', { className: "w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center" }, 
-                  React.createElement(Package, { className: "w-5 h-5 text-amber-500" })
-                ),
-                React.createElement('p', { className: "text-zinc-400 text-sm" }, "Products Sold")
-              ]),
-              React.createElement('h3', { className: "text-2xl font-bold" }, productsSold.toLocaleString()),
-              React.createElement('p', { className: "text-rose-500 text-xs mt-2" }, "-2% from last week")
-            ]),
-            React.createElement('div', { className: "bg-zinc-900 border border-zinc-800 p-6 rounded-2xl" }, [
-              React.createElement('div', { className: "flex items-center gap-4 mb-4" }, [
-                React.createElement('div', { className: "w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center" }, 
-                  React.createElement(Users, { className: "w-5 h-5 text-purple-500" })
-                ),
-                React.createElement('p', { className: "text-zinc-400 text-sm" }, "New Customers")
-              ]),
-              React.createElement('h3', { className: "text-2xl font-bold" }, newCustomers.toLocaleString()),
-              React.createElement('p', { className: "text-emerald-500 text-xs mt-2" }, "+22% from last week")
-            ])
-          ]),
-
-          React.createElement('div', { className: "grid grid-cols-1 lg:grid-cols-3 gap-8" }, [
-            React.createElement('div', { className: "lg:col-span-2 bg-zinc-900 border border-zinc-800 p-6 rounded-2xl" }, [
-              React.createElement('h3', { className: "text-xl font-bold mb-6" }, "Daily Sales Trend"),
-              React.createElement('div', { className: "h-[350px] w-full" }, 
-                React.createElement(ResponsiveContainer, { width: "100%", height: "100%" }, 
-                  React.createElement(BarChart, { data: salesData }, [
-                    React.createElement(CartesianGrid, { strokeDasharray: "3 3", stroke: "#27272a", vertical: false }),
-                    React.createElement(XAxis, { dataKey: "day", stroke: "#71717a" }),
-                    React.createElement(YAxis, { stroke: "#71717a" }),
-                    React.createElement(Tooltip, { 
-                      contentStyle: { backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '8px' } 
-                    }),
-                    React.createElement(Bar, { dataKey: "sales", fill: "#3b82f6", radius: [4, 4, 0, 0] })
-                  ])
-                )
-              )
-            ]),
-
-            React.createElement('div', { className: "bg-zinc-900 border border-zinc-800 p-6 rounded-2xl" }, [
-              React.createElement('h3', { className: "text-xl font-bold mb-6" }, "Sales by Category"),
-              React.createElement('div', { className: "h-[350px] w-full" }, 
-                React.createElement(ResponsiveContainer, { width: "100%", height: "100%" }, 
-                  React.createElement(PieChart, null, 
-                    React.createElement(Pie, {
-                      data: categoryData,
-                      cx: "50%",
-                      cy: "50%",
-                      innerRadius: 60,
-                      outerRadius: 100,
-                      paddingAngle: 5,
-                      dataKey: "value"
-                    }, 
-                      categoryData.map((entry, index) => 
-                        React.createElement(Cell, { key: `cell-${index}`, fill: entry.color })
-                      )
-                    ),
-                    React.createElement(Tooltip, { 
-                      contentStyle: { backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '8px' } 
-                    }),
-                    React.createElement(Legend)
-                  )
-                )
-              )
-            ])
-          ]),
-
-          React.createElement('div', { className: "bg-zinc-900 border border-zinc-800 p-6 rounded-2xl mb-8" }, [
-            React.createElement('h3', { className: "text-xl font-bold mb-4" }, "Newsletter Subscribers"),
-            React.createElement('div', { className: "flex items-center justify-between" }, [
-              React.createElement('div', null, [
-                React.createElement('p', { className: "text-3xl font-bold" }, subscribers.toLocaleString()),
-                React.createElement('p', { className: "text-zinc-400" }, "Total subscribers")
-              ]),
-              React.createElement('button', { 
-                onClick: sendNewsletter,
-                className: "bg-blue-600 hover:bg-blue-500 px-6 py-3 rounded-lg font-medium transition-colors" 
-              }, "Send Newsletter")
-            ])
-          ])
-        ])
-      ]);
+      }
     }
 
-    ReactDOM.render(React.createElement(EcommerceDashboard), document.getElementById('root'));
+    // Load data on page load
+    loadData();
   </script>
 </body>
 </html>
