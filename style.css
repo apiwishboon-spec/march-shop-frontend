@@ -321,9 +321,23 @@ button, .btn-primary, .btn-secondary, .btn-outline {
   align-items: center;
   justify-content: center;
   gap: 8px;
+  min-height: 48px;
   text-decoration: none;
   user-select: none;
   -webkit-user-select: none;
+}
+
+button:disabled, .btn-primary:disabled, .btn-secondary:disabled, .btn-outline:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none;
+  box-shadow: none;
+}
+
+button:disabled:hover, .btn-primary:disabled:hover, .btn-secondary:disabled:hover, .btn-outline:disabled:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--border-primary);
 }
 
 button:focus, .btn-primary:focus, .btn-secondary:focus, .btn-outline:focus {
@@ -655,8 +669,36 @@ input:focus {
   animation-direction: reverse;
 }
 
+.btn-loading {
+  pointer-events: none;
+  opacity: 0.8;
+  position: relative;
+}
+
 .btn-loading .loading-spinner {
   display: inline-block;
+  opacity: 1;
+}
+
+.btn-loading .btn-text {
+  opacity: 0.7;
+}
+
+.btn-loading::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  animation: shimmer 2s infinite;
+  border-radius: var(--border-radius);
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
 @keyframes l14{ 

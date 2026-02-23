@@ -152,10 +152,8 @@ function updateTotal() {
   const total = price * (qty || 1);
 
   // Update display if we're on payment step
-  const qrTotalElement = document.getElementById("qrTotal");
-  if (qrTotalElement) {
-    qrTotalElement.textContent = "฿" + total;
-  }
+  // qrTotal element was removed, so we skip this update
+  console.log('QR generated for total:', total);
 }
 
 // ================================
@@ -195,9 +193,8 @@ function generateQR() {
 
     // Start 5-minute timer
     startQRTimer();
-
-    document.getElementById("qrTotal").textContent =
-      "฿" + data.data.total;
+    
+    console.log('QR generated successfully, total:', data.data.total);
   })
   .catch(err => {
     console.error("QR failed:", err.message);
