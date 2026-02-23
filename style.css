@@ -437,7 +437,7 @@ label {
 
 input {
   width: 100%;
-  padding: 16px 20px;
+  padding: 14px 18px;
   margin-top: 6px;
   border-radius: 12px;
   border: 2px solid var(--border-primary);
@@ -445,6 +445,8 @@ input {
   background: var(--bg-secondary);
   color: var(--text-primary);
   transition: all 0.2s ease;
+  min-height: 48px; /* Minimum touch target size */
+  box-sizing: border-box;
   font-family: inherit;
 }
 
@@ -716,27 +718,27 @@ input:focus {
   }
   
   .hint {
-    font-size: 1rem;
+    font-size: 1rem; /* 16px */
   }
   
   .step-description {
-    font-size: 1rem;
+    font-size: 1rem; /* 16px */
   }
   
   .step-label {
-    font-size: 1rem;
+    font-size: 1rem; /* 16px */
   }
   
   .step-text {
-    font-size: 1rem;
+    font-size: 1rem; /* 16px */
   }
   
   .payment-info span {
-    font-size: 1rem;
+    font-size: 1rem; /* 16px */
   }
   
   .instruction-step .step-text {
-    font-size: 1rem;
+    font-size: 1rem; /* 16px */
   }
   
   /* Improve touch targets */
@@ -744,12 +746,15 @@ input:focus {
     font-size: 1.1rem;
     padding: 16px 32px;
     min-height: 48px; /* Minimum touch target size */
+    width: 100%; /* Full width on mobile */
+    max-width: none; /* Remove max-width constraints */
   }
   
   .size-btn {
     font-size: 1rem;
     padding: 12px 20px;
-    min-height: 44px;
+    min-height: 48px;
+    min-width: 48px;
   }
   
   /* Improve spacing */
@@ -758,11 +763,31 @@ input:focus {
   }
   
   .form-card {
-    padding: 24px 20px;
+    padding: 24px 16px; /* Reduced padding for smaller screens */
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
   
   .qr-card {
-    padding: 20px;
+    padding: 20px 16px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Fix content width */
+  .container {
+    padding: 16px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  
+  input {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 }
 
@@ -872,6 +897,15 @@ input:focus {
   border-radius: 20px;
   color: var(--text-secondary);
   font-size: 0.9rem;
+}
+
+input[type="file"] {
+  padding: 16px;
+  min-height: 48px; /* Minimum touch target size */
+  border: 2px dashed var(--border-primary);
+  background: var(--bg-secondary);
+  cursor: pointer;
+  font-size: 1rem; /* Increased for better readability */
 }
 
 .privacy-link {
