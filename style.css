@@ -653,7 +653,6 @@ input:focus {
     19px -19px 0 0px, 38px -19px 0 0px, 57px -19px 0 0px,
     19px 0     0 5px, 38px 0     0 5px, 57px 0     0 5px,
     19px 19px  0 0px, 38px 19px  0 0px, 57px 19px  0 0px;
-  transform: translateX(-38px);
   animation: l26 2s infinite linear;
 }
 
@@ -745,9 +744,8 @@ body.page-loading {
 
 .page-loader-overlay .loading-spinner {
   display: block;
-  transform: translateX(-38px) scale(2); /* Make it bigger for full page */
-  position: relative;
-  left: 38px; /* Offset the translateX to center */
+  transform: scale(2); /* Scale up without translateX */
+  margin: 0 auto; /* Center horizontally */
 }
 
 /* Story Button */
