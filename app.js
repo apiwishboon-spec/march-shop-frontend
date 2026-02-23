@@ -469,3 +469,58 @@ function showError(message) {
     errorElement.style.display = "none";
   }, 5000);
 }
+
+// Gallery Functions
+function changeGalleryImage(thumbnail, index) {
+  const mainImage = thumbnail.closest('.product-gallery').querySelector('.gallery-main');
+  const allThumbnails = thumbnail.closest('.gallery-thumbnails').querySelectorAll('.thumbnail');
+  
+  // Remove active class from all thumbnails
+  allThumbnails.forEach(thumb => thumb.classList.remove('active'));
+  
+  // Add active class to clicked thumbnail
+  thumbnail.classList.add('active');
+  
+  // Change main image
+  mainImage.src = thumbnail.src;
+}
+
+// Newsletter Functions
+function subscribeNewsletter(event) {
+  event.preventDefault();
+  const email = event.target.querySelector('.newsletter-input').value;
+  
+  if (!email) return;
+  
+  // Save to Google Sheet (Sheet 2)
+  const formData = new URLSearchParams();
+  formData.append('email', email);
+  formData.append('action', 'newsletter');
+  
+  fetch(API_URL, {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      showSuccess('Successfully subscribed to newsletter!');
+      event.target.reset();
+    } else {
+      showError('Failed to subscribe. Please try again.');
+    }
+  })
+  .catch(error => {
+    showError('Subscription failed. Please try again.');
+  });
+}
+
+// Admin Functions
+function showAdminLogin() {
+  const password = prompt('Enter admin password:');
+  if (password === 'YOUR_ADMIN_PASSWORD') {
+    window.location.href = 'admin.html';
+  } else if (password !== null) {
+    showError('Invalid password');
+  }
+}
