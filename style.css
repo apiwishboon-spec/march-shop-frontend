@@ -645,7 +645,7 @@ input:focus {
 /* Loading States */
 .loading-spinner {
   display: none;
-  width: 50px;
+  width: 40px; /* Smaller size */
   aspect-ratio: 1;
   position: relative;
   margin-right: 8px;
@@ -659,15 +659,15 @@ input:focus {
   left: 0;
   width: 100%;
   height: 100%;
-  border: 8px solid;
+  border: 6px solid; /* Thinner border */
   border-radius: 50%;
-  border-color: red red #0000 #0000;
+  border-color: #FF69B4 #FF69B4 #0000 #0000; /* Pink */
   mix-blend-mode: darken;
   animation: l14 1s infinite linear;
 }
 
 .loading-spinner::after {
-  border-color: #0000 #0000 blue blue;
+  border-color: #0000 #0000 #87CEEB #87CEEB; /* Sky blue */
   animation-direction: reverse;
 }
 
