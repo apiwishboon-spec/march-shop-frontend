@@ -478,8 +478,7 @@
 
             <label class="label">
               Phone
-              <input id="phone" type="tel" placeholder="xxx-xxx-xxxx" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required>
-              <span class="hint">Format: xxx-xxx-xxxx</span>
+              <input id="phone" type="tel" placeholder="111-222-4444" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required>
             </label>
 
             <label class="label">
@@ -603,7 +602,7 @@
     // Initialize theme on page load
     initTheme();
     
-    // Phone number formatting
+    // Phone number formatting for Thai format (111-222-4444)
     document.getElementById('phone').addEventListener('input', function(e) {
       let value = e.target.value.replace(/\D/g, '');
       let formattedValue = '';
