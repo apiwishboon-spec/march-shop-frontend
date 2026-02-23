@@ -305,7 +305,13 @@ function submitOrder() {
   // Show loading state
   submitBtn.classList.add("btn-loading");
   submitBtn.disabled = true;
-  if (btnText) btnText.textContent = "Processing...";
+  if (btnText) btnText.textContent = ""; // Hide button text
+  
+  // Show full-page loader overlay
+  const pageLoader = document.getElementById("pageLoader");
+  if (pageLoader) {
+    pageLoader.classList.add("active");
+  }
 
   // PromptPay QR - generate QR code
   console.log('Starting PromptPay order submission...');
@@ -319,6 +325,12 @@ function submitOrder() {
     submitBtn.classList.remove("btn-loading");
     submitBtn.disabled = false;
     submitBtn.querySelector(".btn-text").textContent = "Submit Order";
+    
+    // Hide full-page loader overlay
+    const pageLoader = document.getElementById("pageLoader");
+    if (pageLoader) {
+      pageLoader.classList.remove("active");
+    }
     return;
   }
   
@@ -329,6 +341,12 @@ function submitOrder() {
     submitBtn.classList.remove("btn-loading");
     submitBtn.disabled = false;
     submitBtn.querySelector(".btn-text").textContent = "Submit Order";
+    
+    // Hide full-page loader overlay
+    const pageLoader = document.getElementById("pageLoader");
+    if (pageLoader) {
+      pageLoader.classList.remove("active");
+    }
     return;
   }
     
@@ -371,6 +389,12 @@ function submitOrder() {
       submitBtn.classList.remove("btn-loading");
       submitBtn.disabled = false;
       submitBtn.querySelector(".btn-text").textContent = "Submit Order";
+    
+    // Hide full-page loader overlay
+    const pageLoader = document.getElementById("pageLoader");
+    if (pageLoader) {
+      pageLoader.classList.remove("active");
+    }
 
       if (!data.success) {
         throw new Error(data.message || 'Order submission failed');
@@ -403,6 +427,12 @@ function submitOrder() {
       submitBtn.classList.remove("btn-loading");
       submitBtn.disabled = false;
       submitBtn.querySelector(".btn-text").textContent = "Submit Order";
+    
+    // Hide full-page loader overlay
+    const pageLoader = document.getElementById("pageLoader");
+    if (pageLoader) {
+      pageLoader.classList.remove("active");
+    }
       
       if (err.name === 'AbortError') {
         showError('Request timed out. Please try again.');
