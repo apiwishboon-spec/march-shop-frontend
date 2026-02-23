@@ -300,7 +300,7 @@ function submitOrder() {
   }
 
   const submitBtn = document.getElementById("submitBtn");
-  const btnText = submitBtn.querySelector("span") || submitBtn;
+  const btnText = submitBtn.querySelector(".btn-text") || submitBtn;
   
   // Show loading state
   submitBtn.classList.add("btn-loading");
@@ -318,7 +318,7 @@ function submitOrder() {
     const submitBtn = document.getElementById("submitBtn");
     submitBtn.classList.remove("btn-loading");
     submitBtn.disabled = false;
-    submitBtn.querySelector("span").textContent = "Submit Order";
+    submitBtn.querySelector(".btn-text").textContent = "Submit Order";
     return;
   }
   
@@ -328,7 +328,7 @@ function submitOrder() {
     const submitBtn = document.getElementById("submitBtn");
     submitBtn.classList.remove("btn-loading");
     submitBtn.disabled = false;
-    submitBtn.querySelector("span").textContent = "Submit Order";
+    submitBtn.querySelector(".btn-text").textContent = "Submit Order";
     return;
   }
     
@@ -370,7 +370,7 @@ function submitOrder() {
       const submitBtn = document.getElementById("submitBtn");
       submitBtn.classList.remove("btn-loading");
       submitBtn.disabled = false;
-      submitBtn.querySelector("span").textContent = "Submit Order";
+      submitBtn.querySelector(".btn-text").textContent = "Submit Order";
 
       if (!data.success) {
         throw new Error(data.message || 'Order submission failed');
@@ -402,7 +402,7 @@ function submitOrder() {
       const submitBtn = document.getElementById("submitBtn");
       submitBtn.classList.remove("btn-loading");
       submitBtn.disabled = false;
-      submitBtn.querySelector("span").textContent = "Submit Order";
+      submitBtn.querySelector(".btn-text").textContent = "Submit Order";
       
       if (err.name === 'AbortError') {
         showError('Request timed out. Please try again.');
