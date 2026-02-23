@@ -723,7 +723,7 @@ input:focus {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.4); /* Brighter overlay (40% vs 70%) */
+  background: rgba(0, 0, 0, 0.2); /* Even brighter overlay (20% vs 40%) */
   backdrop-filter: blur(5px);
   z-index: 9999;
   display: none;
@@ -733,6 +733,14 @@ input:focus {
 
 .page-loader-overlay.active {
   display: flex;
+}
+
+/* Prevent scrolling when overlay is active */
+body.page-loading {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
 }
 
 .page-loader-overlay .loading-spinner {

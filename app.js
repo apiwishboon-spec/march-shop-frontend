@@ -311,6 +311,7 @@ function submitOrder() {
   const pageLoader = document.getElementById("pageLoader");
   if (pageLoader) {
     pageLoader.classList.add("active");
+    document.body.classList.add("page-loading"); // Prevent scrolling
   }
 
   // PromptPay QR - generate QR code
@@ -330,6 +331,7 @@ function submitOrder() {
     const pageLoader = document.getElementById("pageLoader");
     if (pageLoader) {
       pageLoader.classList.remove("active");
+      document.body.classList.remove("page-loading"); // Restore scrolling
     }
     return;
   }
@@ -346,6 +348,7 @@ function submitOrder() {
     const pageLoader = document.getElementById("pageLoader");
     if (pageLoader) {
       pageLoader.classList.remove("active");
+      document.body.classList.remove("page-loading"); // Restore scrolling
     }
     return;
   }
@@ -394,6 +397,7 @@ function submitOrder() {
     const pageLoader = document.getElementById("pageLoader");
     if (pageLoader) {
       pageLoader.classList.remove("active");
+      document.body.classList.remove("page-loading"); // Restore scrolling
     }
 
       if (!data.success) {
@@ -432,6 +436,7 @@ function submitOrder() {
     const pageLoader = document.getElementById("pageLoader");
     if (pageLoader) {
       pageLoader.classList.remove("active");
+      document.body.classList.remove("page-loading"); // Restore scrolling
     }
       
       if (err.name === 'AbortError') {
