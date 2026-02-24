@@ -877,6 +877,7 @@
         .then(data => {
           if (data.success) {
             sessionStorage.setItem('adminAuth', 'true');
+            sessionStorage.setItem('adminToken', data.data.token);
             showDashboard();
           } else {
             errEl.textContent = '❌ Wrong password. Please try again.';
@@ -906,6 +907,7 @@
 
     function logout() {
       sessionStorage.removeItem('adminAuth');
+      sessionStorage.removeItem('adminToken');
       window.location.reload();
     }
 
@@ -923,8 +925,16 @@
     //  LOAD ANALYTICS
     // ─────────────────────────────────────
     function loadData() {
+      const token = sessionStorage.getItem('adminToken');
+      if (!token) {
+        showToast('Session expired. Please login again.', 'fail');
+        logout();
+        return;
+      }
+      
       const fd = new URLSearchParams();
       fd.append('action', 'adminData');
+      fd.append('token', token);
 
       fetch(API_URL, { method: 'POST', body: fd })
         .then(r => r.json())
@@ -933,8 +943,13 @@
             updateStats(res.data);
             buildCharts(res.data);
           } else {
-            showToast('Could not load analytics.', 'fail');
-            clearSkeletons();
+            if (res.message === 'Unauthorized') {
+              showToast('Session expired. Please login again.', 'fail');
+              logout();
+            } else {
+              showToast('Could not load analytics.', 'fail');
+              clearSkeletons();
+            }
           }
         })
         .catch(() => {
