@@ -518,9 +518,29 @@ function subscribeNewsletter(event) {
 // Admin Functions
 function showAdminLogin() {
   const password = prompt('Enter admin password:');
-  if (password === 'adminboon5127') {
-    window.location.href = 'admin.html';
-  } else if (password !== null) {
-    showError('Invalid password');
-  }
+  // Password will be validated by backend
+  checkAdminPassword(password);
+}
+
+function checkAdminPassword(password) {
+  const formData = new URLSearchParams();
+  formData.append('password', password);
+  formData.append('action', 'adminLogin');
+  
+  fetch(API_URL, {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      sessionStorage.setItem('adminAuth', 'true');
+      window.location.href = 'admin.html';
+    } else {
+      showError('Invalid password');
+    }
+  })
+  .catch(error => {
+    showError('Authentication failed');
+  });
 }
