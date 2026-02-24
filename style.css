@@ -912,6 +912,62 @@ body.page-loading {
   color: var(--gradient-start);
 }
 
+/* Simple Charts */
+.simple-chart {
+  height: 350px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bar-chart {
+  display: flex;
+  align-items: end;
+  gap: 15px;
+  height: 100%;
+  width: 100%;
+  padding: 20px;
+}
+
+.bar {
+  flex: 1;
+  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+  border-radius: 8px 8px 0 0;
+  position: relative;
+  min-height: 20px;
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  padding-bottom: 10px;
+}
+
+.bar span {
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: center;
+  position: absolute;
+  bottom: -25px;
+  white-space: nowrap;
+}
+
+.pie-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  padding: 20px;
+}
+
+.pie-segment {
+  padding: 15px;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
 /* Admin Dashboard */
 .admin-dashboard {
   min-height: 100vh;
