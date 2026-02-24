@@ -504,12 +504,15 @@ function changeGalleryImage(thumbnail, index) {
 
 // Newsletter Functions
 function subscribeNewsletter(event) {
-  event.preventDefault();
-  const email = event.target.querySelector('.newsletter-input').value;
+  if (event) event.preventDefault();
+
+  // Support both explicit #nl-email id (index.html) and .newsletter-input class (fallback)
+  const emailInput = document.getElementById('nl-email')
+    || (event && event.target.querySelector('.newsletter-input'));
+  const email = emailInput ? emailInput.value.trim() : '';
 
   if (!email) return;
 
-  // Save to Google Sheet (Sheet 2)
   const formData = new URLSearchParams();
   formData.append('email', email);
   formData.append('action', 'newsletter');
@@ -518,46 +521,22 @@ function subscribeNewsletter(event) {
     method: 'POST',
     body: formData
   })
-    .then(response => response.json())
+    .then(r => r.json())
     .then(data => {
       if (data.success) {
-        showSuccess('Successfully subscribed to newsletter!');
-        event.target.reset();
+        showSuccess('🎉 Subscribed! Welcome to the ART&INK community.');
+        if (emailInput) emailInput.value = '';
+        if (event && event.target && event.target.reset) event.target.reset();
       } else {
-        showError('Failed to subscribe. Please try again.');
+        showError('Failed to subscribe: ' + (data.message || 'Please try again.'));
       }
     })
-    .catch(error => {
-      showError('Subscription failed. Please try again.');
+    .catch(() => {
+      showError('Connection error. Please try again.');
     });
 }
 
-// Admin Functions
+// Admin – just navigate to the admin page which has its own secure login wall
 function showAdminLogin() {
-  const password = prompt('Enter admin password:');
-  // Password will be validated by backend
-  checkAdminPassword(password);
-}
-
-function checkAdminPassword(password) {
-  const formData = new URLSearchParams();
-  formData.append('password', password);
-  formData.append('action', 'adminLogin');
-
-  fetch(API_URL, {
-    method: 'POST',
-    body: formData
-  })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        sessionStorage.setItem('adminAuth', 'true');
-        window.location.href = 'admin.html';
-      } else {
-        showError('Invalid password');
-      }
-    })
-    .catch(error => {
-      showError('Authentication failed');
-    });
+  window.location.href = 'admin.html';
 }
