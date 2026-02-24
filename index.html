@@ -782,7 +782,7 @@
       <h2 class="newsletter-title">🎨 Stay Creative</h2>
       <p class="newsletter-description">Get exclusive designs, early access to new drops, and subscriber-only offers.
       </p>
-      <form class="newsletter-form" id="nl-form" onsubmit="subscribeNewsletter(event)">
+      <form class="newsletter-form" id="nl-form" onsubmit="event.preventDefault(); subscribeNewsletter(event)">
         <input type="email" id="nl-email" class="newsletter-input" placeholder="your@email.com" required
           autocomplete="email" />
         <button type="submit" class="newsletter-btn" id="nl-btn">Subscribe</button>
@@ -866,6 +866,57 @@
   </div>
 
   <script src="app.js"></script>
+  <script>
+    // Immediate newsletter form handler to prevent page refresh
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('nl-form');
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          const email = document.getElementById('nl-email').value.trim();
+          const btn = document.getElementById('nl-btn');
+          const status = document.getElementById('nl-status');
+          
+          if (!email) return;
+          
+          btn.disabled = true;
+          btn.textContent = '⏳ Subscribing…';
+          status.textContent = '';
+          status.className = 'nl-status';
+          
+          const fd = new URLSearchParams();
+          fd.append('email', email);
+          fd.append('action', 'newsletter');
+          
+          fetch('https://script.google.com/macros/s/AKfycbxENBG6cKm3ImJd_6gjvxCUnM-hG0xeNhPhjLUleDCyh0JsXhkkG7wOwkBjRW43j-88mg/exec', {
+            method: 'POST',
+            body: fd
+          })
+          .then(r => r.json())
+          .then(data => {
+            btn.disabled = false;
+            btn.textContent = 'Subscribe';
+            if (data.success) {
+              status.textContent = '✅ You\'re subscribed! Check your inbox.';
+              status.className = 'nl-status ok';
+              document.getElementById('nl-email').value = '';
+            } else {
+              status.textContent = '❌ ' + (data.message || 'Please try again.');
+              status.className = 'nl-status fail';
+            }
+          })
+          .catch(() => {
+            btn.disabled = false;
+            btn.textContent = 'Subscribe';
+            status.textContent = '⚠️ Connection error. Please try again.';
+            status.className = 'nl-status fail';
+          });
+        });
+      }
+    });
+  </script>
 </body>
 
 </html>
