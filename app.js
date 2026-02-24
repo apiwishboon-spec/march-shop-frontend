@@ -282,6 +282,12 @@ function onTurnstileSuccess(token) {
 // SUBMIT ORDER (WITH LOADING)
 // ================================
 function submitOrder() {
+  // Show blur overlay with loader
+  const blurOverlay = document.getElementById("blurOverlay");
+  if (blurOverlay) {
+    blurOverlay.classList.add("active");
+  }
+  
   const email = document.getElementById("email").value.trim();
   const phone = document.getElementById("phone").value.trim();
   const item = localStorage.getItem("item");
@@ -306,13 +312,6 @@ function submitOrder() {
   submitBtn.classList.add("btn-loading");
   submitBtn.disabled = true;
   if (btnText) btnText.textContent = ""; // Hide button text
-
-  // Show full-page loader overlay
-  const pageLoader = document.getElementById("pageLoader");
-  if (pageLoader) {
-    pageLoader.classList.add("active");
-    document.body.classList.add("page-loading"); // Prevent scrolling
-  }
 
   // PromptPay QR - generate QR code
   console.log('Starting PromptPay order submission...');
@@ -419,6 +418,12 @@ function submitOrder() {
         // Save order ID to localStorage for success page
         localStorage.setItem('lastOrderId', orderId);
 
+        // Hide blur overlay before redirect
+        const blurOverlay = document.getElementById("blurOverlay");
+        if (blurOverlay) {
+          blurOverlay.classList.remove("active");
+        }
+
         // Redirect to success page with order ID
         window.location.href = "success.html?id=" + orderId;
       })
@@ -469,6 +474,12 @@ function showSuccess(message) {
 
 // ================================
 function showError(message) {
+  // Hide blur overlay when showing error
+  const blurOverlay = document.getElementById("blurOverlay");
+  if (blurOverlay) {
+    blurOverlay.classList.remove("active");
+  }
+  
   // Create or update error message
   let errorElement = document.getElementById("error");
   if (!errorElement) {
