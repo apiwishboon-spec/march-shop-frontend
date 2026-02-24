@@ -865,8 +865,85 @@
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <!-- <script src="app.js"></script> -->
   <script>
+    // Essential functions (inline to avoid app.js conflicts)
+    let currentProduct = null;
+    let currentImageIndex = 0;
+    let selectedSize = 'M';
+
+    function showProductPopup(name, price, image, description, sizes) {
+      currentProduct = { name, price, images: [image], description, sizes };
+      currentImageIndex = 0;
+      selectedSize = sizes.includes('M') ? 'M' : sizes[0];
+
+      document.getElementById('popup-title').textContent = name;
+      document.getElementById('popup-price').textContent = price;
+      document.getElementById('popup-description').textContent = description;
+      document.getElementById('popup-main-image').src = image;
+      document.getElementById('image-counter').textContent = '1 / 1';
+
+      const thumbsEl = document.getElementById('popup-thumbs');
+      thumbsEl.innerHTML = `<img class="popup-thumb active" src="${image}" alt="${name}" onclick="selectImage(0)" />`;
+
+      const sizesEl = document.getElementById('popup-sizes');
+      sizesEl.innerHTML = sizes.map(s =>
+        `<button class="size-btn ${s === selectedSize ? 'selected' : ''}" onclick="selectSize('${s}')" data-size="${s}">${s}</button>`
+      ).join('');
+
+      document.getElementById('product-popup').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeProductPopup() {
+      document.getElementById('product-popup').classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    function selectImage(index) {
+      if (!currentProduct || !currentProduct.images[index]) return;
+      currentImageIndex = index;
+      document.getElementById('popup-main-image').src = currentProduct.images[index];
+      document.getElementById('image-counter').textContent = `${index + 1} / ${currentProduct.images.length}`;
+      document.querySelectorAll('.popup-thumb').forEach((t, i) => t.classList.toggle('active', i === index));
+    }
+
+    function previousImage() { 
+      if (currentImageIndex > 0) selectImage(currentImageIndex - 1); 
+    }
+
+    function nextImage() { 
+      if (currentProduct && currentImageIndex < currentProduct.images.length - 1) selectImage(currentImageIndex + 1); 
+    }
+
+    function selectSize(size) {
+      selectedSize = size;
+      document.querySelectorAll('.size-btn').forEach(b => b.classList.toggle('selected', b.dataset.size === size));
+    }
+
+    function orderFromPopup() {
+      if (!currentProduct) return;
+      localStorage.setItem('item', currentProduct.name);
+      localStorage.setItem('price', currentProduct.price);
+      localStorage.setItem('selectedSize', selectedSize);
+      closeProductPopup();
+      window.location.href = 'order.html';
+    }
+
+    function goOrder(itemName, itemPrice) {
+      localStorage.setItem('item', itemName);
+      localStorage.setItem('price', itemPrice);
+      window.location.href = 'order.html';
+    }
+
+    function openPrivacy() { 
+      document.getElementById('privacy-overlay').classList.remove('hidden'); 
+    }
+
+    function closePrivacy() { 
+      document.getElementById('privacy-overlay').classList.add('hidden'); 
+    }
+
     // Immediate newsletter form handler to prevent page refresh
     document.addEventListener('DOMContentLoaded', function() {
       const form = document.getElementById('nl-form');
