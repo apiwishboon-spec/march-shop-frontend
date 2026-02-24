@@ -19,6 +19,83 @@
       font-family: 'Inter', sans-serif;
     }
 
+    /* Development Notice Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      backdrop-filter: blur(5px);
+    }
+
+    .modal-content.dev-notice {
+      background: white;
+      border-radius: 12px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-header {
+      padding: 20px 20px 0;
+      text-align: center;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      color: #333;
+      font-size: 24px;
+    }
+
+    .modal-body {
+      padding: 20px;
+      color: #666;
+      line-height: 1.6;
+    }
+
+    .modal-body ul {
+      margin: 10px 0;
+      padding-left: 20px;
+    }
+
+    .modal-body a {
+      color: #3b82f6;
+      text-decoration: none;
+    }
+
+    .modal-body a:hover {
+      text-decoration: underline;
+    }
+
+    .modal-footer {
+      padding: 0 20px 20px;
+      text-align: center;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #f3a6c8 0%, #d9b7ee 50%, #9ecbff 100%);
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 25px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
     /* ── Hero ── */
     .hero {
       padding: 72px 0 48px;
@@ -971,6 +1048,31 @@
 
   </div>
 
+  <!-- Development Notice Modal -->
+  <div id="devNoticeModal" class="modal-overlay" style="display: flex;">
+    <div class="modal-content dev-notice">
+      <div class="modal-header">
+        <h2>🚧 Under Development</h2>
+      </div>
+      <div class="modal-body">
+        <p><strong>Welcome to ART&INK!</strong></p>
+        <p>This website is currently under development and may contain bugs or incomplete features. We're working hard to bring you the best art apparel shopping experience.</p>
+        <p><strong>Please note:</strong></p>
+        <ul>
+          <li>Some features may not work perfectly</li>
+          <li>Design and functionality may change</li>
+          <li>Orders are for testing purposes only</li>
+        </ul>
+        <p><strong>Need help? Contact us:</strong></p>
+        <p>📧 <a href="mailto:apiwish.boon@gmail.com">apiwish.boon@gmail.com</a></p>
+        <p><em>Reply time: Up to 72 hours</em></p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-primary" onclick="closeDevNotice()">I Understand</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Newsletter -->
   <section class="newsletter-section">
     <div class="newsletter-content">
@@ -1062,6 +1164,24 @@
 
   <!-- <script src="app.js"></script> -->
   <script>
+    // Development Notice Modal
+    function closeDevNotice() {
+      const modal = document.getElementById('devNoticeModal');
+      modal.style.display = 'none';
+      // Set a cookie to remember user has seen the notice
+      document.cookie = 'devNoticeSeen=true; max-age=86400; path=/'; // 24 hours
+    }
+
+    // Check if user has already seen the notice
+    function checkDevNotice() {
+      if (document.cookie.includes('devNoticeSeen=true')) {
+        document.getElementById('devNoticeModal').style.display = 'none';
+      }
+    }
+
+    // Run check when page loads
+    document.addEventListener('DOMContentLoaded', checkDevNotice);
+
     // Essential functions (inline to avoid app.js conflicts)
     let currentProduct = null;
     let currentImageIndex = 0;
@@ -1154,7 +1274,7 @@
           if (!email) return;
           
           btn.disabled = true;
-          btn.textContent = '⏳ Subscribing…';
+          btn.textContent = '&#x23F3; Subscribing…';
           status.textContent = '';
           status.className = 'nl-status';
           
@@ -1171,18 +1291,18 @@
             btn.disabled = false;
             btn.textContent = 'Subscribe';
             if (data.success) {
-              status.textContent = '✅ You\'re subscribed! Check your inbox.';
+              status.textContent = '&#x2713; You\'re subscribed! Check your inbox.';
               status.className = 'nl-status ok';
               document.getElementById('nl-email').value = '';
             } else {
-              status.textContent = '❌ ' + (data.message || 'Please try again.');
+              status.textContent = '&#x2718; ' + (data.message || 'Please try again.');
               status.className = 'nl-status fail';
             }
           })
           .catch(() => {
             btn.disabled = false;
             btn.textContent = 'Subscribe';
-            status.textContent = '⚠️ Connection error. Please try again.';
+            status.textContent = '&#x26A0; Connection error. Please try again.';
             status.className = 'nl-status fail';
           });
         });
