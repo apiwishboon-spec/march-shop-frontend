@@ -497,25 +497,28 @@
     
     /* HTML: <div class="loader"></div> */
     .loader {
-      width: 90px;
+      width: 50px;
       aspect-ratio: 1;
-      --c:no-repeat linear-gradient(orange 0 0);
-      background:
-        var(--c) left   20px top    0,
-        var(--c) top    20px right  0,
-        var(--c) right  20px bottom 0,
-        var(--c) bottom 20px left   0;
-      background-size:calc(100%/3) calc(100%/3);
-      animation: 
-        l29-1 .75s infinite alternate linear,
-        l29-2 1.5s infinite;
+      display: grid;
+      border-radius: 50%;
+      background: conic-gradient(#25b09b 25%,#f03355 0 50%,#514b82 0 75%,#ffa516 0);
+      animation: l22 2s infinite linear;
     }
-    @keyframes l29-1 {
-      90%,100% {background-size:calc(2*100%/3) calc(100%/3),calc(100%/3) calc(2*100%/3)}
+    .loader::before,
+    .loader::after {
+       content: "";
+       grid-area: 1/1;
+       margin: 15%;
+       border-radius: 50%;
+       background: inherit;
+       animation: inherit;
     }
-    @keyframes l29-2 {
-      0%,49.99% {transform:scaleX(1)}
-      50%,100%  {transform:scaleX(-1)}
+    .loader::after {
+       margin: 25%;
+       animation-duration: 3s;
+    }
+    @keyframes l22 {
+      100% {transform: rotate(1turn)}
     }
   </style>
 </head>
