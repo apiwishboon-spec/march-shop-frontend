@@ -712,6 +712,9 @@
           </div>
           <div class="card-actions">
             <button class="btn-order" onclick="goOrder('Abstract Line Art Tee', 590)">Order Now</button>
+            <button class="btn-info"
+              onclick="showProductPopup('Abstract Line Art Tee', 590, 'https://images.unsplash.com/photo-1520975916090-3105956dac38', 'Minimalist line artwork screen-printed on premium cotton. Clean, modern design with artistic expression. Perfect for those who appreciate subtle elegance and contemporary art.', ['S','M','L','XL'])">ℹ️
+              Details</button>
           </div>
         </div>
       </div>
@@ -863,120 +866,6 @@
   </div>
 
   <script src="app.js"></script>
-  <script>
-    // ── Product Popup ──
-    let currentProduct = null;
-    let currentImageIndex = 0;
-    let selectedSize = 'M';
-
-    function showProductPopup(name, price, image, description, sizes) {
-      currentProduct = { name, price, images: [image], description, sizes };
-      currentImageIndex = 0;
-      selectedSize = sizes.includes('M') ? 'M' : sizes[0];
-
-      document.getElementById('popup-title').textContent = name;
-      document.getElementById('popup-price').textContent = price;
-      document.getElementById('popup-description').textContent = description;
-      document.getElementById('popup-main-image').src = image;
-      document.getElementById('image-counter').textContent = '1 / 1';
-
-      // Thumbnails
-      const thumbsEl = document.getElementById('popup-thumbs');
-      thumbsEl.innerHTML = `<img class="popup-thumb active" src="${image}" alt="${name}" onclick="selectImage(0)" />`;
-
-      // Sizes
-      const sizesEl = document.getElementById('popup-sizes');
-      sizesEl.innerHTML = sizes.map(s =>
-        `<button class="size-btn ${s === selectedSize ? 'selected' : ''}" onclick="selectSize('${s}')" data-size="${s}">${s}</button>`
-      ).join('');
-
-      document.getElementById('product-popup').classList.remove('hidden');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeProductPopup() {
-      document.getElementById('product-popup').classList.add('hidden');
-      document.body.style.overflow = '';
-    }
-
-    function selectImage(index) {
-      if (!currentProduct || !currentProduct.images[index]) return;
-      currentImageIndex = index;
-      document.getElementById('popup-main-image').src = currentProduct.images[index];
-      document.getElementById('image-counter').textContent = `${index + 1} / ${currentProduct.images.length}`;
-      document.querySelectorAll('.popup-thumb').forEach((t, i) => t.classList.toggle('active', i === index));
-    }
-
-    function previousImage() { if (currentImageIndex > 0) selectImage(currentImageIndex - 1); }
-    function nextImage() { if (currentProduct && currentImageIndex < currentProduct.images.length - 1) selectImage(currentImageIndex + 1); }
-
-    function selectSize(size) {
-      selectedSize = size;
-      document.querySelectorAll('.size-btn').forEach(b => b.classList.toggle('selected', b.dataset.size === size));
-    }
-
-    function orderFromPopup() {
-      if (!currentProduct) return;
-      localStorage.setItem('item', currentProduct.name);
-      localStorage.setItem('price', currentProduct.price);
-      localStorage.setItem('selectedSize', selectedSize);
-      closeProductPopup();
-      window.location.href = 'order.html';
-    }
-
-    function goOrder(itemName, itemPrice) {
-      localStorage.setItem('item', itemName);
-      localStorage.setItem('price', itemPrice);
-      window.location.href = 'order.html';
-    }
-
-    function openPrivacy() { document.getElementById('privacy-overlay').classList.remove('hidden'); }
-    function closePrivacy() { document.getElementById('privacy-overlay').classList.add('hidden'); }
-
-    // ── Newsletter ──
-    function subscribeNewsletter(event) {
-      event.preventDefault();
-      const emailInput = document.getElementById('nl-email');
-      const btn = document.getElementById('nl-btn');
-      const status = document.getElementById('nl-status');
-      const email = emailInput.value.trim();
-
-      if (!email) return;
-
-      btn.disabled = true;
-      btn.textContent = '⏳ Subscribing…';
-      status.textContent = '';
-      status.className = 'nl-status';
-
-      const fd = new URLSearchParams();
-      fd.append('email', email);
-      fd.append('action', 'newsletter');
-
-      fetch('https://script.google.com/macros/s/AKfycbxENBG6cKm3ImJd_6gjvxCUnM-hG0xeNhPhjLUleDCyh0JsXhkkG7wOwkBjRW43j-88mg/exec', {
-        method: 'POST',
-        body: fd
-      })
-        .then(r => r.json())
-        .then(data => {
-          btn.disabled = false;
-          btn.textContent = 'Subscribe';
-          if (data.success) {
-            status.textContent = '✅ You\'re subscribed! Check your inbox.';
-            status.className = 'nl-status ok';
-            emailInput.value = '';
-          } else {
-            status.textContent = '❌ ' + (data.message || 'Please try again.');
-            status.className = 'nl-status fail';
-          }
-        })
-        .catch(() => {
-          btn.disabled = false;
-          btn.textContent = 'Subscribe';
-          status.textContent = '⚠️ Connection error. Please try again.';
-          status.className = 'nl-status fail';
-        });
-    }
-  </script>
 </body>
 
 </html>
