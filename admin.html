@@ -114,26 +114,47 @@
     const isAuthenticated = sessionStorage.getItem('adminAuth');
     
     if (!isAuthenticated) {
-      // Check if password is in URL
-      const urlParams = new URLSearchParams(window.location.search);
-      const password = urlParams.get('password');
-      
-      if (password) {
-        // Validate password with backend
-        validatePassword(password);
-      } else {
-        // Prompt for password
-        const enteredPassword = prompt('Enter admin password:');
-        if (enteredPassword) {
-          validatePassword(enteredPassword);
-        } else {
-          alert('Password required');
-          window.location.href = 'index.html';
-        }
-      }
+      // Show login modal
+      showLoginModal();
     } else {
       // Already authenticated, load data
       useFallbackData();
+    }
+
+    function showLoginModal() {
+      const loginModal = document.createElement('div');
+      loginModal.className = 'login-modal';
+      loginModal.innerHTML = `
+        <div class="login-card">
+          <h2>Admin Access</h2>
+          <p>Enter password to access dashboard</p>
+          <input type="password" id="admin-password-input" placeholder="Enter password" />
+          <div class="login-buttons">
+            <button onclick="attemptLogin()" class="login-btn go">Go</button>
+            <button onclick="cancelLogin()" class="login-btn cancel">Cancel</button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(loginModal);
+      
+      // Add enter key support
+      document.getElementById('admin-password-input').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          attemptLogin();
+        }
+      });
+    }
+
+    function attemptLogin() {
+      const password = document.getElementById('admin-password-input').value;
+      if (password) {
+        validatePassword(password);
+      }
+    }
+
+    function cancelLogin() {
+      window.location.href = 'index.html';
     }
 
     function validatePassword(password) {
@@ -151,20 +172,23 @@
       .then(data => {
         if (data.success) {
           sessionStorage.setItem('adminAuth', 'true');
-          // Remove password from URL if present
-          if (window.location.search.includes('password=')) {
-            window.location.href = 'admin.html';
-          } else {
-            useFallbackData(); // Load dashboard data
+          // Remove login modal
+          const modal = document.querySelector('.login-modal');
+          if (modal) {
+            modal.remove();
           }
+          useFallbackData(); // Load dashboard data
         } else {
           alert('Invalid password');
-          window.location.href = 'index.html';
         }
       })
       .catch(error => {
         console.error('Authentication error:', error);
         // Use fallback data on error
+        const modal = document.querySelector('.login-modal');
+        if (modal) {
+          modal.remove();
+        }
         useFallbackData();
       });
     }
