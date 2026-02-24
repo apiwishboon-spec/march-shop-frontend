@@ -100,12 +100,44 @@
               <span id="subscriber-count">0</span>
               <p>Total Subscribers</p>
             </div>
-            <button onclick="sendNewsletter()" class="newsletter-send-btn">
-              📧 Send Newsletter
+            <button onclick="showEmailEditor()" class="newsletter-send-btn">
+              📧 Compose Newsletter
             </button>
           </div>
         </div>
       </section>
+
+      <!-- Email Editor Modal -->
+      <div id="email-editor-modal" class="email-editor-modal hidden">
+        <div class="email-editor-card">
+          <div class="email-editor-header">
+            <h3>Compose Newsletter</h3>
+            <button onclick="closeEmailEditor()" class="close-btn">✕</button>
+          </div>
+          
+          <div class="email-editor-form">
+            <div class="form-group">
+              <label>Subject:</label>
+              <input type="text" id="email-subject" placeholder="Enter email subject" />
+            </div>
+            
+            <div class="form-group">
+              <label>HTML Content:</label>
+              <textarea id="email-content" placeholder="Paste your HTML email content here..." rows="15"></textarea>
+            </div>
+            
+            <div class="email-preview">
+              <h4>Preview:</h4>
+              <div id="email-preview-content" class="preview-frame"></div>
+            </div>
+            
+            <div class="email-actions">
+              <button onclick="previewEmail()" class="preview-btn">👁️ Preview</button>
+              <button onclick="sendCustomNewsletter()" class="send-btn">📧 Send Newsletter</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
   </div>
 
@@ -244,6 +276,68 @@
         .then(data => {
           if (data.success) {
             alert('Newsletter sent successfully to ' + data.sentTo + ' subscribers!');
+          } else {
+            alert('Failed to send newsletter: ' + data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error sending newsletter:', error);
+          alert('Error sending newsletter');
+        });
+      }
+    }
+
+    // Email Editor Functions
+    function showEmailEditor() {
+      document.getElementById('email-editor-modal').classList.remove('hidden');
+    }
+
+    function closeEmailEditor() {
+      document.getElementById('email-editor-modal').classList.add('hidden');
+    }
+
+    function previewEmail() {
+      const subject = document.getElementById('email-subject').value;
+      const content = document.getElementById('email-content').value;
+      const preview = document.getElementById('email-preview-content');
+      
+      if (content) {
+        preview.innerHTML = content;
+      } else {
+        preview.innerHTML = '<p style="color: #999;">No content to preview</p>';
+      }
+    }
+
+    function sendCustomNewsletter() {
+      const subject = document.getElementById('email-subject').value;
+      const content = document.getElementById('email-content').value;
+      
+      if (!subject || !content) {
+        alert('Please enter both subject and HTML content');
+        return;
+      }
+      
+      if (confirm('Send custom newsletter to all subscribers?')) {
+        const API_URL = "https://script.google.com/macros/s/AKfycbxENBG6cKm3ImJd_6gjvxCUnM-hG0xeNhPhjLUleDCyh0JsXhkkG7wOwkBjRW43j-88mg/exec";
+        
+        const formData = new URLSearchParams();
+        formData.append('subject', subject);
+        formData.append('content', content);
+        formData.append('action', 'sendCustomNewsletter');
+        
+        fetch(API_URL, {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Custom newsletter sent successfully to ' + data.sentTo + ' subscribers!');
+            closeEmailEditor();
+            // Clear form
+            document.getElementById('email-subject').value = '';
+            document.getElementById('email-content').value = '';
+            document.getElementById('email-preview-content').innerHTML = '';
           } else {
             alert('Failed to send newsletter: ' + data.message);
           }
