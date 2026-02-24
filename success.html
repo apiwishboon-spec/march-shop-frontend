@@ -25,7 +25,8 @@
       align-items: center;
       justify-content: center;
       padding: 24px;
-      overflow: hidden;
+      overflow-x: hidden;
+      overflow-y: auto;
     }
 
     canvas {
@@ -189,6 +190,133 @@
     .btn-home:hover {
       background: #374151;
       transform: translateY(-1px);
+    }
+
+    /* Mobile Responsive Styles */
+    @media (max-width: 768px) {
+      body {
+        padding: 16px;
+      }
+      
+      .success-card {
+        padding: 40px 24px;
+        border-radius: 20px;
+      }
+      
+      .success-icon {
+        font-size: 4rem;
+        margin-bottom: 20px;
+      }
+      
+      .success-title {
+        font-size: 2rem;
+        margin-bottom: 16px;
+      }
+      
+      .success-sub {
+        font-size: 1rem;
+        margin-bottom: 24px;
+      }
+      
+      .order-box {
+        margin-bottom: 24px;
+      }
+      
+      .order-box-label {
+        font-size: 1.1rem;
+        margin-bottom: 12px;
+      }
+      
+      .order-code {
+        font-size: 1.5rem;
+        margin-bottom: 8px;
+      }
+      
+      .success-steps {
+        margin-bottom: 28px;
+      }
+      
+      .step-row {
+        padding: 8px 0;
+      }
+      
+      .step-num {
+        width: 26px;
+        height: 26px;
+        font-size: .75rem;
+      }
+      
+      .step-text {
+        font-size: .85rem;
+      }
+      
+      .btn-home {
+        padding: 14px 24px;
+        font-size: 0.95rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      body {
+        padding: 12px;
+      }
+      
+      .success-card {
+        padding: 32px 20px;
+        border-radius: 16px;
+      }
+      
+      .success-icon {
+        font-size: 3.5rem;
+        margin-bottom: 16px;
+      }
+      
+      .success-title {
+        font-size: 1.6rem;
+        margin-bottom: 12px;
+      }
+      
+      .success-sub {
+        font-size: 0.95rem;
+        margin-bottom: 20px;
+      }
+      
+      .order-box {
+        margin-bottom: 20px;
+      }
+      
+      .order-box-label {
+        font-size: 1rem;
+        margin-bottom: 10px;
+      }
+      
+      .order-code {
+        font-size: 1.5rem;
+        margin-bottom: 6px;
+      }
+      
+      .success-steps {
+        margin-bottom: 24px;
+      }
+      
+      .step-row {
+        padding: 8px 0;
+      }
+      
+      .step-num {
+        width: 26px;
+        height: 26px;
+        font-size: .75rem;
+      }
+      
+      .step-text {
+        font-size: .85rem;
+      }
+      
+      .btn-home {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+      }
     }
   </style>
 </head>
