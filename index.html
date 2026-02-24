@@ -1180,7 +1180,58 @@
     }
 
     // Run check when page loads
-    document.addEventListener('DOMContentLoaded', checkDevNotice);
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check development notice first
+      checkDevNotice();
+      
+      // Then setup newsletter form
+      const form = document.getElementById('nl-form');
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          const email = document.getElementById('nl-email').value.trim();
+          const btn = document.getElementById('nl-btn');
+          const status = document.getElementById('nl-status');
+          
+          if (!email) return;
+          
+          btn.disabled = true;
+          btn.textContent = '&#x23F3; Subscribing…';
+          status.textContent = '';
+          status.className = 'nl-status';
+          
+          const fd = new URLSearchParams();
+          fd.append('email', email);
+          fd.append('action', 'newsletter');
+          
+          fetch('https://script.google.com/macros/s/AKfycbxENBG6cKm3ImJd_6gjvxCUnM-hG0xeNhPhjLUleDCyh0JsXhkkG7wOwkBjRW43j-88mg/exec', {
+            method: 'POST',
+            body: fd
+          })
+          .then(r => r.json())
+          .then(data => {
+            btn.disabled = false;
+            btn.textContent = 'Subscribe';
+            if (data.success) {
+              status.textContent = '&#x2713; You\'re subscribed! Check your inbox.';
+              status.className = 'nl-status ok';
+              document.getElementById('nl-email').value = '';
+            } else {
+              status.textContent = '&#x2718; ' + (data.message || 'Please try again.');
+              status.className = 'nl-status fail';
+            }
+          })
+          .catch(() => {
+            btn.disabled = false;
+            btn.textContent = 'Subscribe';
+            status.textContent = '&#x26A0; Connection error. Please try again.';
+            status.className = 'nl-status fail';
+          });
+        });
+      }
+    });
 
     // Essential functions (inline to avoid app.js conflicts)
     let currentProduct = null;
@@ -1258,56 +1309,6 @@
     function closePrivacy() { 
       document.getElementById('privacy-overlay').classList.add('hidden'); 
     }
-
-    // Immediate newsletter form handler to prevent page refresh
-    document.addEventListener('DOMContentLoaded', function() {
-      const form = document.getElementById('nl-form');
-      if (form) {
-        form.addEventListener('submit', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          
-          const email = document.getElementById('nl-email').value.trim();
-          const btn = document.getElementById('nl-btn');
-          const status = document.getElementById('nl-status');
-          
-          if (!email) return;
-          
-          btn.disabled = true;
-          btn.textContent = '&#x23F3; Subscribing…';
-          status.textContent = '';
-          status.className = 'nl-status';
-          
-          const fd = new URLSearchParams();
-          fd.append('email', email);
-          fd.append('action', 'newsletter');
-          
-          fetch('https://script.google.com/macros/s/AKfycbxENBG6cKm3ImJd_6gjvxCUnM-hG0xeNhPhjLUleDCyh0JsXhkkG7wOwkBjRW43j-88mg/exec', {
-            method: 'POST',
-            body: fd
-          })
-          .then(r => r.json())
-          .then(data => {
-            btn.disabled = false;
-            btn.textContent = 'Subscribe';
-            if (data.success) {
-              status.textContent = '&#x2713; You\'re subscribed! Check your inbox.';
-              status.className = 'nl-status ok';
-              document.getElementById('nl-email').value = '';
-            } else {
-              status.textContent = '&#x2718; ' + (data.message || 'Please try again.');
-              status.className = 'nl-status fail';
-            }
-          })
-          .catch(() => {
-            btn.disabled = false;
-            btn.textContent = 'Subscribe';
-            status.textContent = '&#x26A0; Connection error. Please try again.';
-            status.className = 'nl-status fail';
-          });
-        });
-      }
-    });
   </script>
 </body>
 
