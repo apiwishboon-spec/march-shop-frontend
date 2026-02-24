@@ -164,9 +164,10 @@
           <p>Enter password to access dashboard</p>
           <input type="password" id="admin-password-input" placeholder="Enter password" />
           <div class="login-buttons">
-            <button onclick="attemptLogin()" class="login-btn go">Go</button>
+            <button id="login-go-btn" onclick="attemptLogin()" class="login-btn go">Login</button>
             <button onclick="cancelLogin()" class="login-btn cancel">Cancel</button>
           </div>
+          <p id="login-error" style="color:#e74c3c;font-size:13px;margin-top:10px;display:none;"></p>
         </div>
       `;
 
@@ -181,10 +182,9 @@
     }
 
     function attemptLogin() {
-      const password = document.getElementById('admin-password-input').value;
-      if (password) {
-        validatePassword(password);
-      }
+      const password = document.getElementById('admin-password-input').value.trim();
+      if (!password) return;
+      validatePassword(password);
     }
 
     function cancelLogin() {
@@ -192,19 +192,16 @@
     }
 
     function validatePassword(password) {
+      // ⚠️ Password is NEVER stored here — validated by GAS backend only
       const API_URL = "https://script.google.com/macros/s/AKfycbxENBG6cKm3ImJd_6gjvxCUnM-hG0xeNhPhjLUleDCyh0JsXhkkG7wOwkBjRW43j-88mg/exec";
 
-      // --- Local password check (works offline / if backend is down) ---
-      const LOCAL_PASSWORD = 'adminboon5127';
-      if (password === LOCAL_PASSWORD) {
-        sessionStorage.setItem('adminAuth', 'true');
-        const modal = document.querySelector('.login-modal');
-        if (modal) modal.remove();
-        loadData(); // Load real analytics from backend
-        return;
-      }
+      // Show loading state
+      const btn = document.getElementById('login-go-btn');
+      const errEl = document.getElementById('login-error');
+      btn.disabled = true;
+      btn.textContent = '⏳ Checking...';
+      errEl.style.display = 'none';
 
-      // --- Try backend validation for any other password ---
       const formData = new URLSearchParams();
       formData.append('password', password);
       formData.append('action', 'adminLogin');
@@ -219,14 +216,21 @@
             sessionStorage.setItem('adminAuth', 'true');
             const modal = document.querySelector('.login-modal');
             if (modal) modal.remove();
-            loadData(); // Load real analytics from backend
+            loadData(); // fetch real analytics
           } else {
-            alert('Invalid password');
+            errEl.textContent = '❌ Invalid password. Please try again.';
+            errEl.style.display = 'block';
+            btn.disabled = false;
+            btn.textContent = 'Login';
+            document.getElementById('admin-password-input').value = '';
+            document.getElementById('admin-password-input').focus();
           }
         })
-        .catch(error => {
-          console.error('Authentication error:', error);
-          alert('Authentication failed. Please check your connection and try again.');
+        .catch(() => {
+          errEl.textContent = '⚠️ Could not reach server. Check your connection.';
+          errEl.style.display = 'block';
+          btn.disabled = false;
+          btn.textContent = 'Login';
         });
     }
 
