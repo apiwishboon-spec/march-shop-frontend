@@ -100,8 +100,6 @@
       border: 2px solid var(--border-primary);
       border-radius: 16px;
       padding: 24px;
-      margin-bottom: 24px;
-      box-shadow: var(--shadow-light);
       text-align: center;
     }
     
@@ -115,6 +113,77 @@
       margin: 0;
       color: var(--text-secondary);
       font-size: 0.95rem;
+    }
+    
+    /* Mobile Responsive QR */
+    #dynamicQR {
+      max-width: 280px !important;
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Mobile Responsive Improvements */
+    @media (max-width: 768px) {
+      .container {
+        padding: 15px;
+      }
+      
+      .step-indicator {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .step {
+        width: 100%;
+        text-align: center;
+      }
+      
+      .qr-card {
+        padding: 20px;
+      }
+      
+      #dynamicQR {
+        max-width: 240px !important;
+      }
+      
+      .form-group {
+        flex-direction: column;
+      }
+      
+      .form-group label {
+        margin-bottom: 8px;
+      }
+      
+      .button-row {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .button-row button {
+        width: 100%;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      #dynamicQR {
+        max-width: 200px !important;
+      }
+      
+      .qr-card {
+        padding: 15px;
+      }
+      
+      .order-summary {
+        padding: 15px;
+      }
+      
+      .summary-item {
+        padding: 10px 0;
+        font-size: 0.9rem;
+      }
     }
     
     .instruction-steps {
@@ -495,7 +564,7 @@
           <div id="promptpay-section">
             <div class="qr-section">
               <div class="qr-card">
-                <img id="dynamicQR" src="" alt="Payment QR Code" style="max-width: 200px; border-radius: 8px; margin-bottom: 16px;">
+                <img id="dynamicQR" src="" alt="Payment QR Code">
                 <div class="qr-info">
                   <h3>📸 Scan QR Code</h3>
                   <p>Use your mobile banking app to scan this QR code and complete the payment.</p>

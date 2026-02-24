@@ -264,9 +264,133 @@
     footer {
       text-align: center;
       padding: 32px 24px;
-      color: #9ca3af;
       font-size: .8rem;
+      color: #6b7280;
       border-top: 1px solid #f0f0f0;
+    }
+    
+    /* Mobile Responsive Styles */
+    @media (max-width: 768px) {
+      .story-nav-bar {
+        padding: 0 20px;
+        height: 50px;
+      }
+      
+      .nav-brand {
+        font-size: 1rem;
+      }
+      
+      .nav-back {
+        font-size: 0.8rem;
+      }
+      
+      .story-hero {
+        padding: 60px 20px 40px;
+      }
+      
+      .story-hero h1 {
+        font-size: clamp(2.2rem, 10vw, 3.2rem);
+      }
+      
+      .story-hero p {
+        font-size: 1rem;
+      }
+      
+      .story-section {
+        padding: 48px 20px;
+      }
+      
+      .story-section h2 {
+        font-size: 2rem;
+      }
+      
+      .timeline-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      
+      .values-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      
+      .value-card {
+        padding: 24px;
+      }
+      
+      .story-cta {
+        padding: 48px 20px;
+      }
+      
+      .story-cta h2 {
+        font-size: 2rem;
+      }
+      
+      .btn-cta {
+        padding: 16px 32px;
+        font-size: 1rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .story-nav-bar {
+        padding: 0 16px;
+      }
+      
+      .story-hero {
+        padding: 40px 16px 32px;
+      }
+      
+      .story-hero h1 {
+        font-size: clamp(1.8rem, 12vw, 2.8rem);
+      }
+      
+      .story-hero p {
+        font-size: 0.95rem;
+      }
+      
+      .story-section {
+        padding: 32px 16px;
+      }
+      
+      .story-section h2 {
+        font-size: 1.6rem;
+      }
+      
+      .value-card {
+        padding: 20px;
+      }
+      
+      .value-emoji {
+        font-size: 2rem;
+        margin-bottom: 12px;
+      }
+      
+      .value-card h4 {
+        font-size: 1.1rem;
+      }
+      
+      .value-card p {
+        font-size: 0.9rem;
+      }
+      
+      .story-cta {
+        padding: 32px 16px;
+      }
+      
+      .story-cta h2 {
+        font-size: 1.6rem;
+      }
+      
+      .btn-cta {
+        padding: 14px 24px;
+        font-size: 0.95rem;
+      }
+      
+      footer {
+        padding: 24px 16px;
+        font-size: 0.75rem;
+      }
     }
   </style>
 </head>
