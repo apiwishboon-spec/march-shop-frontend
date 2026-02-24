@@ -10,7 +10,7 @@ let selectedPaymentMethod = 'promptpay';
 
 const API_URL = "https://script.google.com/macros/s/AKfycbxENBG6cKm3ImJd_6gjvxCUnM-hG0xeNhPhjLUleDCyh0JsXhkkG7wOwkBjRW43j-88mg/exec";
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
   const item = localStorage.getItem("item");
   const price = parseFloat(localStorage.getItem("price"));
   const selectedSize = localStorage.getItem("selectedSize") || 'M';
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // Initialize step 1
   updateOrderSummary(item, price, selectedSize);
-  
+
   // Setup payment method listeners
   setupPaymentMethods();
 });
@@ -35,28 +35,28 @@ document.addEventListener("DOMContentLoaded", function() {
 // ================================
 function updateOrderSummary(item, price, size) {
   console.log('Updating order summary with:', { item, price, size });
-  
+
   const productElement = document.getElementById('summary-product');
   const priceElement = document.getElementById('summary-price');
   const sizeElement = document.getElementById('summary-size');
-  
+
   console.log('Found elements:', { productElement, priceElement, sizeElement });
-  
+
   if (productElement) {
     productElement.textContent = item;
     console.log('Set product to:', item);
   }
-  
+
   if (priceElement) {
     priceElement.textContent = price;
     console.log('Set price to:', price);
   }
-  
+
   if (sizeElement) {
     sizeElement.textContent = size;
     console.log('Set size to:', size);
   }
-  
+
   updateTotalPrice(price);
 }
 
@@ -76,25 +76,25 @@ function setupPaymentMethods() {
 
 function showPromptPaySection() {
   document.getElementById('promptpay-section').style.display = 'block';
-  
+
   // Show slip upload
   const slipLabel = document.getElementById('slipLabel');
   if (slipLabel) {
     slipLabel.style.display = 'block';
   }
-  
+
   // Show turnstile for PromptPay orders
   const turnstile = document.querySelector('.cf-turnstile');
   if (turnstile) {
     turnstile.style.display = 'block';
   }
-  
+
   // Ensure buttons are visible
   const buttonRow = document.querySelector('.button-row');
   if (buttonRow) {
     buttonRow.style.display = 'flex';
   }
-  
+
   updateTotalPrice(parseFloat(localStorage.getItem("price")));
 }
 
@@ -177,29 +177,29 @@ function generateQR() {
     method: "POST",
     body: formData
   })
-  .then(res => res.json())
-  .then(data => {
+    .then(res => res.json())
+    .then(data => {
 
-    if (!data.success) {
-      throw new Error(data.message);
-    }
+      if (!data.success) {
+        throw new Error(data.message);
+      }
 
-    generatedPayload = data.data.promptPayPayload;
+      generatedPayload = data.data.promptPayPayload;
 
-    const qrImg = document.getElementById("dynamicQR");
-    // Add cache busting timestamp and higher error correction for security
-    const qrUrlWithCache = data.data.qrImage + "&v=" + Date.now() + "&ecc=H";
-    qrImg.src = qrUrlWithCache;
+      const qrImg = document.getElementById("dynamicQR");
+      // Add cache busting timestamp and higher error correction for security
+      const qrUrlWithCache = data.data.qrImage + "&v=" + Date.now() + "&ecc=H";
+      qrImg.src = qrUrlWithCache;
 
-    // Start 5-minute timer
-    startQRTimer();
-    
-    console.log('QR generated successfully, total:', data.data.total);
-  })
-  .catch(err => {
-    console.error("QR failed:", err.message);
-    showError("QR generation failed: " + err.message);
-  });
+      // Start 5-minute timer
+      startQRTimer();
+
+      console.log('QR generated successfully, total:', data.data.total);
+    })
+    .catch(err => {
+      console.error("QR failed:", err.message);
+      showError("QR generation failed: " + err.message);
+    });
 }
 
 // ================================
@@ -213,12 +213,12 @@ function startQRTimer() {
 
   // Set expiry time (5 minutes from now)
   qrExpiryTime = Date.now() + (5 * 60 * 1000);
-  
+
   // Update timer display every second
   qrTimer = setInterval(() => {
     const now = Date.now();
     const remaining = Math.max(0, qrExpiryTime - now);
-    
+
     if (remaining === 0) {
       // QR expired
       clearInterval(qrTimer);
@@ -240,7 +240,7 @@ function updateTimerDisplay(minutes, seconds) {
     timerElement.style.cssText = "text-align:center; margin-top:10px; font-weight:bold; color:#e74c3c;";
     document.getElementById("dynamicQR").parentElement.appendChild(timerElement);
   }
-  
+
   if (minutes === 0 && seconds <= 30) {
     timerElement.style.color = "#e74c3c";
     timerElement.innerHTML = `⏰ QR expires in ${seconds}s`;
@@ -254,13 +254,13 @@ function expireQR() {
   const qrImg = document.getElementById("dynamicQR");
   qrImg.style.opacity = "0.3";
   qrImg.style.filter = "blur(5px)";
-  
+
   const timerElement = document.getElementById("qrTimer");
   if (timerElement) {
     timerElement.innerHTML = "⏰ QR Expired - Please refresh";
     timerElement.style.color = "#e74c3c";
   }
-  
+
   showError("QR code expired. Please refresh to generate a new one.");
 }
 
@@ -301,12 +301,12 @@ function submitOrder() {
 
   const submitBtn = document.getElementById("submitBtn");
   const btnText = submitBtn.querySelector(".btn-text") || submitBtn;
-  
+
   // Show loading state
   submitBtn.classList.add("btn-loading");
   submitBtn.disabled = true;
   if (btnText) btnText.textContent = ""; // Hide button text
-  
+
   // Show full-page loader overlay
   const pageLoader = document.getElementById("pageLoader");
   if (pageLoader) {
@@ -316,7 +316,7 @@ function submitOrder() {
 
   // PromptPay QR - generate QR code
   console.log('Starting PromptPay order submission...');
-  
+
   // Check if we have the required data
   const slipFile = document.getElementById("slip").files[0];
   if (!slipFile) {
@@ -326,7 +326,7 @@ function submitOrder() {
     submitBtn.classList.remove("btn-loading");
     submitBtn.disabled = false;
     submitBtn.querySelector(".btn-text").textContent = "Submit Order";
-    
+
     // Hide full-page loader overlay
     const pageLoader = document.getElementById("pageLoader");
     if (pageLoader) {
@@ -335,7 +335,7 @@ function submitOrder() {
     }
     return;
   }
-  
+
   if (!turnstileToken) {
     showError('Please complete the bot verification');
     // Reset button state
@@ -343,7 +343,7 @@ function submitOrder() {
     submitBtn.classList.remove("btn-loading");
     submitBtn.disabled = false;
     submitBtn.querySelector(".btn-text").textContent = "Submit Order";
-    
+
     // Hide full-page loader overlay
     const pageLoader = document.getElementById("pageLoader");
     if (pageLoader) {
@@ -352,12 +352,12 @@ function submitOrder() {
     }
     return;
   }
-    
-    // Convert image to base64
+
+  // Convert image to base64
   const reader = new FileReader();
-  reader.onload = function(e) {
+  reader.onload = function (e) {
     const base64Image = e.target.result.split(',')[1]; // Remove data URL prefix
-    
+
     const formData = new URLSearchParams();
     formData.append("email", document.getElementById("email").value.trim());
     formData.append("phone", document.getElementById("phone").value.trim());
@@ -367,87 +367,104 @@ function submitOrder() {
     formData.append("size", localStorage.getItem("selectedSize") || 'M');
     formData.append("base64Image", base64Image);
     formData.append("turnstileToken", turnstileToken);
-    
+
     console.log('Sending to backend:', formData.toString());
-    
+
     // Add timeout to prevent hanging
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
-    
+
     fetch(API_URL, {
       method: "POST",
       body: formData,
       signal: controller.signal
     })
-    .then(res => {
-      clearTimeout(timeoutId);
-      console.log('Backend response status:', res.status);
-      return res.json();
-    })
-    .then(data => {
-      console.log('Backend response:', data);
-      
-      // Reset button state
-      const submitBtn = document.getElementById("submitBtn");
-      submitBtn.classList.remove("btn-loading");
-      submitBtn.disabled = false;
-      submitBtn.querySelector(".btn-text").textContent = "Submit Order";
-    
-    // Hide full-page loader overlay
-    const pageLoader = document.getElementById("pageLoader");
-    if (pageLoader) {
-      pageLoader.classList.remove("active");
-      document.body.classList.remove("page-loading"); // Restore scrolling
-    }
+      .then(res => {
+        clearTimeout(timeoutId);
+        console.log('Backend response status:', res.status);
+        return res.json();
+      })
+      .then(data => {
+        console.log('Backend response:', data);
 
-      if (!data.success) {
-        throw new Error(data.message || 'Order submission failed');
-      }
+        // Reset button state
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.classList.remove("btn-loading");
+        submitBtn.disabled = false;
+        submitBtn.querySelector(".btn-text").textContent = "Submit Order";
 
-      const orderId = data.data?.orderId || Date.now();
-      const email = document.getElementById("email").value.trim();
-      const item = localStorage.getItem("item");
-      const qty = document.getElementById("qty").value;
-      const total = parseFloat(localStorage.getItem("price")) * qty;
+        // Hide full-page loader overlay
+        const pageLoader = document.getElementById("pageLoader");
+        if (pageLoader) {
+          pageLoader.classList.remove("active");
+          document.body.classList.remove("page-loading"); // Restore scrolling
+        }
 
-      // Save receipt data
-      localStorage.setItem('receipt-email', email);
-      localStorage.setItem('receipt-item', item);
-      localStorage.setItem('receipt-qty', qty);
-      localStorage.setItem('receipt-total', '฿' + total);
+        if (!data.success) {
+          throw new Error(data.message || 'Order submission failed');
+        }
 
-      // Save order ID to localStorage for success page
-      localStorage.setItem('lastOrderId', orderId);
+        const orderId = data.data?.orderId || Date.now();
+        const email = document.getElementById("email").value.trim();
+        const item = localStorage.getItem("item");
+        const qty = document.getElementById("qty").value;
+        const total = parseFloat(localStorage.getItem("price")) * qty;
 
-      // Redirect to success page with order ID
-      window.location.href = "success.html?id=" + orderId;
-    })
-    .catch(err => {
-      clearTimeout(timeoutId);
-      console.error('Submission error:', err);
-      
-      // Reset button state on error
-      const submitBtn = document.getElementById("submitBtn");
-      submitBtn.classList.remove("btn-loading");
-      submitBtn.disabled = false;
-      submitBtn.querySelector(".btn-text").textContent = "Submit Order";
-    
-    // Hide full-page loader overlay
-    const pageLoader = document.getElementById("pageLoader");
-    if (pageLoader) {
-      pageLoader.classList.remove("active");
-      document.body.classList.remove("page-loading"); // Restore scrolling
-    }
-      
-      if (err.name === 'AbortError') {
-        showError('Request timed out. Please try again.');
-      } else {
-        showError(err.message || "Submission failed");
-      }
-    });
+        // Save receipt data
+        localStorage.setItem('receipt-email', email);
+        localStorage.setItem('receipt-item', item);
+        localStorage.setItem('receipt-qty', qty);
+        localStorage.setItem('receipt-total', '฿' + total);
+
+        // Save order ID to localStorage for success page
+        localStorage.setItem('lastOrderId', orderId);
+
+        // Redirect to success page with order ID
+        window.location.href = "success.html?id=" + orderId;
+      })
+      .catch(err => {
+        clearTimeout(timeoutId);
+        console.error('Submission error:', err);
+
+        // Reset button state on error
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.classList.remove("btn-loading");
+        submitBtn.disabled = false;
+        submitBtn.querySelector(".btn-text").textContent = "Submit Order";
+
+        // Hide full-page loader overlay
+        const pageLoader = document.getElementById("pageLoader");
+        if (pageLoader) {
+          pageLoader.classList.remove("active");
+          document.body.classList.remove("page-loading"); // Restore scrolling
+        }
+
+        if (err.name === 'AbortError') {
+          showError('Request timed out. Please try again.');
+        } else {
+          showError(err.message || "Submission failed");
+        }
+      });
   };
-  
+
   reader.readAsDataURL(slipFile);
+}
+
+// ================================
+function showSuccess(message) {
+  let successElement = document.getElementById("success-msg");
+  if (!successElement) {
+    successElement = document.createElement("div");
+    successElement.id = "success-msg";
+    successElement.style.cssText = "background:#d4edda;color:#155724;padding:12px;border-radius:8px;margin-bottom:20px;display:none;";
+    const container = document.querySelector(".container") || document.body;
+    container.insertBefore(successElement, container.firstChild);
+  }
+  successElement.textContent = message;
+  successElement.style.display = "block";
+  setTimeout(() => {
+    successElement.style.display = "none";
+  }, 5000);
 }
 
 // ================================
@@ -460,10 +477,10 @@ function showError(message) {
     errorElement.style.cssText = "background:#f8d7da;color:#721c24;padding:12px;border-radius:8px;margin-bottom:20px;display:none;";
     document.querySelector(".container").insertBefore(errorElement, document.querySelector("main"));
   }
-  
+
   errorElement.textContent = message;
   errorElement.style.display = "block";
-  
+
   // Auto-hide after 5 seconds
   setTimeout(() => {
     errorElement.style.display = "none";
@@ -474,13 +491,13 @@ function showError(message) {
 function changeGalleryImage(thumbnail, index) {
   const mainImage = thumbnail.closest('.product-gallery').querySelector('.gallery-main');
   const allThumbnails = thumbnail.closest('.gallery-thumbnails').querySelectorAll('.thumbnail');
-  
+
   // Remove active class from all thumbnails
   allThumbnails.forEach(thumb => thumb.classList.remove('active'));
-  
+
   // Add active class to clicked thumbnail
   thumbnail.classList.add('active');
-  
+
   // Change main image
   mainImage.src = thumbnail.src;
 }
@@ -489,30 +506,30 @@ function changeGalleryImage(thumbnail, index) {
 function subscribeNewsletter(event) {
   event.preventDefault();
   const email = event.target.querySelector('.newsletter-input').value;
-  
+
   if (!email) return;
-  
+
   // Save to Google Sheet (Sheet 2)
   const formData = new URLSearchParams();
   formData.append('email', email);
   formData.append('action', 'newsletter');
-  
+
   fetch(API_URL, {
     method: 'POST',
     body: formData
   })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      showSuccess('Successfully subscribed to newsletter!');
-      event.target.reset();
-    } else {
-      showError('Failed to subscribe. Please try again.');
-    }
-  })
-  .catch(error => {
-    showError('Subscription failed. Please try again.');
-  });
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        showSuccess('Successfully subscribed to newsletter!');
+        event.target.reset();
+      } else {
+        showError('Failed to subscribe. Please try again.');
+      }
+    })
+    .catch(error => {
+      showError('Subscription failed. Please try again.');
+    });
 }
 
 // Admin Functions
@@ -526,21 +543,21 @@ function checkAdminPassword(password) {
   const formData = new URLSearchParams();
   formData.append('password', password);
   formData.append('action', 'adminLogin');
-  
+
   fetch(API_URL, {
     method: 'POST',
     body: formData
   })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      sessionStorage.setItem('adminAuth', 'true');
-      window.location.href = 'admin.html';
-    } else {
-      showError('Invalid password');
-    }
-  })
-  .catch(error => {
-    showError('Authentication failed');
-  });
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        sessionStorage.setItem('adminAuth', 'true');
+        window.location.href = 'admin.html';
+      } else {
+        showError('Invalid password');
+      }
+    })
+    .catch(error => {
+      showError('Authentication failed');
+    });
 }

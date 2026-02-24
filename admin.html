@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
   <link rel="icon" type="image/png" href="art-ink-icon.png">
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body class="admin-dashboard">
   <div class="admin-container">
     <header class="admin-header">
@@ -29,7 +31,7 @@
               <span class="stat-change positive">+14%</span>
             </div>
           </div>
-          
+
           <div class="stat-card">
             <div class="stat-icon">💳</div>
             <div class="stat-content">
@@ -38,7 +40,7 @@
               <span class="stat-change positive">+8%</span>
             </div>
           </div>
-          
+
           <div class="stat-card">
             <div class="stat-icon">📦</div>
             <div class="stat-content">
@@ -47,7 +49,7 @@
               <span class="stat-change negative">-2%</span>
             </div>
           </div>
-          
+
           <div class="stat-card">
             <div class="stat-icon">👥</div>
             <div class="stat-content">
@@ -76,7 +78,7 @@
               </div>
             </div>
           </div>
-          
+
           <div class="chart-card">
             <h3>Sales by Category</h3>
             <div class="simple-chart">
@@ -114,23 +116,23 @@
             <h3>Compose Newsletter</h3>
             <button onclick="closeEmailEditor()" class="close-btn">✕</button>
           </div>
-          
+
           <div class="email-editor-form">
             <div class="form-group">
               <label>Subject:</label>
               <input type="text" id="email-subject" placeholder="Enter email subject" />
             </div>
-            
+
             <div class="form-group">
               <label>HTML Content:</label>
               <textarea id="email-content" placeholder="Paste your HTML email content here..." rows="15"></textarea>
             </div>
-            
+
             <div class="email-preview">
               <h4>Preview:</h4>
               <div id="email-preview-content" class="preview-frame"></div>
             </div>
-            
+
             <div class="email-actions">
               <button onclick="previewEmail()" class="preview-btn">👁️ Preview</button>
               <button onclick="sendCustomNewsletter()" class="send-btn">📧 Send Newsletter</button>
@@ -144,7 +146,7 @@
   <script>
     // Check if already authenticated
     const isAuthenticated = sessionStorage.getItem('adminAuth');
-    
+
     if (!isAuthenticated) {
       // Show login modal
       showLoginModal();
@@ -167,11 +169,11 @@
           </div>
         </div>
       `;
-      
+
       document.body.appendChild(loginModal);
-      
+
       // Add enter key support
-      document.getElementById('admin-password-input').addEventListener('keypress', function(e) {
+      document.getElementById('admin-password-input').addEventListener('keypress', function (e) {
         if (e.key === 'Enter') {
           attemptLogin();
         }
@@ -191,53 +193,50 @@
 
     function validatePassword(password) {
       const API_URL = "https://script.google.com/macros/s/AKfycbxENBG6cKm3ImJd_6gjvxCUnM-hG0xeNhPhjLUleDCyh0JsXhkkG7wOwkBjRW43j-88mg/exec";
-      
+
       const formData = new URLSearchParams();
       formData.append('password', password);
       formData.append('action', 'adminLogin');
-      
+
       fetch(API_URL, {
         method: 'POST',
         body: formData
       })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          sessionStorage.setItem('adminAuth', 'true');
-          // Remove login modal
-          const modal = document.querySelector('.login-modal');
-          if (modal) {
-            modal.remove();
-          }
-          useFallbackData(); // Load dashboard data
-        } else {
-          // Check fallback password
-          if (password === 'adminboon5127') {
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
             sessionStorage.setItem('adminAuth', 'true');
+            // Remove login modal
             const modal = document.querySelector('.login-modal');
             if (modal) {
               modal.remove();
             }
-            useFallbackData();
+            useFallbackData(); // Load dashboard data
           } else {
             alert('Invalid password');
           }
-        }
-      })
-      .catch(error => {
-        console.error('Authentication error:', error);
-        // Use fallback password when backend fails
-        if (password === 'adminboon5127') {
-          sessionStorage.setItem('adminAuth', 'true');
-          const modal = document.querySelector('.login-modal');
-          if (modal) {
-            modal.remove();
+        })
+        .catch(error => {
+          console.error('Authentication error:', error);
+          alert('Authentication failed. Please check your network connection and try again.');
+        });
+    }
+
+    // loadData reloads dashboard stats from backend
+    function loadData() {
+      const API_URL = "https://script.google.com/macros/s/AKfycbxENBG6cKm3ImJd_6gjvxCUnM-hG0xeNhPhjLUleDCyh0JsXhkkG7wOwkBjRW43j-88mg/exec";
+      const formData = new URLSearchParams();
+      formData.append('action', 'adminData');
+      fetch(API_URL, { method: 'POST', body: formData })
+        .then(r => r.json())
+        .then(data => {
+          if (data.success) {
+            updateStats(data.data);
+          } else {
+            useFallbackData();
           }
-          useFallbackData();
-        } else {
-          alert('Invalid password');
-        }
-      });
+        })
+        .catch(() => useFallbackData());
     }
 
     // Fallback data for testing
@@ -249,9 +248,9 @@
         newCustomers: 342,
         subscribers: 156
       };
-      
+
       updateStats(fallbackData);
-      
+
       console.log('Using fallback data - dashboard working');
     }
 
@@ -268,22 +267,26 @@
     function sendNewsletter() {
       if (confirm('Send newsletter to all subscribers?')) {
         const API_URL = "https://script.google.com/macros/s/AKfycbxENBG6cKm3ImJd_6gjvxCUnM-hG0xeNhPhjLUleDCyh0JsXhkkG7wOwkBjRW43j-88mg/exec";
-        
-        fetch(API_URL + '?action=sendNewsletter', {
-          method: 'POST'
+
+        const formData = new URLSearchParams();
+        formData.append('action', 'sendNewsletter');
+
+        fetch(API_URL, {
+          method: 'POST',
+          body: formData
         })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            alert('Newsletter sent successfully to ' + data.sentTo + ' subscribers!');
-          } else {
-            alert('Failed to send newsletter: ' + data.message);
-          }
-        })
-        .catch(error => {
-          console.error('Error sending newsletter:', error);
-          alert('Error sending newsletter');
-        });
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              alert('Newsletter sent successfully to ' + data.sentTo + ' subscribers!');
+            } else {
+              alert('Failed to send newsletter: ' + data.message);
+            }
+          })
+          .catch(error => {
+            console.error('Error sending newsletter:', error);
+            alert('Error sending newsletter');
+          });
       }
     }
 
@@ -300,7 +303,7 @@
       const subject = document.getElementById('email-subject').value;
       const content = document.getElementById('email-content').value;
       const preview = document.getElementById('email-preview-content');
-      
+
       if (content) {
         preview.innerHTML = content;
       } else {
@@ -311,43 +314,44 @@
     function sendCustomNewsletter() {
       const subject = document.getElementById('email-subject').value;
       const content = document.getElementById('email-content').value;
-      
+
       if (!subject || !content) {
         alert('Please enter both subject and HTML content');
         return;
       }
-      
+
       if (confirm('Send custom newsletter to all subscribers?')) {
         const API_URL = "https://script.google.com/macros/s/AKfycbxENBG6cKm3ImJd_6gjvxCUnM-hG0xeNhPhjLUleDCyh0JsXhkkG7wOwkBjRW43j-88mg/exec";
-        
+
         const formData = new URLSearchParams();
         formData.append('subject', subject);
         formData.append('content', content);
         formData.append('action', 'sendCustomNewsletter');
-        
+
         fetch(API_URL, {
           method: 'POST',
           body: formData
         })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            alert('Custom newsletter sent successfully to ' + data.sentTo + ' subscribers!');
-            closeEmailEditor();
-            // Clear form
-            document.getElementById('email-subject').value = '';
-            document.getElementById('email-content').value = '';
-            document.getElementById('email-preview-content').innerHTML = '';
-          } else {
-            alert('Failed to send newsletter: ' + data.message);
-          }
-        })
-        .catch(error => {
-          console.error('Error sending newsletter:', error);
-          alert('Error sending newsletter');
-        });
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              alert('Custom newsletter sent successfully to ' + data.sentTo + ' subscribers!');
+              closeEmailEditor();
+              // Clear form
+              document.getElementById('email-subject').value = '';
+              document.getElementById('email-content').value = '';
+              document.getElementById('email-preview-content').innerHTML = '';
+            } else {
+              alert('Failed to send newsletter: ' + data.message);
+            }
+          })
+          .catch(error => {
+            console.error('Error sending newsletter:', error);
+            alert('Error sending newsletter');
+          });
       }
     }
   </script>
 </body>
+
 </html>

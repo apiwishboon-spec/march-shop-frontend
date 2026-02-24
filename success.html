@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Order Success - ART&INK</title>
   <link rel="icon" type="image/png" href="art-ink-icon.png">
@@ -37,80 +39,81 @@
   <script>
     // Make orderId globally accessible
     let orderId;
-    
+
     // Get order code from URL parameters with fallback
     const urlParams = new URLSearchParams(window.location.search);
     orderId = urlParams.get('id');
-    
+
     // If no ID in URL, try to get from localStorage or generate one
     if (!orderId) {
       orderId = localStorage.getItem('lastOrderId') || 'ORD-' + Date.now();
     }
-    
+
     // Save to localStorage for receipt functions
     localStorage.setItem('lastOrderId', orderId);
-    
+
     // Set the order code display
     document.getElementById("code").textContent = orderId;
-    
+
     // Initialize on page load
   </script>
-  
+
   <script>
-  const canvas = document.getElementById("confetti");
-  const ctx = canvas.getContext("2d");
+    const canvas = document.getElementById("confetti");
+    const ctx = canvas.getContext("2d");
 
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
-  const colors = ["#f3a6c8", "#d9b7ee", "#9ecbff", "#fde68a"];
-  const pieces = [];
-
-  function createConfetti() {
-    for (let i = 0; i < 120; i++) {
-      pieces.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * -canvas.height,
-        r: Math.random() * 6 + 4,
-        dY: Math.random() * 3 + 2,
-        dX: (Math.random() - 0.5) * 2,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        life: 200
-      });
-    }
-  }
-
-  function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    pieces.forEach((p, i) => {
-      ctx.fillStyle = p.color;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fill();
-
-      p.y += p.dY;
-      p.x += p.dX;
-      p.life--;
-
-      if (p.life <= 0) pieces.splice(i, 1);
-    });
-
-    if (pieces.length > 0) {
-      requestAnimationFrame(draw);
-    }
-  }
-
-  // 🎉 launch sequence
-  createConfetti();
-  draw();
-
-  // resize safety
-  window.addEventListener("resize", () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-  });
-</script>
+
+    const colors = ["#f3a6c8", "#d9b7ee", "#9ecbff", "#fde68a"];
+    const pieces = [];
+
+    function createConfetti() {
+      for (let i = 0; i < 120; i++) {
+        pieces.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * -canvas.height,
+          r: Math.random() * 6 + 4,
+          dY: Math.random() * 3 + 2,
+          dX: (Math.random() - 0.5) * 2,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          life: 200
+        });
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      pieces.forEach((p, i) => {
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+
+        p.y += p.dY;
+        p.x += p.dX;
+        p.life--;
+
+        if (p.life <= 0) pieces.splice(i, 1);
+      });
+
+      if (pieces.length > 0) {
+        requestAnimationFrame(draw);
+      }
+    }
+
+    // 🎉 launch sequence
+    createConfetti();
+    draw();
+
+    // resize safety
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
 
 </body>
+
 </html>

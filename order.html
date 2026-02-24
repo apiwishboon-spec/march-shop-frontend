@@ -499,9 +499,7 @@
                 <div class="qr-info">
                   <h3>📸 Scan QR Code</h3>
                   <p>Use your mobile banking app to scan this QR code and complete the payment.</p>
-                  <div id="qrTimer" class="qr-timer" style="display: block; margin-top: 16px; padding: 12px; background: var(--bg-tertiary); border-radius: 8px; text-align: center;">
-                    ⏰ QR expires in: <span id="timerMinutes">5</span>:<span id="timerSeconds">00</span>
-                  </div>
+                  <!-- QR timer is injected dynamically by app.js -->
                 </div>
               </div>
             </div>
@@ -532,6 +530,7 @@
           </div>
         </div>
       </div>
+      </div><!-- /#promptpay-section -->
     </main>
   </div>
 
@@ -543,8 +542,6 @@
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <script src="app.js"></script>
   <script>
-    // Initialize Lucide icons
-    lucide.createIcons();
     
     // Dark mode functionality with local time adaptation
     function toggleTheme() {
