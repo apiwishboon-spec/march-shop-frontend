@@ -132,7 +132,7 @@
       }
       
       .step-indicator {
-        flex-direction: column;
+        flex-direction: column !important;
         gap: 15px;
         padding: 15px 0;
         position: sticky;
@@ -302,6 +302,8 @@
       padding: 20px 0;
       border-bottom: 2px solid var(--border-primary);
       backdrop-filter: blur(10px);
+      flex-direction: row !important;
+      gap: 40px;
     }
     
     .step-indicator::before {
