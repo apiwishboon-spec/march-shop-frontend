@@ -1168,15 +1168,13 @@
     function closeDevNotice() {
       const modal = document.getElementById('devNoticeModal');
       modal.style.display = 'none';
-      // Set a cookie to remember user has seen the notice
-      document.cookie = 'devNoticeSeen=true; max-age=86400; path=/'; // 24 hours
+      // No cookie - show notice every time
     }
 
     // Check if user has already seen the notice
     function checkDevNotice() {
-      if (document.cookie.includes('devNoticeSeen=true')) {
-        document.getElementById('devNoticeModal').style.display = 'none';
-      }
+      // Always show the notice - no remembering
+      // Modal will be visible every page load
     }
 
     // Run check when page loads
