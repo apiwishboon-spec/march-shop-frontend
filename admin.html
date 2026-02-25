@@ -1129,11 +1129,19 @@
     function sendCustomNewsletter() {
       const subject = document.getElementById('email-subject').value.trim();
       const content = document.getElementById('email-content').value.trim();
+      const token = sessionStorage.getItem('adminToken');
 
       if (!subject || !content) {
         showToast('Please fill in Subject and HTML Content.', 'fail');
         return;
       }
+      
+      if (!token) {
+        showToast('Session expired. Please login again.', 'fail');
+        logout();
+        return;
+      }
+      
       if (!confirm('Send "' + subject + '" to all subscribers?')) return;
 
       const sendBtn = document.getElementById('btn-send-email');
@@ -1143,6 +1151,7 @@
       const fd = new URLSearchParams();
       fd.append('subject', subject);
       fd.append('content', content);
+      fd.append('token', token);
       fd.append('action', 'sendCustomNewsletter');
 
       fetch(API_URL, { method: 'POST', body: fd })
@@ -1152,21 +1161,25 @@
           sendBtn.textContent = '📧 Send to All Subscribers';
 
           if (res.success) {
-            const n = res.data?.sentTo ?? '?';
-            showToast('✅ Sent to ' + n + ' subscribers!', 'ok');
+            showToast('✅ ' + res.message + ' (Sent to ' + res.data.sentTo + ' subscribers)', 'ok');
             closeEmailEditor();
             document.getElementById('email-subject').value = '';
             document.getElementById('email-content').value = '';
             document.getElementById('email-preview').innerHTML =
               '<span style="color:#aaa;font-size:.85rem;">Click Preview to render HTML…</span>';
           } else {
-            showToast('❌ Failed: ' + (res.message || 'Error'), 'fail');
+            if (res.message === 'Unauthorized') {
+              showToast('Session expired. Please login again.', 'fail');
+              logout();
+            } else {
+              showToast('❌ Failed: ' + (res.message || 'Error'), 'fail');
+            }
           }
         })
         .catch(() => {
           sendBtn.disabled = false;
           sendBtn.textContent = '📧 Send to All Subscribers';
-          showToast('❌ Network error. Try again.', 'fail');
+          showToast('❌ Network error. Please try again.', 'fail');
         });
     }
 
