@@ -1077,8 +1077,61 @@
     function sendQuickNewsletter() {
       if (!confirm('Send the default ART&INK newsletter to all subscribers?')) return;
 
+      const token = sessionStorage.getItem('adminToken');
+      if (!token) {
+        showToast('Session expired. Please login again.', 'fail');
+        logout();
+        return;
+      }
+
       const fd = new URLSearchParams();
       fd.append('action', 'sendCustomNewsletter');
+      fd.append('subject', '🎨 New Designs from ART&INK!');
+      fd.append('content', `
+        <div style="background:#f4f6f8;padding:40px;font-family:Arial;">
+          <div style="max-width:600px;margin:auto;background:#fff;
+                      padding:30px;border-radius:14px;
+                      box-shadow:0 10px 30px rgba(0,0,0,0.06);">
+
+            <h2 style="margin-top:0;">🎨 New Designs from ART&INK!</h2>
+
+            <p style="margin-top:25px;font-size:13px;color:#666;">
+              Hey creative soul! 🎨<br><br>
+              
+              We've got some amazing new designs dropping soon, plus exclusive offers just for our subscribers. 
+              Be the first to know about limited editions and special promotions!
+            </p>
+            
+            <div style="background:#f3a6c1;padding:20px;border-radius:10px;margin:20px 0;">
+              <h3 style="color:white;margin:0 0 10px 0;">✨ What's New:</h3>
+              <ul style="color:white;margin:0;padding-left:20px;">
+                <li>Exclusive design previews</li>
+                <li>Early access to new drops</li>
+                <li>Behind-the-scenes content</li>
+                <li>Special subscriber offers</li>
+              </ul>
+            </div>
+            
+            <div style="text-align:center;margin:30px 0;">
+              <a href="https://art-ink-pages.dev/" 
+                 style="background:#3b82f6;color:white;padding:12px 30px;text-decoration:none;
+                        border-radius:25px;font-weight:bold;display:inline-block;">
+                Shop Now →
+              </a>
+            </div>
+
+            <p style="margin-top:25px;font-size:13px;color:#666;">
+              Thanks for being part of our creative journey!<br>
+              Questions? Reply to this email anytime.
+            </p>
+
+            <hr style="border:none;border-top:1px solid #eee;margin-top:30px;">
+            <small>ART&INK Shop</small>
+
+          </div>
+        </div>
+      `);
+      fd.append('token', token);
 
       fetch(API_URL, { method: 'POST', body: fd })
         .then(r => r.json())
@@ -1087,10 +1140,17 @@
             const n = res.data?.sentTo ?? res.data?.message ?? '?';
             showToast('✅ Newsletter sent to ' + n + ' subscribers!', 'ok');
           } else {
-            showToast('❌ Failed: ' + (res.message || 'Unknown error'), 'fail');
+            if (res.message === 'Unauthorized') {
+              showToast('Session expired. Please login again.', 'fail');
+              logout();
+            } else {
+              showToast('❌ Failed: ' + (res.message || 'Unknown error'), 'fail');
+            }
           }
         })
-        .catch(() => showToast('❌ Network error.', 'fail'));
+        .catch(() => {
+          showToast('❌ Network error — could not reach server.', 'fail');
+        });
     }
 
     // ─────────────────────────────────────
@@ -1127,6 +1187,13 @@
     // while preserving safe formatting tags for newsletter content
 
     function sendCustomNewsletter() {
+      const token = sessionStorage.getItem('adminToken');
+      if (!token) {
+        showToast('Session expired. Please login again.', 'fail');
+        logout();
+        return;
+      }
+
       const subject = document.getElementById('email-subject').value.trim();
       const content = document.getElementById('email-content').value.trim();
 
@@ -1144,6 +1211,7 @@
       fd.append('subject', subject);
       fd.append('content', content);
       fd.append('action', 'sendCustomNewsletter');
+      fd.append('token', token);
 
       fetch(API_URL, { method: 'POST', body: fd })
         .then(r => r.json())
