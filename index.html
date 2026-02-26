@@ -1213,18 +1213,18 @@
             btn.disabled = false;
             btn.textContent = 'Subscribe';
             if (data.success) {
-              status.textContent = '&#x2713; You\'re subscribed! Check your inbox.';
+              status.textContent = '✓ You\'re subscribed! Check your inbox.';
               status.className = 'nl-status ok';
               document.getElementById('nl-email').value = '';
             } else {
-              status.textContent = '&#x2718; ' + (data.message || 'Please try again.');
+              status.textContent = '✗ ' + (data.message || 'Please try again.');
               status.className = 'nl-status fail';
             }
           })
           .catch(() => {
             btn.disabled = false;
             btn.textContent = 'Subscribe';
-            status.textContent = '&#x26A0; Connection error. Please try again.';
+            status.textContent = '⚠ Connection error. Please try again.';
             status.className = 'nl-status fail';
           });
         });
