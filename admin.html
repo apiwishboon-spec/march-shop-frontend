@@ -875,9 +875,12 @@
       fetch(API_URL, { method: 'POST', body: fd })
         .then(r => r.json())
         .then(data => {
+          console.log('Login response:', data); // Debug log
           if (data.success) {
             sessionStorage.setItem('adminAuth', 'true');
             sessionStorage.setItem('adminToken', data.data.token);
+            console.log('Stored token:', data.data.token); // Debug log
+            console.log('SessionStorage token:', sessionStorage.getItem('adminToken')); // Debug log
             showDashboard();
           } else {
             errEl.textContent = '❌ Wrong password. Please try again.';
@@ -1078,7 +1081,10 @@
       if (!confirm('Send the default ART&INK newsletter to all subscribers?')) return;
 
       const token = sessionStorage.getItem('adminToken');
+      console.log('Quick send - token:', token); // Debug log
+      
       if (!token) {
+        console.log('No token found in sessionStorage'); // Debug log
         showToast('Session expired. Please login again.', 'fail');
         logout();
         return;
@@ -1132,10 +1138,13 @@
         </div>
       `);
       fd.append('token', token);
+      
+      console.log('Sending request with token:', token); // Debug log
 
       fetch(API_URL, { method: 'POST', body: fd })
         .then(r => r.json())
         .then(res => {
+          console.log('Response:', res); // Debug log
           if (res.success) {
             const n = res.data?.sentTo ?? res.data?.message ?? '?';
             showToast('✅ Newsletter sent to ' + n + ' subscribers!', 'ok');
