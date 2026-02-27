@@ -167,6 +167,7 @@ function generateQR() {
   if (!qty || qty < 1) return;
 
   const formData = new URLSearchParams();
+  formData.append("action", "order"); // Add missing action parameter
   formData.append("email", "preview@shop.com"); // dummy
   formData.append("phone", "");
   formData.append("item", item);
