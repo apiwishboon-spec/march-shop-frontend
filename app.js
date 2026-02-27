@@ -164,6 +164,11 @@ function generateQR() {
   const price = parseFloat(localStorage.getItem("price"));
   const itemName = localStorage.getItem("item");
 
+  console.log("=== QR GENERATION DEBUG ===");
+  console.log("Item name from localStorage:", itemName);
+  console.log("Price from localStorage:", price);
+  console.log("Quantity from input:", qty);
+
   if (!qty || qty < 1) return;
 
   // Map product names to backend IDs
@@ -177,6 +182,7 @@ function generateQR() {
   };
 
   const itemId = nameToIdMap[itemName] || itemName; // Fallback to original name
+  console.log("Mapped itemId:", itemId);
 
   const formData = new URLSearchParams();
   formData.append("action", "order"); // Add missing action parameter
@@ -186,12 +192,25 @@ function generateQR() {
   formData.append("price", price);
   formData.append("quantity", qty);
 
+  console.log("Sending form data:");
+  console.log("Action: order");
+  console.log("Email: preview@shop.com");
+  console.log("Phone: 093-337-2907");
+  console.log("ItemId:", itemId);
+  console.log("Price:", price);
+  console.log("Quantity:", qty);
+
   fetch(API_URL, {
     method: "POST",
     body: formData
   })
-    .then(res => res.json())
+    .then(res => {
+      console.log("Response status:", res.status);
+      console.log("Response headers:", res.headers);
+      return res.json();
+    })
     .then(data => {
+      console.log("Backend response:", data);
 
       if (!data.success) {
         throw new Error(data.message);
@@ -202,6 +221,7 @@ function generateQR() {
       const qrImg = document.getElementById("dynamicQR");
       // Add cache busting timestamp and higher error correction for security
       const qrUrlWithCache = data.data.qrImage + "&v=" + Date.now() + "&ecc=H";
+      console.log("QR URL with cache:", qrUrlWithCache);
       qrImg.src = qrUrlWithCache;
 
       // Start 5-minute timer
@@ -211,6 +231,8 @@ function generateQR() {
     })
     .catch(err => {
       console.error('QR generation failed:', err);
+      console.error('Error details:', err.message);
+      console.error('Error stack:', err.stack);
       alert('QR generation failed: ' + err.message);
     });
 }
