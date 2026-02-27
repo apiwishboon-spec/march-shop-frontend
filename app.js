@@ -169,7 +169,7 @@ function generateQR() {
   const formData = new URLSearchParams();
   formData.append("action", "order"); // Add missing action parameter
   formData.append("email", "preview@shop.com"); // dummy
-  formData.append("phone", "");
+  formData.append("phone", "0000000000"); // dummy phone number for QR generation
   formData.append("item", item);
   formData.append("price", price);
   formData.append("quantity", qty);
@@ -198,8 +198,8 @@ function generateQR() {
       console.log('QR generated successfully, total:', data.data.total);
     })
     .catch(err => {
-      console.error("QR failed:", err.message);
-      showError("QR generation failed: " + err.message);
+      console.error('QR generation failed:', err);
+      alert('QR generation failed: ' + err.message);
     });
 }
 
