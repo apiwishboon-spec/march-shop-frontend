@@ -748,8 +748,31 @@
 
     // Initialize size selection
     document.addEventListener('DOMContentLoaded', () => {
+      console.log("=== ORDER PAGE DEBUG ===");
+      
       const savedSize = localStorage.getItem('selectedSize') || 'M';
+      const itemName = localStorage.getItem('item');
+      const itemPrice = localStorage.getItem('price');
+      
+      console.log("Loaded from localStorage:");
+      console.log("- Item:", itemName);
+      console.log("- Price:", itemPrice);
+      console.log("- Size:", savedSize);
+      
+      // Update order summary
+      if (itemName) {
+        document.getElementById('summary-product').textContent = itemName;
+        console.log("Updated product display:", itemName);
+      }
+      
+      if (itemPrice) {
+        document.getElementById('summary-price').textContent = itemPrice;
+        console.log("Updated price display:", itemPrice);
+      }
+      
       selectOrderSize(savedSize);
+      
+      console.log("Order page initialization complete");
     });
     
     // Collapsible instructions

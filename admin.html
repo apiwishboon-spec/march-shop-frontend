@@ -859,11 +859,21 @@
     //  LOGIN
     // ─────────────────────────────────────
     function attemptLogin() {
+      console.log("=== ADMIN LOGIN DEBUG ===");
+      
       const pw = document.getElementById('pw-input').value.trim();
       const btn = document.getElementById('btn-go');
       const errEl = document.getElementById('login-error');
-      if (!pw) return;
-
+      
+      console.log("Password entered:", pw ? "***" : "(empty)");
+      console.log("Button element:", btn);
+      console.log("Error element:", errEl);
+      
+      if (!pw) {
+        errEl.textContent = 'Please enter password';
+        console.log("Error: Empty password");
+        return;
+      }
       btn.disabled = true;
       btn.textContent = '⏳ Checking…';
       errEl.textContent = '';
@@ -1213,18 +1223,26 @@
     // while preserving safe formatting tags for newsletter content
 
     function sendCustomNewsletter() {
+      console.log("=== SEND CUSTOM NEWSLETTER DEBUG ===");
+      
       const token = sessionStorage.getItem('adminToken');
+      const subject = document.getElementById('email-subject').value.trim();
+      const content = document.getElementById('email-content').value.trim();
+      
+      console.log("Token from sessionStorage:", token ? "Present" : "Missing");
+      console.log("Subject:", subject);
+      console.log("Content length:", content.length);
+      console.log("Content preview:", content.substring(0, 100) + "...");
+      
       if (!token) {
         showToast('Session expired. Please login again.', 'fail');
         logout();
         return;
       }
 
-      const subject = document.getElementById('email-subject').value.trim();
-      const content = document.getElementById('email-content').value.trim();
-
       if (!subject || !content) {
         showToast('Please fill in Subject and HTML Content.', 'fail');
+        console.log("Error: Missing subject or content");
         return;
       }
       if (!confirm('Send "' + subject + '" to all subscribers?')) return;

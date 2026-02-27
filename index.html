@@ -1287,16 +1287,34 @@
 
     function orderFromPopup() {
       if (!currentProduct) return;
+      
+      console.log("=== ORDER FROM POPUP DEBUG ===");
+      console.log("Current product:", currentProduct);
+      console.log("Selected size:", selectedSize);
+      
       localStorage.setItem('item', currentProduct.name);
       localStorage.setItem('price', currentProduct.price);
       localStorage.setItem('selectedSize', selectedSize);
+      
+      console.log("Set localStorage - item:", currentProduct.name);
+      console.log("Set localStorage - price:", currentProduct.price);
+      console.log("Set localStorage - size:", selectedSize);
+      
       closeProductPopup();
       window.location.href = 'order.html';
     }
 
     function goOrder(itemName, itemPrice) {
+      console.log("=== GO ORDER DEBUG ===");
+      console.log("Item name:", itemName);
+      console.log("Item price:", itemPrice);
+      
       localStorage.setItem('item', itemName);
       localStorage.setItem('price', itemPrice);
+      
+      console.log("Set localStorage - item:", itemName);
+      console.log("Set localStorage - price:", itemPrice);
+      
       window.location.href = 'order.html';
     }
 
