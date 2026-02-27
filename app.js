@@ -169,7 +169,7 @@ function generateQR() {
   const formData = new URLSearchParams();
   formData.append("action", "order"); // Add missing action parameter
   formData.append("email", "preview@shop.com"); // dummy
-  formData.append("phone", "0000000000"); // dummy phone number for QR generation
+  formData.append("phone", "093-337-2907"); // Your actual phone number for payments
   formData.append("item", item);
   formData.append("price", price);
   formData.append("quantity", qty);
