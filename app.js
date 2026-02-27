@@ -162,15 +162,27 @@ function updateTotal() {
 function generateQR() {
   const qty = Number(document.getElementById("qty").value);
   const price = parseFloat(localStorage.getItem("price"));
-  const item = localStorage.getItem("item");
+  const itemName = localStorage.getItem("item");
 
   if (!qty || qty < 1) return;
+
+  // Map product names to backend IDs
+  const nameToIdMap = {
+    "ART&INK Basic Tee": "ARTINK_BASIC_TEE",
+    "ART&INK Vintage Tee": "ARTINK_VINTAGE_TEE", 
+    "ART&INK Nature Tee": "ARTINK_NATURE_TEE",
+    "ART&INK Urban Tee": "ARTINK_URBAN_TEE",
+    "ART&INK Art Tee": "ARTINK_ART_TEE",
+    "ART&INK Classic Tee": "ARTINK_CLASSIC_TEE"
+  };
+
+  const itemId = nameToIdMap[itemName] || itemName; // Fallback to original name
 
   const formData = new URLSearchParams();
   formData.append("action", "order"); // Add missing action parameter
   formData.append("email", "preview@shop.com"); // dummy
   formData.append("phone", "093-337-2907"); // Your actual phone number for payments
-  formData.append("item", item);
+  formData.append("itemId", itemId); // Use mapped itemId
   formData.append("price", price);
   formData.append("quantity", qty);
 
