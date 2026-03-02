@@ -384,9 +384,10 @@ function submitOrder() {
     const base64Image = e.target.result.split(',')[1]; // Remove data URL prefix
 
     const formData = new URLSearchParams();
+    formData.append("action", "order"); // Add action parameter
     formData.append("email", document.getElementById("email").value.trim());
     formData.append("phone", document.getElementById("phone").value.trim());
-    formData.append("item", localStorage.getItem("item"));
+    formData.append("itemId", localStorage.getItem("item"));
     formData.append("price", localStorage.getItem("price"));
     formData.append("quantity", document.getElementById("qty").value);
     formData.append("size", localStorage.getItem("selectedSize") || 'M');
