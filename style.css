@@ -3549,6 +3549,7 @@ nav .close:hover::before {
   position: relative;
   z-index: 10;
   user-select: none;
+  pointer-events: auto !important;
 }
 
 .faq-question:hover {
@@ -3583,8 +3584,9 @@ nav .close:hover::before {
 }
 
 .faq-answer.active {
-  max-height: 500px;
+  max-height: 1000px;
   padding: 0 30px 25px 30px;
+  overflow: visible;
 }
 
 .faq-contact-banner {
