@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us | ART&INK</title>
+  <link rel="icon" type="image/png" href="art-ink-icon.png">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <style>
+    /* Contact Page Specific Styles */
+    .contact-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: start;
+    }
+
+    .contact-header {
+      text-align: center;
+      margin-bottom: 60px;
+      grid-column: 1 / -1;
+    }
+
+    .contact-title {
+      font-size: 48px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #f8a5c2, #87cefa);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 20px;
+    }
+
+    .contact-subtitle {
+      font-size: 20px;
+      color: #666;
+      margin-bottom: 30px;
+    }
+
+    .contact-info {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    .contact-info h2 {
+      font-size: 28px;
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    .contact-method {
+      margin-bottom: 30px;
+      padding: 20px;
+      background: rgba(248, 165, 194, 0.05);
+      border-radius: 15px;
+      transition: all 0.3s ease;
+    }
+
+    .contact-method:hover {
+      background: rgba(248, 165, 194, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .contact-method-icon {
+      font-size: 24px;
+      margin-bottom: 15px;
+      display: block;
+    }
+
+    .contact-method h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .contact-method p {
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+
+    .contact-method a {
+      color: #f8a5c2;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .contact-method a:hover {
+      text-decoration: underline;
+    }
+
+    .contact-form {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    .contact-form h2 {
+      font-size: 28px;
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      background: #fafafa;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #f8a5c2;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(248, 165, 194, 0.1);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, #f8a5c2, #87cefa);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(248, 165, 194, 0.4);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .form-message {
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .form-message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .form-message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .business-hours {
+      margin-top: 40px;
+      padding: 20px;
+      background: rgba(135, 206, 250, 0.05);
+      border-radius: 15px;
+    }
+
+    .business-hours h3 {
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    .business-hours p {
+      color: #666;
+      margin-bottom: 8px;
+    }
+
+    .social-links {
+      margin-top: 30px;
+      display: flex;
+      gap: 15px;
+    }
+
+    .social-link {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f8a5c2, #87cefa);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .social-link:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(248, 165, 194, 0.4);
+    }
+
+    /* Dark mode support */
+    .dark .contact-info,
+    .dark .contact-form {
+      background: rgba(30, 30, 30, 0.95);
+    }
+
+    .dark .contact-info h2,
+    .dark .contact-form h2,
+    .dark .contact-method h3,
+    .dark .form-group label {
+      color: #fff;
+    }
+
+    .dark .contact-method {
+      background: rgba(248, 165, 194, 0.1);
+    }
+
+    .dark .contact-method:hover {
+      background: rgba(248, 165, 194, 0.2);
+    }
+
+    .dark .form-group input,
+    .dark .form-group textarea,
+    .dark .form-group select {
+      background: rgba(50, 50, 50, 0.8);
+      border-color: #444;
+      color: #fff;
+    }
+
+    .dark .form-group input:focus,
+    .dark .form-group textarea:focus,
+    .dark .form-group select:focus {
+      background: rgba(60, 60, 60, 0.9);
+    }
+
+    .dark .business-hours {
+      background: rgba(135, 206, 250, 0.1);
+    }
+
+    /* Responsive design */
+    @media (max-width: 968px) {
+      .contact-container {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        padding: 20px 15px;
+      }
+
+      .contact-header {
+        margin-bottom: 40px;
+      }
+
+      .contact-title {
+        font-size: 36px;
+      }
+
+      .contact-subtitle {
+        font-size: 18px;
+      }
+
+      .contact-info,
+      .contact-form {
+        padding: 30px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .contact-info,
+      .contact-form {
+        padding: 20px;
+      }
+
+      .contact-title {
+        font-size: 28px;
+      }
+
+      .contact-info h2,
+      .contact-form h2 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="site-wrapper">
+    <!-- Header -->
+    <header class="site-header">
+      <div class="header-content">
+        <div class="logo">
+          <a href="index.html">
+            <img src="art-ink-icon.png" alt="ART&INK" width="40" height="40">
+            <span>ART&INK</span>
+          </a>
+        </div>
+        <nav class="main-nav">
+          <a href="index.html">Home</a>
+          <a href="story.html">About</a>
+          <a href="faq.html">FAQ</a>
+          <a href="contact.html" class="active">Contact</a>
+        </nav>
+        <button class="theme-toggle" onclick="toggleTheme()">
+          <span class="sun-icon">☀️</span>
+          <span class="moon-icon">🌙</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="contact-container">
+        <!-- Header -->
+        <div class="contact-header">
+          <h1 class="contact-title">Get in Touch</h1>
+          <p class="contact-subtitle">We're here to help! Reach out to us with any questions, feedback, or custom order requests.</p>
+        </div>
+
+        <!-- Contact Information -->
+        <div class="contact-info">
+          <h2>📞 Contact Information</h2>
+          
+          <div class="contact-method">
+            <span class="contact-method-icon">📧</span>
+            <h3>Email Support</h3>
+            <p>Fastest way to reach us. We respond within 24 hours.</p>
+            <a href="mailto:support@art-ink.com">support@art-ink.com</a>
+          </div>
+
+          <div class="contact-method">
+            <span class="contact-method-icon">📱</span>
+            <h3>Phone/WhatsApp</h3>
+            <p>Call or message us for urgent inquiries.</p>
+            <a href="tel:+66933372907">+66 93-337-2907</a>
+            <p><small>Available Mon-Fri, 9AM-6PM Bangkok time</small></p>
+          </div>
+
+          <div class="contact-method">
+            <span class="contact-method-icon">💬</span>
+            <h3>LINE Official</h3>
+            <p>Chat with us on LINE for quick support.</p>
+            <a href="#">@artink.official</a>
+          </div>
+
+          <div class="contact-method">
+            <span class="contact-method-icon">📍</span>
+            <h3>Studio Location</h3>
+            <p>Bangkok, Thailand</p>
+            <p><small>By appointment only - we work primarily online</small></p>
+          </div>
+
+          <div class="business-hours">
+            <h3>🕐 Business Hours</h3>
+            <p><strong>Monday - Friday:</strong> 9:00 AM - 6:00 PM</p>
+            <p><strong>Saturday:</strong> 10:00 AM - 4:00 PM</p>
+            <p><strong>Sunday:</strong> Closed</p>
+            <p><small>All times are Bangkok Time (GMT+7)</small></p>
+          </div>
+
+          <div class="social-links">
+            <a href="#" class="social-link" title="Instagram">📷</a>
+            <a href="#" class="social-link" title="Facebook">📘</a>
+            <a href="#" class="social-link" title="Twitter">🐦</a>
+            <a href="#" class="social-link" title="TikTok">🎵</a>
+          </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="contact-form">
+          <h2>📝 Send us a Message</h2>
+          
+          <div id="formMessage"></div>
+
+          <form id="contactForm" onsubmit="handleSubmit(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="firstName">First Name *</label>
+                <input type="text" id="firstName" name="firstName" required>
+              </div>
+              <div class="form-group">
+                <label for="lastName">Last Name *</label>
+                <input type="text" id="lastName" name="lastName" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email Address *</label>
+              <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Phone Number</label>
+              <input type="tel" id="phone" name="phone" placeholder="Optional">
+            </div>
+
+            <div class="form-group">
+              <label for="subject">Subject *</label>
+              <select id="subject" name="subject" required>
+                <option value="">Select a topic...</option>
+                <option value="order">Order Inquiry</option>
+                <option value="product">Product Question</option>
+                <option value="shipping">Shipping & Delivery</option>
+                <option value="return">Return/Exchange</option>
+                <option value="custom">Custom Order</option>
+                <option value="partnership">Partnership/Bulk</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="message">Message *</label>
+              <textarea id="message" name="message" required placeholder="Tell us how we can help you..."></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">
+              <span id="btnText">Send Message</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4>ART&INK</h4>
+          <p>Premium art-inspired apparel for creative souls.</p>
+        </div>
+        <div class="footer-section">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="story.html">About</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Customer Care</h4>
+          <ul>
+            <li><a href="faq.html">Help Center</a></li>
+            <li><a href="faq.html#shipping">Shipping Info</a></li>
+            <li><a href="faq.html#returns">Returns</a></li>
+            <li><a href="faq.html#payment">Payment</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Connect</h4>
+          <ul>
+            <li><a href="#">Instagram</a></li>
+            <li><a href="#">Facebook</a></li>
+            <li><a href="#">Twitter</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="site-footer-bar">
+        All shirts are screen-printed order to order. &nbsp;·&nbsp;
+        <a href="#" onclick="openPrivacy(); return false;">Privacy Policy</a>
+        &nbsp;·&nbsp; <span class="copyright">© 2026 ART&INK</span>
+      </div>
+    </footer>
+  </div>
+
+  <script src="copyright.js"></script>
+  <script>
+    // Contact Form Handling
+    function handleSubmit(event) {
+      event.preventDefault();
+      
+      const form = event.target;
+      const submitBtn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btnText');
+      const formMessage = document.getElementById('formMessage');
+      
+      // Disable submit button
+      submitBtn.disabled = true;
+      btnText.textContent = 'Sending...';
+      
+      // Get form data
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData);
+      
+      // Simulate form submission (replace with actual backend call)
+      setTimeout(() => {
+        // Show success message
+        formMessage.className = 'form-message success';
+        formMessage.textContent = '✅ Message sent successfully! We\'ll respond within 24 hours.';
+        
+        // Reset form
+        form.reset();
+        
+        // Reset button
+        submitBtn.disabled = false;
+        btnText.textContent = 'Send Message';
+        
+        // Clear message after 5 seconds
+        setTimeout(() => {
+          formMessage.className = '';
+          formMessage.textContent = '';
+        }, 5000);
+        
+        // Log for debugging
+        console.log('Contact form submitted:', data);
+        
+      }, 1500); // Simulate network delay
+    }
+
+    // Phone number formatting
+    document.getElementById('phone').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, '');
+      let formattedValue = '';
+      
+      if (value.length > 0) {
+        formattedValue = value.substring(0, 3);
+      }
+      if (value.length > 3) {
+        formattedValue += '-' + value.substring(3, 6);
+      }
+      if (value.length > 6) {
+        formattedValue += '-' + value.substring(6, 10);
+      }
+      
+      e.target.value = formattedValue;
+    });
+
+    // Dark mode functionality
+    function toggleTheme() {
+      const html = document.documentElement;
+      const sunIcon = document.querySelector('.sun-icon');
+      const moonIcon = document.querySelector('.moon-icon');
+      
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        sunIcon.style.display = 'block';
+        moonIcon.style.display = 'none';
+        localStorage.setItem('theme', 'light');
+      } else {
+        html.classList.add('dark');
+        sunIcon.style.display = 'none';
+        moonIcon.style.display = 'block';
+        localStorage.setItem('theme', 'dark');
+      }
+    }
+
+    // Check for saved theme preference and local time
+    function initTheme() {
+      const hour = new Date().getHours();
+      const isNightTime = hour >= 18 || hour < 6; // 6 PM to 6 AM
+      const savedTheme = localStorage.getItem('theme');
+      
+      // Auto-enable dark mode during night hours if no preference saved
+      if (savedTheme === 'dark' || (!savedTheme && isNightTime)) {
+        document.documentElement.classList.add('dark');
+        document.querySelector('.sun-icon').style.display = 'none';
+        document.querySelector('.moon-icon').style.display = 'block';
+      }
+    }
+
+    // Initialize theme on page load
+    initTheme();
+
+    // Privacy modal (if needed)
+    function openPrivacy() { 
+      // This would open a privacy modal - implement as needed
+      alert('Privacy Policy: We protect your data and never share it with third parties.');
+    }
+  </script>
+</body>
+</html>

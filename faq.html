@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ - Frequently Asked Questions | ART&INK</title>
+  <link rel="icon" type="image/png" href="art-ink-icon.png">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <style>
+    /* FAQ Page Specific Styles */
+    .faq-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .faq-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .faq-title {
+      font-size: 48px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #f8a5c2, #87cefa);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 20px;
+    }
+
+    .faq-subtitle {
+      font-size: 20px;
+      color: #666;
+      margin-bottom: 40px;
+    }
+
+    .faq-categories {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 50px;
+      flex-wrap: wrap;
+    }
+
+    .category-btn {
+      padding: 10px 20px;
+      border: 2px solid #f8a5c2;
+      background: transparent;
+      color: #f8a5c2;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .category-btn:hover,
+    .category-btn.active {
+      background: #f8a5c2;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .faq-section {
+      margin-bottom: 40px;
+    }
+
+    .faq-section-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .faq-item {
+      background: white;
+      border-radius: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .faq-item:hover {
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+      transform: translateY(-2px);
+    }
+
+    .faq-question {
+      padding: 20px 25px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      font-size: 16px;
+      color: #333;
+      transition: all 0.3s ease;
+    }
+
+    .faq-question:hover {
+      background: rgba(248, 165, 194, 0.05);
+    }
+
+    .faq-icon {
+      font-size: 20px;
+      transition: transform 0.3s ease;
+      color: #f8a5c2;
+    }
+
+    .faq-item.active .faq-icon {
+      transform: rotate(180deg);
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      background: rgba(248, 165, 194, 0.02);
+    }
+
+    .faq-item.active .faq-answer {
+      max-height: 500px;
+    }
+
+    .faq-answer-content {
+      padding: 0 25px 20px 25px;
+      color: #666;
+      line-height: 1.6;
+    }
+
+    .faq-answer-content ul,
+    .faq-answer-content ol {
+      margin: 15px 0;
+      padding-left: 20px;
+    }
+
+    .faq-answer-content li {
+      margin-bottom: 8px;
+    }
+
+    .faq-answer-content strong {
+      color: #333;
+    }
+
+    .contact-cta {
+      text-align: center;
+      margin-top: 60px;
+      padding: 40px;
+      background: linear-gradient(135deg, rgba(248, 165, 194, 0.1), rgba(135, 206, 250, 0.1));
+      border-radius: 20px;
+    }
+
+    .contact-cta h3 {
+      font-size: 24px;
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    .contact-cta p {
+      color: #666;
+      margin-bottom: 25px;
+    }
+
+    .btn-contact {
+      display: inline-block;
+      padding: 15px 30px;
+      background: linear-gradient(135deg, #f8a5c2, #87cefa);
+      color: white;
+      text-decoration: none;
+      border-radius: 25px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-contact:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(248, 165, 194, 0.4);
+    }
+
+    /* Dark mode support */
+    .dark .faq-item {
+      background: rgba(30, 30, 30, 0.95);
+    }
+
+    .dark .faq-question {
+      color: #fff;
+    }
+
+    .dark .faq-question:hover {
+      background: rgba(248, 165, 194, 0.1);
+    }
+
+    .dark .faq-answer {
+      background: rgba(248, 165, 194, 0.05);
+    }
+
+    .dark .faq-answer-content {
+      color: #ccc;
+    }
+
+    .dark .faq-section-title {
+      color: #fff;
+    }
+
+    .dark .contact-cta {
+      background: linear-gradient(135deg, rgba(248, 165, 194, 0.2), rgba(135, 206, 250, 0.2));
+    }
+
+    .dark .contact-cta h3 {
+      color: #fff;
+    }
+
+    .dark .contact-cta p {
+      color: #aaa;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .faq-container {
+        padding: 20px 15px;
+      }
+
+      .faq-title {
+        font-size: 36px;
+      }
+
+      .faq-subtitle {
+        font-size: 18px;
+      }
+
+      .faq-categories {
+        gap: 10px;
+      }
+
+      .category-btn {
+        padding: 8px 16px;
+        font-size: 13px;
+      }
+
+      .faq-question {
+        padding: 15px 20px;
+        font-size: 15px;
+      }
+
+      .faq-answer-content {
+        padding: 0 20px 15px 20px;
+      }
+
+      .contact-cta {
+        padding: 30px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="site-wrapper">
+    <!-- Header -->
+    <header class="site-header">
+      <div class="header-content">
+        <div class="logo">
+          <a href="index.html">
+            <img src="art-ink-icon.png" alt="ART&INK" width="40" height="40">
+            <span>ART&INK</span>
+          </a>
+        </div>
+        <nav class="main-nav">
+          <a href="index.html">Home</a>
+          <a href="story.html">About</a>
+          <a href="faq.html" class="active">FAQ</a>
+          <a href="contact.html">Contact</a>
+        </nav>
+        <button class="theme-toggle" onclick="toggleTheme()">
+          <span class="sun-icon">☀️</span>
+          <span class="moon-icon">🌙</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="faq-container">
+        <!-- Header -->
+        <div class="faq-header">
+          <h1 class="faq-title">Frequently Asked Questions</h1>
+          <p class="faq-subtitle">Everything you need to know about ART&INK products and services</p>
+        </div>
+
+        <!-- Category Filters -->
+        <div class="faq-categories">
+          <button class="category-btn active" onclick="filterFAQ('all')">All</button>
+          <button class="category-btn" onclick="filterFAQ('products')">Products</button>
+          <button class="category-btn" onclick="filterFAQ('ordering')">Ordering</button>
+          <button class="category-btn" onclick="filterFAQ('payment')">Payment</button>
+          <button class="category-btn" onclick="filterFAQ('shipping')">Shipping</button>
+          <button class="category-btn" onclick="filterFAQ('returns')">Returns</button>
+        </div>
+
+        <!-- FAQ Sections -->
+        <div class="faq-content">
+          <!-- Products Section -->
+          <div class="faq-section" data-category="products">
+            <h2 class="faq-section-title">
+              <span>👕</span>
+              Products & Quality
+            </h2>
+            
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>What materials are your T-shirts made of?</span>
+                <span class="faq-icon">▼</span>
+              </div>
+              <div class="faq-answer">
+                <div class="faq-answer-content">
+                  <p>Our T-shirts are made from <strong>100% premium cotton</strong> with the following specifications:</p>
+                  <ul>
+                    <li>180-200 GSM fabric weight for durability</li>
+                    <li>Pre-shrunk to minimize size changes</li>
+                    <li>Reactive dye for long-lasting color</li>
+                    <li>Soft, breathable finish</li>
+                    <li>Double-stitched seams for durability</li>
+                  </ul>
+                  <p>All our shirts are screen-printed using high-quality, eco-friendly inks that are safe for skin and environment.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>How do I choose the right size?</span>
+                <span class="faq-icon">▼</span>
+              </div>
+              <div class="faq-answer">
+                <div class="faq-answer-content">
+                  <p>We offer sizes S, M, L, and XL. Here's our size guide:</p>
+                  <ul>
+                    <li><strong>S</strong>: Chest 36-38", Length 26-27" (Fits XS-S)</li>
+                    <li><strong>M</strong>: Chest 39-41", Length 28-29" (Fits M)</li>
+                    <li><strong>L</strong>: Chest 42-44", Length 30-31" (Fits L)</li>
+                    <li><strong>XL</strong>: Chest 45-48", Length 32-33" (Fits XL)</li>
+                  </ul>
+                  <p>Our shirts have a modern fit - not too tight, not too loose. If you're between sizes, we recommend sizing up for a more relaxed fit.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>How should I wash and care for my ART&INK T-shirt?</span>
+                <span class="faq-icon">▼</span>
+              </div>
+              <div class="faq-answer">
+                <div class="faq-answer-content">
+                  <p>To keep your ART&INK T-shirt looking great:</p>
+                  <ol>
+                    <li>Wash inside out with cold water</li>
+                    <li>Use gentle cycle and mild detergent</li>
+                    <li>Avoid bleach and fabric softeners</li>
+                    <li>Tumble dry low or hang to dry</li>
+                    <li>Do not iron directly on the print</li>
+                    <li>Do not dry clean</li>
+                  </ol>
+                  <p>Following these care instructions will help maintain the print quality and fabric integrity for years.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ordering Section -->
+          <div class="faq-section" data-category="ordering">
+            <h2 class="faq-section-title">
+              <span>🛒</span>
+              Ordering Process
+            </h2>
+            
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>How do I place an order?</span>
+                <span class="faq-icon">▼</span>
+              </div>
+              <div class="faq-answer">
+                <div class="faq-answer-content">
+                  <p>Placing an order is simple:</p>
+                  <ol>
+                    <li>Browse our collection on the homepage</li>
+                    <li>Click "Order Now" on your desired design</li>
+                    <li>Select your size and quantity</li>
+                    <li>Scan the PromptPay QR code to pay</li>
+                    <li>Upload your payment slip</li>
+                    <li>Fill in your contact information</li>
+                    <li>Submit your order</li>
+                  </ol>
+                  <p>You'll receive a confirmation email once we verify your payment.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>Can I modify or cancel my order after placing it?</span>
+                <span class="faq-icon">▼</span>
+              </div>
+              <div class="faq-answer">
+                <div class="faq-answer-content">
+                  <p>Since our shirts are made to order, modifications are limited:</p>
+                  <ul>
+                    <li><strong>Within 1 hour</strong>: Contact us immediately - we may be able to modify</li>
+                    <li><strong>After 1 hour</strong>: Orders enter production and cannot be modified</li>
+                    <li><strong>Cancellations</strong>: Only possible before production starts</li>
+                  </ul>
+                  <p>Please double-check your order details before submitting. If you need to make changes, contact us as soon as possible.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>Do you offer bulk or wholesale orders?</span>
+                <span class="faq-icon">▼</span>
+              </div>
+              <div class="faq-answer">
+                <div class="faq-answer-content">
+                  <p>Yes! We offer bulk pricing for orders of 10+ shirts:</p>
+                  <ul>
+                    <li><strong>10-24 shirts</strong>: 10% discount</li>
+                    <li><strong>25-49 shirts</strong>: 15% discount</li>
+                    <li><strong>50+ shirts</strong>: 20% discount + free shipping</li>
+                  </ul>
+                  <p>For bulk orders, please contact us directly with your requirements. We can also discuss custom designs and special packaging.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Payment Section -->
+          <div class="faq-section" data-category="payment">
+            <h2 class="faq-section-title">
+              <span>💳</span>
+              Payment Methods
+            </h2>
+            
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>What payment methods do you accept?</span>
+                <span class="faq-icon">▼</span>
+              </div>
+              <div class="faq-answer">
+                <div class="faq-answer-content">
+                  <p>We currently accept <strong>PromptPay</strong> only, which is Thailand's most popular payment method:</p>
+                  <ul>
+                    <li>Mobile banking apps (KTB, SCB, BBL, etc.)</li>
+                    <li>TrueMoney Wallet</li>
+                    <li>GrabPay</li>
+                    <li>Rabbit LINE Pay</li>
+                  </ul>
+                  <p>Simply scan the QR code with your preferred banking app to complete payment.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>Is it safe to pay with PromptPay?</span>
+                <span class="faq-icon">▼</span>
+              </div>
+              <div class="faq-answer">
+                <div class="faq-answer-content">
+                  <p>Yes, PromptPay is extremely safe:</p>
+                  <ul>
+                    <li>Bank-level security encryption</li>
+                    <li>No need to share card details</li>
+                    <li>Transaction limits protect against fraud</li>
+                    <li>Instant confirmation</li>
+                    <li>Official Bank of Thailand payment system</li>
+                  </ul>
+                  <p>We never store your payment information - everything goes through secure banking channels.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>What happens after I make a payment?</span>
+                <span class="faq-icon">▼</span>
+              </div>
+              <div class="faq-answer">
+                <div class="faq-answer-content">
+                  <p>After payment:</p>
+                  <ol>
+                    <li>Take a screenshot of your payment confirmation</li>
+                    <li>Upload the payment slip on our order page</li>
+                    <li>Fill in your contact details</li>
+                    <li>Submit your order</li>
+                    <li>We'll verify your payment within 24 hours</li>
+                    <li>Production starts after verification</li>
+                  </ol>
+                  <p>You'll receive email updates at each step of the process.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Shipping Section -->
+          <div class="faq-section" data-category="shipping">
+            <h2 class="faq-section-title">
+              <span>📦</span>
+              Shipping & Delivery
+            </h2>
+            
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>How long does delivery take?</span>
+                <span class="faq-icon">▼</span>
+              </div>
+              <div class="faq-answer">
+                <div class="faq-answer-content">
+                  <p>Production and delivery times:</p>
+                  <ul>
+                    <li><strong>Production</strong>: 3-5 business days (made to order)</li>
+                    <li><strong>Bangkok Metro</strong>: 1-2 business days</li>
+                    <li><strong>Provincial Cities</strong>: 2-3 business days</li>
+                    <li><strong>Remote Areas</strong>: 3-5 business days</li>
+                  </ul>
+                  <p>Total delivery time is typically 4-10 business days from order placement.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>How much does shipping cost?</span>
+                <span class="faq-icon">▼</span>
+              </div>
+              <div class="faq-answer">
+                <div class="faq-answer-content">
+                  <p>Shipping rates within Thailand:</p>
+                    <li><strong>Bangkok Metro</strong>: ฿50</li>
+                    <li><strong>Provincial Cities</strong>: ฿70</li>
+                    <li><strong>Remote Areas</strong>: ฿90</li>
+                    <li><strong>Free Shipping</strong>: On orders over ฿500</li>
+                  </ul>
+                  <p>International shipping is not currently available.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>Can I track my order?</span>
+                <span class="faq-icon">▼</span>
+              </div>
+              <div class="faq-answer">
+                <div class="faq-answer-content">
+                  <p>Yes! Order tracking is available:</p>
+                  <ul>
+                    <li>You'll receive a tracking number via email</li>
+                    <li>Track on Thailand Post website</li>
+                    <li>Real-time delivery updates</li>
+                    <li>SMS notifications for major updates</li>
+                  </ul>
+                  <p>Tracking is typically available within 24 hours after shipment.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Returns Section -->
+          <div class="faq-section" data-category="returns">
+            <h2 class="faq-section-title">
+              <span>🔄</span>
+              Returns & Exchanges
+            </h2>
+            
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>What is your return policy?</span>
+                <span class="faq-icon">▼</span>
+              </div>
+              <div class="faq-answer">
+                <div class="faq-answer-content">
+                  <p>Our return policy:</p>
+                  <ul>
+                    <li><strong>30-day return window</strong> from delivery date</li>
+                    <li><strong>Full refund</strong> for defective items</li>
+                    <li><strong>Store credit</strong> for wrong size/color (if our error)</li>
+                    <li><strong>No returns</strong> on custom orders</li>
+                  </ul>
+                  <p>Items must be unworn, unwashed, and in original condition with tags attached.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>How do I initiate a return or exchange?</span>
+                <span class="faq-icon">▼</span>
+              </div>
+              <div class="faq-answer">
+                <div class="faq-answer-content">
+                  <p>To return or exchange:</p>
+                  <ol>
+                    <li>Contact us within 30 days of delivery</li>
+                    <li>Provide your order number and reason for return</li>
+                    <li>We'll send you a return shipping label</li>
+                    <li>Pack the item securely in original packaging</li>
+                    <li>Drop off at any Thailand Post location</li>
+                    <li>Refund/exchange processed within 5 business days</li>
+                  </ol>
+                  <p>Return shipping is free for defective items. For other returns, shipping costs may apply.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>What if my item arrives damaged?</span>
+                <span class="faq-icon">▼</span>
+              </div>
+              <div class="faq-answer">
+                <div class="faq-answer-content">
+                  <p>If your item arrives damaged:</p>
+                  <ol>
+                    <li>Contact us immediately (within 48 hours)</li>
+                    <li>Send photos of the damage</li>
+                    <li>We'll arrange a replacement or full refund</li>
+                    <li>No return shipping required for damaged items</li>
+                  </ol>
+                  <p>We stand behind our quality and will make it right if there's any issue with your order.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact CTA -->
+        <div class="contact-cta">
+          <h3>Still have questions?</h3>
+          <p>We're here to help! Contact our friendly support team.</p>
+          <a href="contact.html" class="btn-contact">📧 Contact Support</a>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4>ART&INK</h4>
+          <p>Premium art-inspired apparel for creative souls.</p>
+        </div>
+        <div class="footer-section">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="story.html">About</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Customer Care</h4>
+          <ul>
+            <li><a href="faq.html">Help Center</a></li>
+            <li><a href="faq.html#shipping">Shipping Info</a></li>
+            <li><a href="faq.html#returns">Returns</a></li>
+            <li><a href="faq.html#payment">Payment</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Connect</h4>
+          <ul>
+            <li><a href="#">Instagram</a></li>
+            <li><a href="#">Facebook</a></li>
+            <li><a href="#">Twitter</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="site-footer-bar">
+        All shirts are screen-printed order to order. &nbsp;·&nbsp;
+        <a href="#" onclick="openPrivacy(); return false;">Privacy Policy</a>
+        &nbsp;·&nbsp; <span class="copyright">© 2026 ART&INK</span>
+      </div>
+    </footer>
+  </div>
+
+  <script src="copyright.js"></script>
+  <script>
+    // FAQ Functionality
+    function toggleFAQ(element) {
+      const faqItem = element.parentElement;
+      const isActive = faqItem.classList.contains('active');
+      
+      // Close all FAQ items
+      document.querySelectorAll('.faq-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      
+      // Open clicked item if it wasn't active
+      if (!isActive) {
+        faqItem.classList.add('active');
+      }
+    }
+
+    // Category Filter
+    function filterFAQ(category) {
+      // Update button states
+      document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+
+      // Filter FAQ sections
+      const sections = document.querySelectorAll('.faq-section');
+      
+      if (category === 'all') {
+        sections.forEach(section => {
+          section.style.display = 'block';
+        });
+      } else {
+        sections.forEach(section => {
+          if (section.dataset.category === category) {
+            section.style.display = 'block';
+          } else {
+            section.style.display = 'none';
+          }
+        });
+      }
+    }
+
+    // Dark mode functionality
+    function toggleTheme() {
+      const html = document.documentElement;
+      const sunIcon = document.querySelector('.sun-icon');
+      const moonIcon = document.querySelector('.moon-icon');
+      
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        sunIcon.style.display = 'block';
+        moonIcon.style.display = 'none';
+        localStorage.setItem('theme', 'light');
+      } else {
+        html.classList.add('dark');
+        sunIcon.style.display = 'none';
+        moonIcon.style.display = 'block';
+        localStorage.setItem('theme', 'dark');
+      }
+    }
+
+    // Check for saved theme preference and local time
+    function initTheme() {
+      const hour = new Date().getHours();
+      const isNightTime = hour >= 18 || hour < 6; // 6 PM to 6 AM
+      const savedTheme = localStorage.getItem('theme');
+      
+      // Auto-enable dark mode during night hours if no preference saved
+      if (savedTheme === 'dark' || (!savedTheme && isNightTime)) {
+        document.documentElement.classList.add('dark');
+        document.querySelector('.sun-icon').style.display = 'none';
+        document.querySelector('.moon-icon').style.display = 'block';
+      }
+    }
+
+    // Initialize theme on page load
+    initTheme();
+
+    // Privacy modal (if needed)
+    function openPrivacy() { 
+      // This would open a privacy modal - implement as needed
+      alert('Privacy Policy: We protect your data and never share it with third parties.');
+    }
+  </script>
+</body>
+</html>
