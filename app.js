@@ -173,12 +173,15 @@ function generateQR() {
 
   // Map product names to backend IDs
   const nameToIdMap = {
-    "ART&INK Basic Tee": "ARTINK_BASIC_TEE",
-    "ART&INK Vintage Tee": "ARTINK_VINTAGE_TEE", 
-    "ART&INK Nature Tee": "ARTINK_NATURE_TEE",
-    "ART&INK Urban Tee": "ARTINK_URBAN_TEE",
-    "ART&INK Art Tee": "ARTINK_ART_TEE",
-    "ART&INK Classic Tee": "ARTINK_CLASSIC_TEE"
+    "Abstract Line Art Tee": "ARTINK_BASIC_TEE",
+    "Cyber Geometry Tee": "ARTINK_VINTAGE_TEE", 
+    "Vintage Wave Tee": "ARTINK_NATURE_TEE",
+    "Nature Sketch Tee": "ARTINK_URBAN_TEE",
+    "Urban Typography Tee": "ARTINK_ART_TEE",
+    "Test Product": "ARTINK_CLASSIC_TEE",
+    "Cosmic Dreams Tee": "ARTINK_BASIC_TEE",
+    "Tropical Paradise Tee": "ARTINK_VINTAGE_TEE",
+    "Minimalist Grid Tee": "ARTINK_NATURE_TEE"
   };
 
   const itemId = nameToIdMap[itemName] || itemName; // Fallback to original name
