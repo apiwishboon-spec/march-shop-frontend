@@ -166,6 +166,36 @@
       box-shadow: 0 6px 20px rgba(243, 166, 200, .25);
     }
 
+    .faq-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 28px;
+      border-radius: 40px;
+      border: 1.5px solid #e5e7eb;
+      background: linear-gradient(135deg, #f8a5c2, #87cefa);
+      font-size: .9rem;
+      font-weight: 600;
+      color: white;
+      text-decoration: none;
+      transition: all .25s ease;
+      box-shadow: 0 2px 10px rgba(248, 165, 194, .2);
+    }
+
+    .faq-btn:hover {
+      background: linear-gradient(135deg, #f6a1c0, #85cdfa);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(248, 165, 194, .3);
+    }
+
+    .story-button-container {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
     /* ── Products heading ── */
     .section-heading {
       text-align: center;
@@ -858,9 +888,7 @@
         </div>
         <nav class="nav-menu">
           <a href="index.html" class="active">Home</a>
-          <a href="story.html">About</a>
           <a href="faq.html">FAQ</a>
-          <a href="admin.html">Admin</a>
         </nav>
       </div>
     </header>
@@ -873,6 +901,9 @@
       <div class="story-button-container">
         <a href="story.html" class="story-btn">
           <span>🎨</span> Discover Our Journey
+        </a>
+        <a href="faq.html" class="faq-btn">
+          <span>❓</span> Frequently Asked Questions
         </a>
       </div>
     </section>
