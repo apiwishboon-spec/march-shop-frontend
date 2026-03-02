@@ -707,14 +707,14 @@
       </div>
       <ul>
         <li><a href="index.html">Home</a></li>
-        <li><a href="#" onclick="scrollToContact(); return false;">Your Contact</a></li>
+        <li><a href="faq.html">FQA</a></li>
       </ul>
     </nav>
 
     <!-- Simple Step Indicator -->
     <div class="step-indicator">
       <div class="step active" id="step1-indicator">
-        <div class="step-dot">☰</div>
+        <div class="step-dot">FQA</div>
         <div class="step-label">Menu</div>
         <div class="step-description">Navigation</div>
       </div>
@@ -969,26 +969,6 @@
         instructions.style.display = 'none';
         toggle.querySelector('.chevron-icon').textContent = '▼';
       }
-    }
-  </script>
-
-  <!-- Scroll to Contact Function -->
-  <script>
-    function scrollToContact() {
-      // Close navigation first
-      const close = document.querySelector('.close');
-      if (close) {
-        close.click();
-      }
-      
-      // Scroll to email field
-      setTimeout(() => {
-        const emailField = document.getElementById('email');
-        if (emailField) {
-          emailField.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          emailField.focus();
-        }
-      }, 500);
     }
   </script>
 
