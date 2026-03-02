@@ -1745,6 +1745,12 @@ document.addEventListener('DOMContentLoaded', function() {
         nav.classList.remove('open');
         open.classList.remove('hidden');
       });
+      
+      // Reset timeline when it completes to prevent breaking
+      tl.eventCallback('onReverseComplete', () => {
+        nav.classList.remove('open');
+        open.classList.remove('hidden');
+      });
     }
   }
 });
