@@ -2487,6 +2487,13 @@ input[type="file"] {
   width: 30px;
   height: 20px;
   z-index: 1001;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.nav-container.hidden {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .bars {
@@ -2598,6 +2605,22 @@ nav .close {
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
+  position: relative;
+}
+
+nav .close::before {
+  content: '';
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+  transition: all 0.3s ease;
 }
 
 nav h2 {
@@ -2639,6 +2662,12 @@ nav .close:hover {
   background: rgba(255, 255, 255, 0.4);
   border-color: rgba(255, 255, 255, 0.6);
   transform: scale(1.1);
+}
+
+nav .close:hover::before {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translate(-50%, -50%) scale(1.1);
 }
 
 @media (max-width: 992px) {
