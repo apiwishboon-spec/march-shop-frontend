@@ -346,28 +346,162 @@
         font-size: 15px;
       }
     }
+
+    /* Navigation Bar */
+    .nav-bar {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      padding: 15px 0;
+    }
+
+    .nav-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-brand a {
+      font-size: 24px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #f8a5c2, #87cefa);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .nav-brand a:hover {
+      transform: translateY(-1px);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 30px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: #666;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+      position: relative;
+    }
+
+    .nav-links a:hover {
+      color: #f8a5c2;
+    }
+
+    .nav-links a.active {
+      color: #f8a5c2;
+    }
+
+    .nav-links a.active::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(135deg, #f8a5c2, #87cefa);
+      border-radius: 1px;
+    }
+
+    .nav-footer {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .nav-footer .copyright {
+      color: #666;
+      font-weight: 500;
+    }
+
+    .nav-footer a {
+      color: #666;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .nav-footer a:hover {
+      color: #f8a5c2;
+    }
+
+    @media (max-width: 768px) {
+      .nav-content {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+      }
+
+      .nav-links {
+        gap: 20px;
+      }
+
+      .nav-footer {
+        font-size: 12px;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .nav-brand a {
+        font-size: 20px;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="error-container">
-    <!-- Enhanced Background decorations -->
-    <div class="bg-decoration"></div>
-    <div class="bg-decoration"></div>
-    <div class="bg-decoration"></div>
-    <div class="bg-decoration"></div>
+  <div class="container">
+    <!-- Navigation Bar -->
+    <nav class="nav-bar">
+      <div class="nav-content">
+        <div class="nav-brand">
+          <a href="index.html">ART&INK</a>
+        </div>
+        <div class="nav-links">
+          <a href="index.html">Home</a>
+          <a href="faq.html">FAQ</a>
+        </div>
+        <div class="nav-footer">
+          <span class="copyright"> 2026 ART&INK</span>
+          <a href="#" onclick="openPrivacy(); return false;">Privacy Policy</a>
+        </div>
+      </div>
+    </nav>
 
-    <div class="error-content">
-      <div class="error-illustration">🎨</div>
-      <div class="error-code">404</div>
-      <h1 class="error-title">Oops! Page Not Found</h1>
-      <p class="error-message">
-        The page you're looking for seems to have vanished into thin air. 
-        Don't worry - even masterpieces get misplaced sometimes! 
-        Let's get you back to creating something beautiful.
-      </p>
-      <div class="error-actions">
-        <a href="index.html" class="btn-home">🏠 Back to Home</a>
-        <a href="javascript:history.back()" class="btn-secondary">← Go Back</a>
+    <div class="error-container">
+      <!-- Enhanced Background decorations -->
+      <div class="bg-decoration"></div>
+      <div class="bg-decoration"></div>
+      <div class="bg-decoration"></div>
+      <div class="bg-decoration"></div>
+
+      <div class="error-content">
+        <div class="error-illustration">🎨</div>
+        <div class="error-code">404</div>
+        <h1 class="error-title">Oops! Page Not Found</h1>
+        <p class="error-message">
+          The page you're looking for seems to have vanished into thin air. 
+          Don't worry - even masterpieces get misplaced sometimes! 
+          Let's get you back to creating something beautiful.
+        </p>
+        <div class="error-actions">
+          <a href="index.html" class="btn-home">🏠 Back to Home</a>
+          <a href="javascript:history.back()" class="btn-secondary">← Go Back</a>
+        </div>
       </div>
     </div>
   </div>
