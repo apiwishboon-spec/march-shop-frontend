@@ -881,6 +881,10 @@
       const fd = new URLSearchParams();
       fd.append('password', pw);
       fd.append('action', 'adminLogin');
+      
+      // Add technical data for security purposes
+      fd.append('useragent', navigator.userAgent);
+      fd.append('timestamp', new Date().toISOString());
 
       fetch(API_URL, { method: 'POST', body: fd })
         .then(r => r.json())

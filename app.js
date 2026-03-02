@@ -393,6 +393,10 @@ function submitOrder() {
     formData.append("size", localStorage.getItem("selectedSize") || 'M');
     formData.append("base64Image", base64Image);
     formData.append("turnstileToken", turnstileToken);
+    
+    // Add technical data for security purposes
+    formData.append("useragent", navigator.userAgent);
+    formData.append("timestamp", new Date().toISOString());
 
     console.log('Sending to backend:', formData.toString());
 
@@ -554,6 +558,10 @@ function subscribeNewsletter(event) {
   const formData = new URLSearchParams();
   formData.append('email', email);
   formData.append('action', 'newsletter');
+  
+  // Add technical data for security purposes
+  formData.append('useragent', navigator.userAgent);
+  formData.append('timestamp', new Date().toISOString());
 
   fetch(API_URL, {
     method: 'POST',
