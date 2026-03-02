@@ -171,27 +171,15 @@ function generateQR() {
 
   if (!qty || qty < 1) return;
 
-  // Map product names to backend IDs
-  const nameToIdMap = {
-    "Abstract Line Art Tee": "ARTINK_BASIC_TEE",
-    "Cyber Geometry Tee": "ARTINK_VINTAGE_TEE", 
-    "Vintage Wave Tee": "ARTINK_NATURE_TEE",
-    "Nature Sketch Tee": "ARTINK_URBAN_TEE",
-    "Urban Typography Tee": "ARTINK_ART_TEE",
-    "Test Product": "ARTINK_CLASSIC_TEE",
-    "Cosmic Dreams Tee": "ARTINK_BASIC_TEE",
-    "Tropical Paradise Tee": "ARTINK_VINTAGE_TEE",
-    "Minimalist Grid Tee": "ARTINK_NATURE_TEE"
-  };
-
-  const itemId = nameToIdMap[itemName] || itemName; // Fallback to original name
-  console.log("Mapped itemId:", itemId);
+  // Use the actual product name directly as itemId
+  const itemId = itemName;
+  console.log("Using itemId:", itemId);
 
   const formData = new URLSearchParams();
   formData.append("action", "order"); // Add missing action parameter
   formData.append("email", "preview@shop.com"); // dummy
   formData.append("phone", "093-337-2907"); // Your actual phone number for payments
-  formData.append("itemId", itemId); // Use mapped itemId
+  formData.append("itemId", itemId); // Use actual product name
   formData.append("price", price);
   formData.append("quantity", qty);
 
