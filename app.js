@@ -836,14 +836,11 @@ document.addEventListener('DOMContentLoaded', function() {
   if (window.location.pathname.includes('faq.html')) {
     // Initialize FAQ accordion
     const faqQuestions = document.querySelectorAll('.faq-question');
-    console.log('Found FAQ questions:', faqQuestions.length);
     
-    faqQuestions.forEach((question, index) => {
-      console.log(`Setting up FAQ question ${index + 1}`);
+    faqQuestions.forEach(question => {
       question.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
-        console.log('FAQ question clicked:', this.textContent.trim());
         
         const answer = this.nextElementSibling;
         const isActive = this.classList.contains('active');
@@ -860,7 +857,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Toggle current FAQ
         this.classList.toggle('active');
         answer.classList.toggle('active');
-        console.log('FAQ toggled, active:', this.classList.contains('active'));
       });
     });
 
