@@ -392,6 +392,27 @@
         font-size: 0.75rem;
       }
     }
+  .nav-links {
+      display: flex;
+      gap: 15px;
+    }
+    
+    .nav-links a {
+      color: #666;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    
+    .nav-links a:hover {
+      color: #f8a5c2;
+    }
+    
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+    }
   </style>
 </head>
 
@@ -401,32 +422,15 @@
   <nav class="story-nav-bar">
     <a href="index.html" class="nav-back">← Back to Shop</a>
     <span class="nav-brand">ART&INK</span>
-    <div class="main-nav">
-      <a href="index.html">Home</a>
-      <a href="story.html" class="active">About</a>
+    <div class="nav-links">
       <a href="faq.html">FAQ</a>
       <a href="contact.html">Contact</a>
+      <a href="admin.html">Admin</a>
     </div>
-    <div style="width:88px;"></div><!-- spacer -->
   </nav>
 
   <!-- Hero -->
   <section class="story-hero">
-    <div class="story-hero-label">🎨 Our Story</div>
-    <h1>ART&INK</h1>
-    <p>Crafted to Be Seen</p>
-  </section>
-
-  <!-- Main -->
-  <main class="story-main">
-
-    <div class="story-cards">
-      <div class="story-card">
-        <div class="card-icon-wrap">💡</div>
-        <div class="card-content">
-          <h3>The Beginning</h3>
-          <p>ART&INK started with a simple idea: make art wearable and accessible for everyone. Not mass-produced
-            graphics — pieces made with care and creative intention.</p>
         </div>
       </div>
 
