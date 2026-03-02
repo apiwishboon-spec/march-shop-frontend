@@ -707,7 +707,7 @@
       </div>
       <ul>
         <li><a href="index.html">Home</a></li>
-        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="#" onclick="scrollToContact(); return false;">Your Contact</a></li>
       </ul>
     </nav>
 
@@ -970,11 +970,31 @@
         toggle.querySelector('.chevron-icon').textContent = '▼';
       }
     }
-</script>
+  </script>
+
+  <!-- Scroll to Contact Function -->
+  <script>
+    function scrollToContact() {
+      // Close navigation first
+      const close = document.querySelector('.close');
+      if (close) {
+        close.click();
+      }
+      
+      // Scroll to email field
+      setTimeout(() => {
+        const emailField = document.getElementById('email');
+        if (emailField) {
+          emailField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          emailField.focus();
+        }
+      }, 500);
+    }
+  </script>
 
   <!-- Footer -->
   <footer class="page-footer">
-    <span class="copyright">© 2026 ART&INK</span>
+    <span class="copyright"> 2026 ART&INK</span>
     <a href="#" onclick="openPrivacy(); return false;">Privacy Policy</a>
   </footer>
 
