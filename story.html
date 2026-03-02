@@ -25,42 +25,129 @@
     }
 
     /* ── Nav ── */
-    .story-nav-bar {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(255, 255, 255, .9);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid #f0f0f0;
-      padding: 0 32px;
-      height: 60px;
+    .nav-container {
+      cursor: pointer;
+      position: fixed;
+      top: 5%;
+      right: 5%;
+      width: 30px;
+      height: 20px;
+      z-index: 1001;
+    }
+
+    .bars {
+      width: 30px;
+      height: 4px;
+      background: #000;
+    }
+
+    .bars::before,
+    .bars::after {
+      content: '';
+      position: absolute;
+      width: 30px;
+      height: 4px;
+      background: #000;
+    }
+
+    .bars::before {
+      margin-top: 9px;
+    }
+
+    .bars::after {
+      margin-top: 18px;
+    }
+
+    nav {
+      position: fixed;
+      width: 100%;
+      height: 30px;
+      background: #000;
       display: flex;
+      justify-content: center;
       align-items: center;
-      justify-content: space-between;
+      right: -200vw;
+      z-index: 1000;
     }
 
-    .nav-back {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+    nav ul {
+      list-style: none;
+    }
+
+    nav ul li {
+      margin: 50px 0;
+    }
+
+    nav ul li a {
+      color: #fafafa;
+      font-size: 2em;
       text-decoration: none;
-      color: #6b7280;
-      font-size: .88rem;
-      font-weight: 600;
-      transition: color .2s;
+      font-weight: 500;
+      position: relative;
+      opacity: 0;
+      pointer-events: none;
     }
 
-    .nav-back:hover {
-      color: #111827;
+    nav ul li a:after {
+      content: '';
+      width: 100%;
+      position: absolute;
+      height: 3px;
+      border-radius: 5px;
+      background: #fff;
+      bottom: -10px;
+      left: 0;
+      transform-origin: left;
+      transition: transform .5s ease;
+      transform: scaleX(0);
     }
 
-    .nav-brand {
-      font-size: 1.1rem;
-      font-weight: 900;
-      background: linear-gradient(135deg, #f3a6c8, #d9b7ee, #9ecbff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+    nav ul li a:hover:after {
+      transform: scaleX(1);
+    }
+
+    nav .close {
+      width: 30px;
+      height: 30px;
+      position: absolute;
+      top: 6%;
+      right: 5%;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    nav h2 {
+      position: absolute;
+      top: 5%;
+      left: 5%;
+      opacity: 0;
+      pointer-events: none;
+      color: #fff;
+      font-size: 2em;
+    }
+
+    nav .close div::before,
+    nav .close div::after {
+      content: '';
+      position: absolute;
+      width: 30px;
+      height: 4px;
+      background: #fff;
+      transition: background .5s ease;
+    }
+
+    nav .close div::before {
+      transform: rotate(-45deg);
+    }
+
+    nav .close div::after {
+      transform: rotate(45deg);
+    }
+
+    nav .close:hover div::before,
+    nav .close:hover div::after {
+      background: #f8a5c2;
     }
 
     /* ── Hero ── */
@@ -269,21 +356,38 @@
       border-top: 1px solid #f0f0f0;
     }
     
+    /* Page Footer */
+    .page-footer {
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+      border-top: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .page-footer .copyright {
+      color: #666;
+      font-weight: 500;
+    }
+
+    .page-footer a {
+      color: #666;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .page-footer a:hover {
+      color: #f8a5c2;
+    }
+    
     /* Mobile Responsive Styles */
     @media (max-width: 768px) {
-      .story-nav-bar {
-        padding: 0 20px;
-        height: 50px;
-      }
-      
-      .nav-brand {
-        font-size: 1rem;
-      }
-      
-      .nav-back {
-        font-size: 0.8rem;
-      }
-      
       .story-hero {
         padding: 60px 20px 40px;
       }
@@ -333,10 +437,6 @@
     }
     
     @media (max-width: 480px) {
-      .story-nav-bar {
-        padding: 0 16px;
-      }
-      
       .story-hero {
         padding: 40px 16px 32px;
       }
@@ -391,145 +491,11 @@
         padding: 24px 16px;
         font-size: 0.75rem;
       }
-    }
-  .nav-links {
-      display: flex;
-      gap: 15px;
-    }
-    
-    .nav-links a {
-      color: #666;
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s ease;
-    }
-    
-    .nav-links a:hover {
-      color: #f8a5c2;
-    }
-    
-    @media (max-width: 768px) {
-      .nav-links {
-        display: none;
-      }
-    }
-
-    /* Navigation Bar */
-    .nav-bar {
-      background: #ffffff;
-      border-bottom: 1px solid #e5e7eb;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      padding: 15px 0;
-      width: 100%;
-      left: 0;
-      right: 0;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
-
-    .nav-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-    }
-
-    .nav-brand a {
-      font-size: 24px;
-      font-weight: 800;
-      background: linear-gradient(135deg, #f8a5c2, #87cefa);
-      background-clip: text;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-decoration: none;
-      transition: all 0.3s ease;
-    }
-
-    .nav-brand a:hover {
-      transform: translateY(-1px);
-    }
-
-    .nav-bar .nav-links {
-      display: flex;
-      gap: 30px;
-      align-items: center;
-    }
-
-    .nav-bar .nav-links a {
-      color: #666;
-      text-decoration: none;
-      font-weight: 600;
-      transition: color 0.3s ease;
-      position: relative;
-    }
-
-    .nav-bar .nav-links a:hover {
-      color: #f8a5c2;
-    }
-
-    .nav-bar .nav-links a.active {
-      color: #f8a5c2;
-    }
-
-    .nav-bar .nav-links a.active::after {
-      content: '';
-      position: absolute;
-      bottom: -5px;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(135deg, #f8a5c2, #87cefa);
-      border-radius: 1px;
-    }
-
-    .nav-footer {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      font-size: 14px;
-      color: #666;
-    }
-
-    .nav-footer .copyright {
-      color: #666;
-      font-weight: 500;
-    }
-
-    .nav-footer a {
-      color: #666;
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s ease;
-    }
-
-    .nav-footer a:hover {
-      color: #f8a5c2;
-    }
-
-    @media (max-width: 768px) {
-      .nav-content {
+      
+      .page-footer {
         flex-direction: column;
         gap: 10px;
-        text-align: center;
-      }
-
-      .nav-bar .nav-links {
-        gap: 20px;
-      }
-
-      .nav-footer {
         font-size: 12px;
-        gap: 10px;
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-
-      .nav-brand a {
-        font-size: 20px;
       }
     }
   </style>
@@ -537,29 +503,21 @@
 
 <body>
   <div class="container">
-    <!-- Navigation Bar -->
-    <nav class="nav-bar">
-      <div class="nav-content">
-        <div class="nav-brand">
-          <a href="index.html">ART&INK</a>
-        </div>
-        <div class="nav-links">
-        </div>
-        <div class="nav-footer">
-          <span class="copyright">© 2026 ART&INK</span>
-          <a href="#" onclick="openPrivacy(); return false;">Privacy Policy</a>
-        </div>
-      </div>
-    </nav>
-
-  <!-- Nav -->
-  <nav class="story-nav-bar">
-    <a href="index.html" class="nav-back">← Back to Shop</a>
-    <span class="nav-brand">ART&INK</span>
-    <div class="nav-links">
-      <a href="faq.html">FAQ</a>
+    <!-- Animated Navigation -->
+    <div class="nav-container">
+      <div class="bars"></div>
     </div>
-  </nav>
+
+    <nav>
+      <h2>ART&INK</h2>
+      <div class="close">
+        <div></div>
+      </div>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul>
+    </nav>
 
   <!-- Hero -->
   <section class="story-hero">
@@ -649,6 +607,38 @@
     </section>
 
   </main>
+
+  <!-- Footer -->
+  <footer class="page-footer">
+    <span class="copyright">© 2026 ART&INK</span>
+    <a href="#" onclick="openPrivacy(); return false;">Privacy Policy</a>
+  </footer>
+
+  <!-- GSAP Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  
+  <!-- Animated Navigation Script -->
+  <script>
+    const open = document.querySelector('.nav-container');
+    const close = document.querySelector('.close');
+    var tl = gsap.timeline({ defaults: { duration: 1, ease: 'expo.inOut' } });
+    
+    open.addEventListener('click', () => {
+      if (tl.reversed()) {
+        tl.play();
+      } else {
+        tl.to('nav', { right: 0 })
+          .to('nav', { height: '100vh' }, '-=.1')
+          .to('nav ul li a', { opacity: 1, pointerEvents: 'all', stagger: .2 }, '-=.8')
+          .to('.close', { opacity: 1, pointerEvents: 'all' }, "-=.8")
+          .to('nav h2', { opacity: 1 }, '-=1');
+      }
+    });
+
+    close.addEventListener('click', () => {
+      tl.reverse();
+    });
+  </script>
 
 <script src="copyright.js"></script>
 </body>
