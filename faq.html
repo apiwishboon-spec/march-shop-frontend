@@ -517,6 +517,44 @@
         right: 3%;
       }
     }
+
+    /* Page Footer */
+    .page-footer {
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+      border-top: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .page-footer .copyright {
+      color: #666;
+      font-weight: 500;
+    }
+
+    .page-footer a {
+      color: #666;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .page-footer a:hover {
+      color: #f8a5c2;
+    }
+
+    @media (max-width: 768px) {
+      .page-footer {
+        flex-direction: column;
+        gap: 10px;
+        font-size: 12px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -821,6 +859,12 @@
         <p>Try searching with different keywords or browse our categories above.</p>
       </div>
     </div>
+
+  <!-- Footer -->
+  <footer class="page-footer">
+    <span class="copyright">© 2026 ART&INK</span>
+    <a href="#" onclick="openPrivacy(); return false;">Privacy Policy</a>
+  </footer>
 
   <script src="copyright.js"></script>
   <script>

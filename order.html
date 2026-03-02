@@ -521,122 +521,174 @@
       100% {transform: rotate(1turn)}
     }
 
-    /* Navigation Bar */
-    .nav-bar {
-      background: #ffffff;
-      border-bottom: 1px solid #e5e7eb;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      padding: 15px 0;
-      width: 100%;
-      left: 0;
-      right: 0;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    /* Animated Navigation */
+    .nav-container {
+      cursor: pointer;
+      position: fixed;
+      top: 5%;
+      right: 5%;
+      width: 30px;
+      height: 20px;
+      z-index: 1001;
     }
 
-    .nav-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
+    .bars {
+      width: 30px;
+      height: 4px;
+      background: #000;
     }
 
-    .nav-brand a {
-      font-size: 24px;
-      font-weight: 800;
-      background: linear-gradient(135deg, #f8a5c2, #87cefa);
-      background-clip: text;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-decoration: none;
-      transition: all 0.3s ease;
-    }
-
-    .nav-brand a:hover {
-      transform: translateY(-1px);
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 30px;
-      align-items: center;
-    }
-
-    .nav-links a {
-      color: #666;
-      text-decoration: none;
-      font-weight: 600;
-      transition: color 0.3s ease;
-      position: relative;
-    }
-
-    .nav-links a:hover {
-      color: #f8a5c2;
-    }
-
-    .nav-links a.active {
-      color: #f8a5c2;
-    }
-
-    .nav-links a.active::after {
+    .bars::before,
+    .bars::after {
       content: '';
       position: absolute;
-      bottom: -5px;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(135deg, #f8a5c2, #87cefa);
-      border-radius: 1px;
+      width: 30px;
+      height: 4px;
+      background: #000;
     }
 
-    .nav-footer {
+    .bars::before {
+      margin-top: 9px;
+    }
+
+    .bars::after {
+      margin-top: 18px;
+    }
+
+    nav {
+      position: fixed;
+      width: 100%;
+      height: 30px;
+      background: #000;
       display: flex;
+      justify-content: center;
+      align-items: center;
+      right: -200vw;
+      z-index: 1000;
+    }
+
+    nav ul {
+      list-style: none;
+    }
+
+    nav ul li {
+      margin: 50px 0;
+    }
+
+    nav ul li a {
+      color: #fafafa;
+      font-size: 2em;
+      text-decoration: none;
+      font-weight: 500;
+      position: relative;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    nav ul li a:after {
+      content: '';
+      width: 100%;
+      position: absolute;
+      height: 3px;
+      border-radius: 5px;
+      background: #fff;
+      bottom: -10px;
+      left: 0;
+      transform-origin: left;
+      transition: transform .5s ease;
+      transform: scaleX(0);
+    }
+
+    nav ul li a:hover:after {
+      transform: scaleX(1);
+    }
+
+    nav .close {
+      width: 30px;
+      height: 30px;
+      position: absolute;
+      top: 6%;
+      right: 5%;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    nav h2 {
+      position: absolute;
+      top: 5%;
+      left: 5%;
+      opacity: 0;
+      pointer-events: none;
+      color: #fff;
+      font-size: 2em;
+    }
+
+    nav .close div::before,
+    nav .close div::after {
+      content: '';
+      position: absolute;
+      width: 30px;
+      height: 4px;
+      background: #fff;
+      transition: background .5s ease;
+    }
+
+    nav .close div::before {
+      transform: rotate(-45deg);
+    }
+
+    nav .close div::after {
+      transform: rotate(45deg);
+    }
+
+    nav .close:hover div::before,
+    nav .close:hover div::after {
+      background: #f8a5c2;
+    }
+
+    /* Page Footer */
+    .page-footer {
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+      border-top: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: center;
       align-items: center;
       gap: 15px;
       font-size: 14px;
       color: #666;
     }
 
-    .nav-footer .copyright {
+    .page-footer .copyright {
       color: #666;
       font-weight: 500;
     }
 
-    .nav-footer a {
+    .page-footer a {
       color: #666;
       text-decoration: none;
       font-weight: 500;
       transition: color 0.3s ease;
     }
 
-    .nav-footer a:hover {
+    .page-footer a:hover {
       color: #f8a5c2;
     }
 
+    @media (max-width: 992px) {
+      .nav-container {
+        top: 3%;
+        right: 3%;
+      }
+    }
+
     @media (max-width: 768px) {
-      .nav-content {
+      .page-footer {
         flex-direction: column;
         gap: 10px;
-        text-align: center;
-      }
-
-      .nav-links {
-        gap: 20px;
-      }
-
-      .nav-footer {
         font-size: 12px;
-        gap: 10px;
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-
-      .nav-brand a {
-        font-size: 20px;
       }
     }
   </style>
@@ -920,6 +972,38 @@
       }
     }
 </script>
+
+  <!-- Footer -->
+  <footer class="page-footer">
+    <span class="copyright">© 2026 ART&INK</span>
+    <a href="#" onclick="openPrivacy(); return false;">Privacy Policy</a>
+  </footer>
+
+  <!-- GSAP Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  
+  <!-- Animated Navigation Script -->
+  <script>
+    const open = document.querySelector('.nav-container');
+    const close = document.querySelector('.close');
+    var tl = gsap.timeline({ defaults: { duration: 1, ease: 'expo.inOut' } });
+    
+    open.addEventListener('click', () => {
+      if (tl.reversed()) {
+        tl.play();
+      } else {
+        tl.to('nav', { right: 0 })
+          .to('nav', { height: '100vh' }, '-=.1')
+          .to('nav ul li a', { opacity: 1, pointerEvents: 'all', stagger: .2 }, '-=.8')
+          .to('.close', { opacity: 1, pointerEvents: 'all' }, "-=.8")
+          .to('nav h2', { opacity: 1 }, '-=1');
+      }
+    });
+
+    close.addEventListener('click', () => {
+      tl.reverse();
+    });
+  </script>
 
 <script src="copyright.js"></script>
 </body>
