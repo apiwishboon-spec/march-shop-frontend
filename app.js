@@ -1752,11 +1752,22 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log("Error: Missing subject or content");
         return;
       }
-      if (!confirm('Send "' + subject + '" to all subscribers?')) return;
+      
+      console.log("About to show confirm dialog...");
+      if (!confirm('Send "' + subject + '" to all subscribers?')) {
+        console.log("User cancelled send");
+        return;
+      }
+      console.log("User confirmed send");
 
       const sendBtn = document.getElementById('send-custom-newsletter-btn');
-      sendBtn.disabled = true;
-      sendBtn.textContent = '⏳ Sending…';
+      console.log("Send button found:", !!sendBtn);
+      
+      if (sendBtn) {
+        sendBtn.disabled = true;
+        sendBtn.textContent = '⏳ Sending…';
+        console.log("Button state updated");
+      }
 
       const fd = new URLSearchParams();
       fd.append('subject', subject);
@@ -1764,23 +1775,28 @@ document.addEventListener('DOMContentLoaded', function () {
       fd.append('action', 'sendCustomNewsletter');
       fd.append('token', token);
 
+      console.log("FormData prepared:", fd.toString());
+
       // Add test mode option
       if (subject.includes('[TEST]')) {
         console.log("TEST MODE: Sending to debug endpoint");
         fd.append('testMode', 'true');
       }
 
+      console.log("About to fetch...");
       fetch(API_URL, { method: 'POST', body: fd })
         .then(r => {
-          console.log("Response status:", r.status);
+          console.log("Fetch response received, status:", r.status);
           console.log("Response headers:", [...r.headers.entries()]);
           return r.json();
         })
         .then(res => {
           console.log("Full response:", res);
           const sendBtn = document.getElementById('send-custom-newsletter-btn');
-          sendBtn.disabled = false;
-          sendBtn.textContent = '📧 Send to All Subscribers';
+          if (sendBtn) {
+            sendBtn.disabled = false;
+            sendBtn.textContent = '📧 Send to All Subscribers';
+          }
 
           if (res.success) {
             const n = res.data?.sentTo ?? '?';
@@ -1796,9 +1812,12 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .catch(err => {
           console.log("Network error:", err);
+          console.log("Error stack:", err.stack);
           const sendBtn = document.getElementById('send-custom-newsletter-btn');
-          sendBtn.disabled = false;
-          sendBtn.textContent = '📧 Send to All Subscribers';
+          if (sendBtn) {
+            sendBtn.disabled = false;
+            sendBtn.textContent = '📧 Send to All Subscribers';
+          }
           showAdminToast('❌ Network error. Try again.');
         });
     }
