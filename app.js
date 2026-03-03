@@ -1008,7 +1008,8 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // Check if we're on order page for order functionality
-  if (window.location.pathname.includes('order.html')) {
+  // Use element detection so this works on both /order and /order.html (Cloudflare clean URLs)
+  if (document.querySelector('.step-indicator')) {
     // Dark mode functionality with local time adaptation
     function toggleTheme() {
       const html = document.documentElement;
