@@ -2,6 +2,28 @@
  * ART&INK SHOP – AUTO QR VERSION (2-STEP PROCESS)
  *************************************************/
 
+// Global admin login function placeholder - will be properly defined after DOM loads
+window.attemptLogin = function() {
+  console.log('attemptLogin called - delegating to attemptAdminLogin after DOM loads');
+  // Try to call the actual function if it exists, otherwise wait and retry
+  if (typeof attemptAdminLogin === 'function') {
+    attemptAdminLogin();
+  } else {
+    // Wait a bit and try again
+    setTimeout(() => {
+      if (typeof attemptAdminLogin === 'function') {
+        attemptAdminLogin();
+      } else {
+        console.error('attemptAdminLogin function not found');
+        const errEl = document.getElementById('login-error');
+        if (errEl) {
+          errEl.textContent = 'System loading... Please try again in a moment.';
+        }
+      }
+    }, 100);
+  }
+};
+
 let turnstileToken = null;
 let generatedPayload = null;
 let qrTimer = null;
