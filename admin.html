@@ -6,6 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin — ART&amp;INK</title>
   <link rel="icon" type="image/png" href="art-ink-icon.png">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
   <script src="app.js"></script>
@@ -174,9 +177,13 @@
   <div class="toast" id="toast"></div>
 
   <!-- Stat Detail Modal -->
-  <div id="stat-modal-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;padding:20px;overflow-y:auto;" onclick="closeStatModal(event)">
-    <div style="background:#fff;border-radius:16px;max-width:720px;margin:40px auto;padding:28px;position:relative;" onclick="event.stopPropagation()">
-      <button onclick="closeStatModal()" style="position:absolute;top:16px;right:16px;background:none;border:none;font-size:1.4rem;cursor:pointer;">&#x2715;</button>
+  <div id="stat-modal-overlay"
+    style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;padding:20px;overflow-y:auto;"
+    onclick="closeStatModal(event)">
+    <div style="background:#fff;border-radius:16px;max-width:720px;margin:40px auto;padding:28px;position:relative;"
+      onclick="event.stopPropagation()">
+      <button onclick="closeStatModal()"
+        style="position:absolute;top:16px;right:16px;background:none;border:none;font-size:1.4rem;cursor:pointer;">&#x2715;</button>
       <h3 id="stat-modal-title" style="margin-top:0;"></h3>
       <div id="stat-modal-body" style="margin-top:16px;overflow-x:auto;"></div>
     </div>
@@ -207,31 +214,31 @@
       fd.append('action', 'getOrders');
       fd.append('token', getAdminToken());
       try {
-        const res  = await fetch(ADMIN_API, { method:'POST', body:fd });
+        const res = await fetch(ADMIN_API, { method: 'POST', body: fd });
         const json = await res.json();
-        if (!json.success) { panel.innerHTML = '<p style="color:red;">Error: '+(json.message||'Failed')+'</p>'; return; }
-        const pending = (json.data.orders||[]).filter(o => String(o.status).toLowerCase() !== 'done');
+        if (!json.success) { panel.innerHTML = '<p style="color:red;">Error: ' + (json.message || 'Failed') + '</p>'; return; }
+        const pending = (json.data.orders || []).filter(o => String(o.status).toLowerCase() !== 'done');
         if (pending.length === 0) { panel.innerHTML = '<p style="color:#4ade80;font-weight:600;">&#10003; All orders are completed!</p>'; return; }
         let rows = '';
         pending.forEach((o, idx) => {
-          const slip = o.slipUrl ? '<a class="slip-link" href="'+o.slipUrl+'" target="_blank">View &#128444;</a>' : '-';
-          rows += '<tr id="row-'+o.rowIndex+'">'
-            + '<td>'+(idx+1)+'</td>'
-            + '<td><code>'+(o.orderId||'-')+'</code></td>'
-            + '<td>'+(o.email||'-')+'</td>'
-            + '<td>'+(o.phone||'-')+'</td>'
-            + '<td>'+(o.item||'-')+'</td>'
-            + '<td>'+(o.qty||'-')+'</td>'
-            + '<td><b>'+(o.size||'-')+'</b></td>'
-            + '<td>&#3647;'+(o.total||'-')+'</td>'
-            + '<td>'+slip+'</td>'
-            + '<td><span style="background:#fef3c7;color:#92400e;padding:3px 8px;border-radius:20px;font-size:.75rem;">'+(o.status||'Pending')+'</span></td>'
-            + '<td><button class="btn-mark-done" onclick="markDone('+o.rowIndex+', this)">&#10003; Done</button></td>'
+          const slip = o.slipUrl ? '<a class="slip-link" href="' + o.slipUrl + '" target="_blank">View &#128444;</a>' : '-';
+          rows += '<tr id="row-' + o.rowIndex + '">'
+            + '<td>' + (idx + 1) + '</td>'
+            + '<td><code>' + (o.orderId || '-') + '</code></td>'
+            + '<td>' + (o.email || '-') + '</td>'
+            + '<td>' + (o.phone || '-') + '</td>'
+            + '<td>' + (o.item || '-') + '</td>'
+            + '<td>' + (o.qty || '-') + '</td>'
+            + '<td><b>' + (o.size || '-') + '</b></td>'
+            + '<td>&#3647;' + (o.total || '-') + '</td>'
+            + '<td>' + slip + '</td>'
+            + '<td><span style="background:#fef3c7;color:#92400e;padding:3px 8px;border-radius:20px;font-size:.75rem;">' + (o.status || 'Pending') + '</span></td>'
+            + '<td><button class="btn-mark-done" onclick="markDone(' + o.rowIndex + ', this)">&#10003; Done</button></td>'
             + '</tr>';
         });
-        panel.innerHTML = tblStyle + '<table class="orders-tbl"><thead><tr><th>#</th><th>Order ID</th><th>Email</th><th>Phone</th><th>Item</th><th>Qty</th><th>Size</th><th>Total</th><th>Slip</th><th>Status</th><th>Action</th></tr></thead><tbody>'+rows+'</tbody></table>';
-      } catch(err) {
-        panel.innerHTML = '<p style="color:red;">Error: '+err.message+'</p>';
+        panel.innerHTML = tblStyle + '<table class="orders-tbl"><thead><tr><th>#</th><th>Order ID</th><th>Email</th><th>Phone</th><th>Item</th><th>Qty</th><th>Size</th><th>Total</th><th>Slip</th><th>Status</th><th>Action</th></tr></thead><tbody>' + rows + '</tbody></table>';
+      } catch (err) {
+        panel.innerHTML = '<p style="color:red;">Error: ' + err.message + '</p>';
       }
     }
 
@@ -242,19 +249,19 @@
       fd.append('token', getAdminToken());
       fd.append('rowIndex', rowIndex);
       try {
-        const res  = await fetch(ADMIN_API, { method:'POST', body:fd });
+        const res = await fetch(ADMIN_API, { method: 'POST', body: fd });
         const json = await res.json();
         if (json.success) {
-          const row = document.getElementById('row-'+rowIndex);
-          if (row) { row.style.opacity='0.4'; row.style.transition='opacity .5s'; }
+          const row = document.getElementById('row-' + rowIndex);
+          if (row) { row.style.opacity = '0.4'; row.style.transition = 'opacity .5s'; }
           btn.textContent = 'Done!';
           showAdminToast('Order marked as Done!');
         } else {
-          btn.disabled=false; btn.textContent='&#10003; Done';
-          showAdminToast('Error: '+(json.message||'Failed'));
+          btn.disabled = false; btn.textContent = '&#10003; Done';
+          showAdminToast('Error: ' + (json.message || 'Failed'));
         }
-      } catch(err) {
-        btn.disabled=false; btn.textContent='&#10003; Done';
+      } catch (err) {
+        btn.disabled = false; btn.textContent = '&#10003; Done';
         showAdminToast('Network error');
       }
     }
@@ -262,64 +269,64 @@
     let _cachedOrders = null;
 
     async function openStatModal(type) {
-      document.getElementById('stat-modal-overlay').style.display='block';
+      document.getElementById('stat-modal-overlay').style.display = 'block';
       const title = document.getElementById('stat-modal-title');
-      const body  = document.getElementById('stat-modal-body');
+      const body = document.getElementById('stat-modal-body');
       body.innerHTML = '<p style="color:#aaa;">Loading...</p>';
       if (!_cachedOrders) {
         const fd = new URLSearchParams();
-        fd.append('action','getOrders'); fd.append('token', getAdminToken());
+        fd.append('action', 'getOrders'); fd.append('token', getAdminToken());
         try {
-          const r = await fetch(ADMIN_API,{method:'POST',body:fd});
+          const r = await fetch(ADMIN_API, { method: 'POST', body: fd });
           const j = await r.json();
           _cachedOrders = j.success ? j.data.orders : [];
-        } catch(e) { _cachedOrders=[]; }
+        } catch (e) { _cachedOrders = []; }
       }
-      const done = _cachedOrders.filter(o => String(o.status).toLowerCase()==='done');
-      if (type==='orders') {
+      const done = _cachedOrders.filter(o => String(o.status).toLowerCase() === 'done');
+      if (type === 'orders') {
         title.textContent = 'Completed Orders';
-        const rows=done.map(o=>'<tr><td><code>'+(o.orderId||'-')+'</code></td><td>'+(o.email||'-')+'</td><td>'+(o.item||'-')+'</td><td>'+(o.size||'-')+'</td><td>&#3647;'+(o.total||'-')+'</td></tr>').join('');
-        body.innerHTML=tblStyle+'<table class="orders-tbl"><thead><tr><th>Order ID</th><th>Email</th><th>Item</th><th>Size</th><th>Total</th></tr></thead><tbody>'+(rows||'<tr><td colspan=5 style="color:#aaa">No completed orders</td></tr>')+'</tbody></table>';
-      } else if (type==='revenue') {
+        const rows = done.map(o => '<tr><td><code>' + (o.orderId || '-') + '</code></td><td>' + (o.email || '-') + '</td><td>' + (o.item || '-') + '</td><td>' + (o.size || '-') + '</td><td>&#3647;' + (o.total || '-') + '</td></tr>').join('');
+        body.innerHTML = tblStyle + '<table class="orders-tbl"><thead><tr><th>Order ID</th><th>Email</th><th>Item</th><th>Size</th><th>Total</th></tr></thead><tbody>' + (rows || '<tr><td colspan=5 style="color:#aaa">No completed orders</td></tr>') + '</tbody></table>';
+      } else if (type === 'revenue') {
         title.textContent = 'Revenue Breakdown';
-        const rows=done.map(o=>'<tr><td><code>'+(o.orderId||'-')+'</code></td><td>'+(o.email||'-')+'</td><td>'+(o.item||'-')+'</td><td>&#3647;'+(o.total||'-')+'</td></tr>').join('');
-        body.innerHTML=tblStyle+'<table class="orders-tbl"><thead><tr><th>Order ID</th><th>Email</th><th>Item</th><th>Total</th></tr></thead><tbody>'+(rows||'<tr><td colspan=4 style="color:#aaa">No data</td></tr>')+'</tbody></table>';
-      } else if (type==='products') {
+        const rows = done.map(o => '<tr><td><code>' + (o.orderId || '-') + '</code></td><td>' + (o.email || '-') + '</td><td>' + (o.item || '-') + '</td><td>&#3647;' + (o.total || '-') + '</td></tr>').join('');
+        body.innerHTML = tblStyle + '<table class="orders-tbl"><thead><tr><th>Order ID</th><th>Email</th><th>Item</th><th>Total</th></tr></thead><tbody>' + (rows || '<tr><td colspan=4 style="color:#aaa">No data</td></tr>') + '</tbody></table>';
+      } else if (type === 'products') {
         title.textContent = 'Products Sold';
-        const counts={};
-        done.forEach(o=>{counts[o.item]=(counts[o.item]||0)+Number(o.qty||1);});
-        const rows=Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([k,v])=>'<tr><td>'+k+'</td><td><b>'+v+'</b></td></tr>').join('');
-        body.innerHTML=tblStyle+'<table class="orders-tbl"><thead><tr><th>Product</th><th>Units Sold</th></tr></thead><tbody>'+(rows||'<tr><td colspan=2 style="color:#aaa">No data</td></tr>')+'</tbody></table>';
-      } else if (type==='customers') {
+        const counts = {};
+        done.forEach(o => { counts[o.item] = (counts[o.item] || 0) + Number(o.qty || 1); });
+        const rows = Object.entries(counts).sort((a, b) => b[1] - a[1]).map(([k, v]) => '<tr><td>' + k + '</td><td><b>' + v + '</b></td></tr>').join('');
+        body.innerHTML = tblStyle + '<table class="orders-tbl"><thead><tr><th>Product</th><th>Units Sold</th></tr></thead><tbody>' + (rows || '<tr><td colspan=2 style="color:#aaa">No data</td></tr>') + '</tbody></table>';
+      } else if (type === 'customers') {
         title.textContent = 'Unique Customers';
-        const emails=[...new Set(done.map(o=>o.email).filter(Boolean))];
-        const rows=emails.map(e=>'<tr><td>'+e+'</td></tr>').join('');
-        body.innerHTML=tblStyle+'<table class="orders-tbl"><thead><tr><th>Email</th></tr></thead><tbody>'+(rows||'<tr><td style="color:#aaa">No data</td></tr>')+'</tbody></table>';
+        const emails = [...new Set(done.map(o => o.email).filter(Boolean))];
+        const rows = emails.map(e => '<tr><td>' + e + '</td></tr>').join('');
+        body.innerHTML = tblStyle + '<table class="orders-tbl"><thead><tr><th>Email</th></tr></thead><tbody>' + (rows || '<tr><td style="color:#aaa">No data</td></tr>') + '</tbody></table>';
       } else {
-        title.textContent='Subscribers';
-        body.innerHTML='<p>Open Google Sheets Sheet2 for the full subscriber list.</p>';
+        title.textContent = 'Subscribers';
+        body.innerHTML = '<p>Open Google Sheets Sheet2 for the full subscriber list.</p>';
       }
     }
 
     function closeStatModal(e) {
-      if (!e || e.target===document.getElementById('stat-modal-overlay'))
-        document.getElementById('stat-modal-overlay').style.display='none';
+      if (!e || e.target === document.getElementById('stat-modal-overlay'))
+        document.getElementById('stat-modal-overlay').style.display = 'none';
     }
 
     function showAdminToast(msg) {
-      const t=document.getElementById('toast');
-      if (t){ t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); }
+      const t = document.getElementById('toast');
+      if (t) { t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       const dash = document.getElementById('dashboard');
       if (!dash) return;
-      new MutationObserver(function() {
-        if (dash.style.display!=='none' && !dash.dataset.ordersLoaded) {
-          dash.dataset.ordersLoaded='1';
+      new MutationObserver(function () {
+        if (dash.style.display !== 'none' && !dash.dataset.ordersLoaded) {
+          dash.dataset.ordersLoaded = '1';
           loadIncompleteOrders();
         }
-      }).observe(dash, {attributes:true, attributeFilter:['style']});
+      }).observe(dash, { attributes: true, attributeFilter: ['style'] });
     });
   </script>
 
