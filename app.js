@@ -1673,7 +1673,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // NEWSLETTER — CUSTOM EDITOR
     function showEmailEditor() {
-      document.getElementById('email-modal').classList.remove('hidden');
+      console.log("=== SHOW EMAIL EDITOR DEBUG ===");
+      const modal = document.getElementById('email-modal');
+      console.log("Modal found:", !!modal);
+      console.log("Modal classes:", modal ? modal.className : 'not found');
+      
+      if (modal) {
+        modal.classList.remove('hidden');
+        console.log("Modal classes after remove:", modal.className);
+        
+        // Focus on subject field
+        setTimeout(() => {
+          const subjectField = document.getElementById('email-subject');
+          if (subjectField) {
+            subjectField.focus();
+            console.log("Focused on subject field");
+          }
+        }, 100);
+      }
     }
 
     function closeEmailEditor() {
@@ -1681,21 +1698,34 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function previewEmail() {
+      console.log("=== PREVIEW EMAIL DEBUG ===");
+      
       const html = document.getElementById('email-content').value;
       const box = document.getElementById('email-preview');
+      
+      console.log("HTML content length:", html.length);
+      console.log("Preview box found:", !!box);
+      console.log("DOMPurify available:", typeof DOMPurify !== 'undefined');
 
-      // Sanitize HTML to prevent XSS attacks
-      // Only allow safe formatting tags, block scripts and dangerous attributes
-      const cleanHtml = DOMPurify.sanitize(html, {
-        ALLOWED_TAGS: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'strong', 'em', 'ul', 'ol', 'li', 'a', 'img', 'div', 'span', 'br'],
-        ALLOWED_ATTR: ['href', 'src', 'alt', 'class', 'style'],
-        FORBID_ATTR: ['onclick', 'onerror', 'onload', 'onmouseover', 'onfocus', 'onblur', 'onchange', 'onsubmit'],
-        FORBID_TAGS: ['script', 'iframe', 'object', 'embed', 'form', 'input', 'button'],
-        ALLOW_DATA_URI: false,
-        ALLOW_UNKNOWN_PROTOCOLS: false
-      });
+      try {
+        // Sanitize HTML to prevent XSS attacks
+        // Only allow safe formatting tags, block scripts and dangerous attributes
+        const cleanHtml = DOMPurify.sanitize(html, {
+          ALLOWED_TAGS: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'strong', 'em', 'ul', 'ol', 'li', 'a', 'img', 'div', 'span', 'br'],
+          ALLOWED_ATTR: ['href', 'src', 'alt', 'class', 'style'],
+          FORBID_ATTR: ['onclick', 'onerror', 'onload', 'onmouseover', 'onfocus', 'onblur', 'onchange', 'onsubmit'],
+          FORBID_TAGS: ['script', 'iframe', 'object', 'embed', 'form', 'input', 'button'],
+          ALLOW_DATA_URI: false,
+          ALLOW_UNKNOWN_PROTOCOLS: false
+        });
 
-      box.innerHTML = cleanHtml || '<span style="color:#aaa;font-size:.85rem;">Nothing to preview.</span>';
+        console.log("Sanitized HTML length:", cleanHtml.length);
+        box.innerHTML = cleanHtml || '<span style="color:#aaa;font-size:.85rem;">Nothing to preview.</span>';
+        console.log("Preview updated successfully");
+      } catch (error) {
+        console.error("Preview error:", error);
+        box.innerHTML = '<span style="color:red;">Preview error: ' + error.message + '</span>';
+      }
     }
 
     function sendCustomNewsletter() {
@@ -1724,7 +1754,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
       if (!confirm('Send "' + subject + '" to all subscribers?')) return;
 
-      const sendBtn = document.getElementById('btn-send-email');
+      const sendBtn = document.getElementById('send-custom-newsletter-btn');
       sendBtn.disabled = true;
       sendBtn.textContent = '⏳ Sending…';
 
@@ -1748,6 +1778,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(res => {
           console.log("Full response:", res);
+          const sendBtn = document.getElementById('send-custom-newsletter-btn');
           sendBtn.disabled = false;
           sendBtn.textContent = '📧 Send to All Subscribers';
 
@@ -1765,6 +1796,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .catch(err => {
           console.log("Network error:", err);
+          const sendBtn = document.getElementById('send-custom-newsletter-btn');
           sendBtn.disabled = false;
           sendBtn.textContent = '📧 Send to All Subscribers';
           showAdminToast('❌ Network error. Try again.');
