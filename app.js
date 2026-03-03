@@ -5,9 +5,19 @@
 // Global admin login function placeholder - will be properly defined after DOM loads
 window.attemptLogin = function() {
   console.log('attemptLogin called - checking if admin functions are loaded');
+  console.log('Current pathname:', window.location.pathname);
+  console.log('Current href:', window.location.href);
   
-  // Check if we're on admin page and the function exists
-  if (window.location.pathname.includes('admin.html')) {
+  // Check if we're on admin page - more flexible check
+  const isAdminPage = window.location.pathname.includes('admin.html') || 
+                     window.location.href.includes('admin.html') ||
+                     document.title.includes('Admin') ||
+                     // Fallback: check if admin elements exist
+                     (document.getElementById('pw-input') && document.getElementById('btn-go'));
+  
+  console.log('Is admin page:', isAdminPage);
+  
+  if (isAdminPage) {
     // Try to get the password and call the login logic directly
     const pw = document.getElementById('pw-input')?.value?.trim();
     const btn = document.getElementById('btn-go');
