@@ -120,14 +120,29 @@ document.addEventListener("DOMContentLoaded", function () {
     setupPaymentMethods();
   }
 
-  // Confetti for success page
+  // Consolidated Success Page Logic (Clean path check for Cloudflare)
   if (window.location.pathname.includes('success')) {
+    // 1. Dynamic Order ID Retrieval
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderId = urlParams.get('id') || localStorage.getItem('lastOrderId') || 'ART-' + Date.now().toString().slice(-6);
+
+    // Save as last known ID
+    localStorage.setItem('lastOrderId', orderId);
+
+    // Update the UI element
+    const codeElement = document.getElementById('code');
+    if (codeElement) {
+      codeElement.textContent = orderId;
+      console.log('Success page loaded with Order ID:', orderId);
+    }
+
+    // 2. High-quality Confetti
     if (typeof confetti === 'function') {
       confetti({
         particleCount: 150,
-        spread: 70,
+        spread: 75,
         origin: { y: 0.6 },
-        colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff']
+        colors: ['#f3a6c8', '#d9b7ee', '#9ecbff', '#fde68a', '#a7f3d0']
       });
     }
   }
@@ -1125,71 +1140,7 @@ document.addEventListener('DOMContentLoaded', function () {
     };
   }
 
-  // Check if we're on success page for success functionality
-  if (window.location.pathname.includes('success.html')) {
-    // Show order ID
-    const urlParams = new URLSearchParams(window.location.search);
-    let orderId = urlParams.get('id') || localStorage.getItem('lastOrderId') || 'ART-' + Date.now();
-    localStorage.setItem('lastOrderId', orderId);
-    const codeElement = document.getElementById('code');
-    if (codeElement) {
-      codeElement.textContent = orderId;
-    }
 
-    // Confetti animation
-    const canvas = document.getElementById('confetti');
-    if (canvas) {
-      const ctx = canvas.getContext('2d');
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-
-      const colors = ['#f3a6c8', '#d9b7ee', '#9ecbff', '#fde68a', '#a7f3d0'];
-      const pieces = [];
-
-      for (let i = 0; i < 140; i++) {
-        pieces.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * -canvas.height - 20,
-          r: Math.random() * 7 + 3,
-          dY: Math.random() * 2.5 + 1.5,
-          dX: (Math.random() - 0.5) * 2.5,
-          rot: Math.random() * 360,
-          dRot: (Math.random() - 0.5) * 4,
-          color: colors[Math.floor(Math.random() * colors.length)],
-          shape: Math.random() > .5 ? 'circle' : 'rect'
-        });
-      }
-
-      function drawConfetti() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        pieces.forEach((p, i) => {
-          ctx.save();
-          ctx.translate(p.x, p.y);
-          ctx.rotate(p.rot * Math.PI / 180);
-          ctx.fillStyle = p.color;
-          if (p.shape === 'circle') {
-            ctx.beginPath();
-            ctx.arc(0, 0, p.r, 0, Math.PI * 2);
-            ctx.fill();
-          } else {
-            ctx.fillRect(-p.r, -p.r * .5, p.r * 2, p.r);
-          }
-          ctx.restore();
-          p.y += p.dY;
-          p.x += p.dX;
-          p.rot += p.dRot;
-          if (p.y > canvas.height + 20) pieces.splice(i, 1);
-        });
-        if (pieces.length > 0) requestAnimationFrame(drawConfetti);
-      }
-
-      drawConfetti();
-      window.addEventListener('resize', () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      });
-    }
-  }
 
   // Check if we're on 404 page for 404 functionality
   if (window.location.pathname.includes('404.html')) {
