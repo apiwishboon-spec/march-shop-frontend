@@ -415,196 +415,192 @@ function onTurnstileSuccess(token) {
   turnstileToken = token;
 }
 
+// Helper to hide all loading overlays
+function hideLoaders() {
+  const loaders = ['blurOverlay', 'pageLoader'];
+  loaders.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove("active");
+  });
+
+  document.body.classList.remove("page-loading");
+
+  const submitBtn = document.getElementById("submitBtn");
+  if (submitBtn) {
+    submitBtn.classList.remove("btn-loading");
+    submitBtn.disabled = false;
+    const btnText = submitBtn.querySelector(".btn-text") || submitBtn;
+    if (btnText && btnText.tagName !== 'BUTTON') {
+      btnText.textContent = "Submit Order";
+    } else if (submitBtn.tagName === 'BUTTON' && !submitBtn.querySelector(".btn-text")) {
+      submitBtn.textContent = "Submit Order";
+    }
+  }
+}
+
 // ================================
 // SUBMIT ORDER (WITH LOADING)
 // ================================
 function submitOrder() {
-  // Show blur overlay with loader
-  const blurOverlay = document.getElementById("blurOverlay");
-  if (blurOverlay) {
-    blurOverlay.classList.add("active");
-  }
+  try {
+    // Show blur overlay with loader
+    const blurOverlay = document.getElementById("blurOverlay");
+    if (blurOverlay) {
+      blurOverlay.classList.add("active");
+    }
 
-  // Determine which email we are using based on auth method
-  let emailValue = '';
-  if (currentAuthMethod === 'auto') {
-    emailValue = document.getElementById("email-auto").value.trim();
-  } else {
-    emailValue = document.getElementById("email-manual").value.trim();
-  }
+    // Determine which email we are using based on auth method
+    let emailValue = '';
+    if (currentAuthMethod === 'auto') {
+      emailValue = document.getElementById("email-auto").value.trim();
+    } else {
+      emailValue = document.getElementById("email-manual").value.trim();
+    }
 
-  const phone = document.getElementById("phone").value.trim();
-  const item = localStorage.getItem("item");
-  const price = parseFloat(localStorage.getItem("price"));
-  const qty = Number(document.getElementById("qty").value);
-  const size = localStorage.getItem("selectedSize") || 'M';
+    const phone = document.getElementById("phone").value.trim();
+    const item = localStorage.getItem("item");
+    const price = parseFloat(localStorage.getItem("price"));
+    const qty = Number(document.getElementById("qty").value);
+    const size = localStorage.getItem("selectedSize") || 'M';
 
-  if (!item || price <= 0 || qty < 1) {
-    showError("Invalid order data");
-    return;
-  }
+    if (!item || price <= 0 || qty < 1) {
+      showError("Invalid order data");
+      hideLoaders();
+      return;
+    }
 
-  if (!emailValue) {
-    showError("Email is required");
-    return;
-  }
+    if (!emailValue) {
+      showError("Email is required");
+      hideLoaders();
+      return;
+    }
 
-  const submitBtn = document.getElementById("submitBtn");
-  const btnText = submitBtn.querySelector(".btn-text") || submitBtn;
-
-  // Show loading state
-  submitBtn.classList.add("btn-loading");
-  submitBtn.disabled = true;
-  if (btnText) btnText.textContent = ""; // Hide button text
-
-  // PromptPay QR - generate QR code
-  console.log('Starting PromptPay order submission...');
-
-  // Check if we have the required data
-  const slipFile = document.getElementById("slip").files[0];
-  if (!slipFile) {
-    showError('Please upload a payment slip image');
-    // Reset button state
     const submitBtn = document.getElementById("submitBtn");
-    submitBtn.classList.remove("btn-loading");
-    submitBtn.disabled = false;
-    submitBtn.querySelector(".btn-text").textContent = "Submit Order";
+    const btnText = submitBtn.querySelector(".btn-text") || submitBtn;
 
-    // Hide full-page loader overlay
-    const pageLoader = document.getElementById("pageLoader");
-    if (pageLoader) {
-      pageLoader.classList.remove("active");
-      document.body.classList.remove("page-loading"); // Restore scrolling
-    }
-    return;
-  }
+    // Show loading state
+    submitBtn.classList.add("btn-loading");
+    submitBtn.disabled = true;
+    if (btnText) btnText.textContent = ""; // Hide button text
 
-  if (!turnstileToken) {
-    showError('Please complete the bot verification');
-    // Reset button state
-    const submitBtn = document.getElementById("submitBtn");
-    submitBtn.classList.remove("btn-loading");
-    submitBtn.disabled = false;
-    submitBtn.querySelector(".btn-text").textContent = "Submit Order";
+    // PromptPay QR - generate QR code
+    console.log('Starting PromptPay order submission...');
 
-    // Hide full-page loader overlay
-    const pageLoader = document.getElementById("pageLoader");
-    if (pageLoader) {
-      pageLoader.classList.remove("active");
-      document.body.classList.remove("page-loading"); // Restore scrolling
-    }
-    return;
-  }
-
-  // Convert image to base64
-  const reader = new FileReader();
-  reader.onload = function (e) {
-    const base64Image = e.target.result.split(',')[1]; // Remove data URL prefix
-
-    const formData = new URLSearchParams();
-    formData.append("action", "order"); // Add action parameter
-    formData.append("email", emailValue); // Use the validated email value
-    const cleanPhone = phone.replace(/[\s\-]/g, '');
-    formData.append("phone", cleanPhone);
-    formData.append("itemId", item);
-    formData.append("price", price);
-    formData.append("quantity", qty);
-    formData.append("size", size);
-    formData.append("base64Image", base64Image);
-    formData.append("turnstileToken", turnstileToken);
-
-    // IMPORTANT!!! Send the Google Authentication Token securely to the backend if used
-    if (currentAuthMethod === 'auto' && currentGoogleToken) {
-      formData.append("googleToken", currentGoogleToken);
+    const slipFile = document.getElementById("slip").files[0];
+    if (!slipFile) {
+      showError('Please upload a payment slip image');
+      hideLoaders();
+      return;
     }
 
-    // Add technical data for security purposes
-    formData.append("useragent", navigator.userAgent);
-    formData.append("timestamp", new Date().toISOString());
+    if (!turnstileToken) {
+      showError('Please complete the bot verification');
+      hideLoaders();
+      return;
+    }
 
-    console.log('Sending to backend:', formData.toString());
+    // Convert image to base64
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const base64Image = e.target.result.split(',')[1]; // Remove data URL prefix
 
-    // Add timeout to prevent hanging
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+      const formData = new URLSearchParams();
+      formData.append("action", "order"); // Add action parameter
+      formData.append("email", emailValue); // Use the validated email value
+      const cleanPhone = phone.replace(/[\s\-]/g, '');
+      formData.append("phone", cleanPhone);
+      formData.append("itemId", item);
+      formData.append("price", price);
+      formData.append("quantity", qty);
+      formData.append("size", size);
+      formData.append("base64Image", base64Image);
+      formData.append("turnstileToken", turnstileToken);
 
-    fetch(API_URL, {
-      method: "POST",
-      body: formData,
-      signal: controller.signal
-    })
-      .then(res => {
-        clearTimeout(timeoutId);
-        console.log('Backend response status:', res.status);
-        return res.json();
+      // IMPORTANT!!! Send the Google Authentication Token securely to the backend if used
+      if (currentAuthMethod === 'auto' && currentGoogleToken) {
+        formData.append("googleToken", currentGoogleToken);
+      }
+
+      // Add technical data for security purposes
+      formData.append("useragent", navigator.userAgent);
+      formData.append("timestamp", new Date().toISOString());
+
+      console.log('Sending to backend:', formData.toString());
+
+      // Add timeout to prevent hanging
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+
+      fetch(API_URL, {
+        method: "POST",
+        body: formData,
+        signal: controller.signal
       })
-      .then(data => {
-        console.log('Backend response:', data);
+        .then(res => {
+          clearTimeout(timeoutId);
+          console.log('Backend response status:', res.status);
+          return res.json();
+        })
+        .then(data => {
+          console.log('Backend response:', data);
 
-        // Reset button state
-        const submitBtn = document.getElementById("submitBtn");
-        submitBtn.classList.remove("btn-loading");
-        submitBtn.disabled = false;
-        submitBtn.querySelector(".btn-text").textContent = "Submit Order";
+          hideLoaders();
 
-        // Hide full-page loader overlay
-        const pageLoader = document.getElementById("pageLoader");
-        if (pageLoader) {
-          pageLoader.classList.remove("active");
-          document.body.classList.remove("page-loading"); // Restore scrolling
-        }
+          if (!data.success) {
+            throw new Error(data.message || 'Order submission failed');
+          }
 
-        if (!data.success) {
-          throw new Error(data.message || 'Order submission failed');
-        }
+          const orderId = data.data?.orderId || Date.now();
+          const total = price * qty;
 
-        const orderId = data.data?.orderId || Date.now();
-        const total = price * qty;
+          // Save receipt data
+          localStorage.setItem('receipt-email', emailValue);
+          localStorage.setItem('receipt-item', item);
+          localStorage.setItem('receipt-qty', qty);
+          localStorage.setItem('receipt-total', '฿' + total);
 
-        // Save receipt data
-        localStorage.setItem('receipt-email', emailValue);
-        localStorage.setItem('receipt-item', item);
-        localStorage.setItem('receipt-qty', qty);
-        localStorage.setItem('receipt-total', '฿' + total);
+          // Save order ID to localStorage for success page
+          localStorage.setItem('lastOrderId', orderId);
 
-        // Save order ID to localStorage for success page
-        localStorage.setItem('lastOrderId', orderId);
+          // Hide blur overlay before redirect
+          const blurOverlay = document.getElementById("blurOverlay");
+          if (blurOverlay) {
+            blurOverlay.classList.remove("active");
+          }
 
-        // Hide blur overlay before redirect
-        const blurOverlay = document.getElementById("blurOverlay");
-        if (blurOverlay) {
-          blurOverlay.classList.remove("active");
-        }
+          // Redirect to success page with order ID
+          window.location.href = "success.html?id=" + orderId;
+        })
+        .catch(err => {
+          clearTimeout(timeoutId);
+          console.error('Submission error:', err);
 
-        // Redirect to success page with order ID
-        window.location.href = "success.html?id=" + orderId;
-      })
-      .catch(err => {
-        clearTimeout(timeoutId);
-        console.error('Submission error:', err);
+          // Reset button state on error
+          const submitBtn = document.getElementById("submitBtn");
+          submitBtn.classList.remove("btn-loading");
+          submitBtn.disabled = false;
+          submitBtn.querySelector(".btn-text").textContent = "Submit Order";
 
-        // Reset button state on error
-        const submitBtn = document.getElementById("submitBtn");
-        submitBtn.classList.remove("btn-loading");
-        submitBtn.disabled = false;
-        submitBtn.querySelector(".btn-text").textContent = "Submit Order";
+          // Hide full-page loader overlay
+          const pageLoader = document.getElementById("pageLoader");
+          if (pageLoader) {
+            pageLoader.classList.remove("active");
+            document.body.classList.remove("page-loading"); // Restore scrolling
+          }
 
-        // Hide full-page loader overlay
-        const pageLoader = document.getElementById("pageLoader");
-        if (pageLoader) {
-          pageLoader.classList.remove("active");
-          document.body.classList.remove("page-loading"); // Restore scrolling
-        }
-
-        if (err.name === 'AbortError') {
-          showError('Request timed out. Please try again.');
-        } else {
-          showError(err.message || "Submission failed");
-        }
-      });
-  };
-
-  reader.readAsDataURL(slipFile);
+          if (err.name === 'AbortError') {
+            showError('Request timed out. Please try again.');
+          } else {
+            showError(err.message || "Submission failed");
+          }
+        });
+    };
+    reader.readAsDataURL(slipFile);
+  } catch (err) {
+    console.error("Order submit crash:", err);
+    showError("An unexpected error occurred: " + err.message);
+    hideLoaders();
+  }
 }
 
 // ================================
