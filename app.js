@@ -1734,6 +1734,12 @@ document.addEventListener('DOMContentLoaded', function () {
       fd.append('action', 'sendCustomNewsletter');
       fd.append('token', token);
 
+      // Add test mode option
+      if (subject.includes('[TEST]')) {
+        console.log("TEST MODE: Sending to debug endpoint");
+        fd.append('testMode', 'true');
+      }
+
       fetch(API_URL, { method: 'POST', body: fd })
         .then(r => {
           console.log("Response status:", r.status);
@@ -1764,6 +1770,46 @@ document.addEventListener('DOMContentLoaded', function () {
           showAdminToast('❌ Network error. Try again.');
         });
     }
+
+    // Add test function
+    window.testNewsletter = function() {
+      console.log("=== TESTING NEWSLETTER ===");
+      
+      const token = sessionStorage.getItem('adminToken');
+      if (!token) {
+        showAdminToast('Please login first');
+        return;
+      }
+
+      const fd = new URLSearchParams();
+      fd.append('subject', '[TEST] ART&INK Newsletter Test');
+      fd.append('content', `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #f3a6c8;">🎨 ART&INK Test Newsletter</h2>
+          <p>This is a test email to verify the newsletter system is working.</p>
+          <p>If you receive this, the custom newsletter feature is working correctly!</p>
+          <hr style="border: 1px solid #eee; margin: 20px 0;">
+          <p style="color: #666; font-size: 12px;">© 2026 ART&INK Shop</p>
+        </div>
+      `);
+      fd.append('action', 'sendCustomNewsletter');
+      fd.append('token', token);
+
+      fetch(API_URL, { method: 'POST', body: fd })
+        .then(r => r.json())
+        .then(res => {
+          console.log("Test response:", res);
+          if (res.success) {
+            showAdminToast('✅ Test email sent successfully!');
+          } else {
+            showAdminToast('❌ Test failed: ' + (res.message || 'Unknown error'));
+          }
+        })
+        .catch(err => {
+          console.log("Test error:", err);
+          showAdminToast('❌ Test failed: Network error');
+        });
+    };
 
     // Make functions globally available
     // Note: attemptLogin is already defined globally at the top of the file
