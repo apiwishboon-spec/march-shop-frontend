@@ -425,7 +425,14 @@ function submitOrder() {
     blurOverlay.classList.add("active");
   }
 
-  const email = document.getElementById("email").value.trim();
+  // Determine which email we are using based on auth method
+  let emailValue = '';
+  if (currentAuthMethod === 'auto') {
+    emailValue = document.getElementById("email-auto").value.trim();
+  } else {
+    emailValue = document.getElementById("email-manual").value.trim();
+  }
+
   const phone = document.getElementById("phone").value.trim();
   const item = localStorage.getItem("item");
   const price = parseFloat(localStorage.getItem("price"));
