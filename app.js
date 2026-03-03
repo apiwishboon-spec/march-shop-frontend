@@ -109,12 +109,29 @@ function goToStep1() {
 }
 
 function goToStep2() {
-  // Validate contact form
-  const email = document.getElementById("email").value.trim();
+  // Determine which email we are using based on auth method
+  let emailValue = '';
+
+  if (currentAuthMethod === 'auto') {
+    if (!currentGoogleToken) {
+      showError("Please sign in with Google to continue, or switch to Manual Entry.");
+      return;
+    }
+    emailValue = document.getElementById("email-auto").value.trim();
+  } else {
+    emailValue = document.getElementById("email-manual").value.trim();
+  }
+
+  const phone = document.getElementById("phone").value.trim();
   const qty = document.getElementById("qty").value;
 
-  if (!email || !email.includes("@")) {
+  if (!emailValue || !emailValue.includes("@")) {
     showError("Please enter a valid email address.");
+    return;
+  }
+
+  if (!phone || !phone.match(/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/)) {
+    showError("Please enter a valid phone number (Format: XXX-XXX-XXXX)");
     return;
   }
 
@@ -131,7 +148,7 @@ function goToStep2() {
   document.getElementById("step2-indicator").classList.add("active");
 
   // Generate QR for payment step
-  generateQR();
+  generateQR(emailValue);
 }
 
 function hideAllSteps() {
@@ -159,7 +176,7 @@ function updateTotal() {
 // ================================
 // GENERATE QR (NO EMAIL REQUIRED)
 // ================================
-function generateQR() {
+function generateQR(userEmail) {
   const qty = Number(document.getElementById("qty").value);
   const price = parseFloat(localStorage.getItem("price"));
   const itemName = localStorage.getItem("item");
@@ -176,10 +193,10 @@ function generateQR() {
   console.log("Using itemId:", itemId);
 
   const formData = new URLSearchParams();
-  formData.append("action", "order"); // Add missing action parameter
-  formData.append("email", "preview@shop.com"); // dummy
-  formData.append("phone", "093-337-2907"); // Your actual phone number for payments
-  formData.append("itemId", itemId); // Use actual product name
+  formData.append("action", "order");
+  formData.append("email", userEmail || "preview@shop.com"); // Use provided email
+  formData.append("phone", document.getElementById("phone").value.trim());
+  formData.append("itemId", itemId);
   formData.append("price", price);
   formData.append("quantity", qty);
 
@@ -326,7 +343,7 @@ function submitOrder() {
     return;
   }
 
-  if (!email) {
+  if (!emailValue) {
     showError("Email is required");
     return;
   }
@@ -385,14 +402,19 @@ function submitOrder() {
 
     const formData = new URLSearchParams();
     formData.append("action", "order"); // Add action parameter
-    formData.append("email", document.getElementById("email").value.trim());
-    formData.append("phone", document.getElementById("phone").value.trim());
-    formData.append("itemId", localStorage.getItem("item"));
-    formData.append("price", localStorage.getItem("price"));
-    formData.append("quantity", document.getElementById("qty").value);
-    formData.append("size", localStorage.getItem("selectedSize") || 'M');
+    formData.append("email", emailValue); // Use the validated email value
+    formData.append("phone", phone);
+    formData.append("itemId", item);
+    formData.append("price", price);
+    formData.append("quantity", qty);
+    formData.append("size", size);
     formData.append("base64Image", base64Image);
     formData.append("turnstileToken", turnstileToken);
+
+    // IMPORTANT!!! Send the Google Authentication Token securely to the backend if used
+    if (currentAuthMethod === 'auto' && currentGoogleToken) {
+      formData.append("googleToken", currentGoogleToken);
+    }
 
     // Add technical data for security purposes
     formData.append("useragent", navigator.userAgent);
@@ -435,13 +457,10 @@ function submitOrder() {
         }
 
         const orderId = data.data?.orderId || Date.now();
-        const email = document.getElementById("email").value.trim();
-        const item = localStorage.getItem("item");
-        const qty = document.getElementById("qty").value;
-        const total = parseFloat(localStorage.getItem("price")) * qty;
+        const total = price * qty;
 
         // Save receipt data
-        localStorage.setItem('receipt-email', email);
+        localStorage.setItem('receipt-email', emailValue);
         localStorage.setItem('receipt-item', item);
         localStorage.setItem('receipt-qty', qty);
         localStorage.setItem('receipt-total', '฿' + total);
