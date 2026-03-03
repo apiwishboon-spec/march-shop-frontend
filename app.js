@@ -4,23 +4,71 @@
 
 // Global admin login function placeholder - will be properly defined after DOM loads
 window.attemptLogin = function() {
-  console.log('attemptLogin called - delegating to attemptAdminLogin after DOM loads');
-  // Try to call the actual function if it exists, otherwise wait and retry
-  if (typeof attemptAdminLogin === 'function') {
-    attemptAdminLogin();
-  } else {
-    // Wait a bit and try again
-    setTimeout(() => {
-      if (typeof attemptAdminLogin === 'function') {
-        attemptAdminLogin();
-      } else {
-        console.error('attemptAdminLogin function not found');
-        const errEl = document.getElementById('login-error');
-        if (errEl) {
-          errEl.textContent = 'System loading... Please try again in a moment.';
+  console.log('attemptLogin called - checking if admin functions are loaded');
+  
+  // Check if we're on admin page and the function exists
+  if (window.location.pathname.includes('admin.html')) {
+    // Try to get the password and call the login logic directly
+    const pw = document.getElementById('pw-input')?.value?.trim();
+    const btn = document.getElementById('btn-go');
+    const errEl = document.getElementById('login-error');
+    
+    if (!pw) {
+      if (errEl) errEl.textContent = 'Please enter password';
+      return;
+    }
+    
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = '⏳ Checking…';
+    }
+    if (errEl) errEl.textContent = '';
+    
+    const API_URL = "https://script.google.com/macros/s/AKfycbxENBG6cKm3ImJd_6gjvxCUnM-hG0xeNhPhjLUleDCyh0JsXhkkG7wOwkBjRW43j-88mg/exec";
+    
+    const fd = new URLSearchParams();
+    fd.append('password', pw);
+    fd.append('action', 'adminLogin');
+    fd.append('useragent', navigator.userAgent);
+    fd.append('timestamp', new Date().toISOString());
+    
+    fetch(API_URL, { method: 'POST', body: fd })
+      .then(r => r.json())
+      .then(data => {
+        console.log('Login response:', data);
+        if (data.success) {
+          sessionStorage.setItem('adminAuth', 'true');
+          sessionStorage.setItem('adminToken', data.data.token);
+          // Call the dashboard show function if it exists
+          if (typeof showAdminDashboard === 'function') {
+            showAdminDashboard();
+          } else {
+            // Fallback: hide login wall and show dashboard
+            document.getElementById('login-wall').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+          }
+        } else {
+          if (errEl) errEl.textContent = '❌ Wrong password. Please try again.';
+          if (btn) {
+            btn.disabled = false;
+            btn.textContent = 'Go →';
+          }
+          const pwInput = document.getElementById('pw-input');
+          if (pwInput) {
+            pwInput.value = '';
+            pwInput.focus();
+          }
         }
-      }
-    }, 100);
+      })
+      .catch(() => {
+        if (errEl) errEl.textContent = '⚠️ Cannot reach server. Check your connection.';
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = 'Go →';
+        }
+      });
+  } else {
+    console.error('Not on admin page');
   }
 };
 
@@ -1701,7 +1749,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Make functions globally available
-    window.attemptLogin = attemptAdminLogin;
+    // Note: attemptLogin is already defined globally at the top of the file
     window.cancelLogin = cancelLogin;
     window.logout = logout;
     window.refreshData = refreshData;
