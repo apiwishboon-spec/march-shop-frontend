@@ -306,20 +306,18 @@
         title.textContent = 'Subscribers';
         body.innerHTML = '<p style="color:#aaa;">Loading subscribers...</p>';
         
-        // Fetch subscriber data from API
+        // Use the existing adminData action which should include subscriber info
         const fd = new URLSearchParams();
-        fd.append('action', 'getSubscribers');
+        fd.append('action', 'adminData');
         fd.append('token', getAdminToken());
         
         fetch(ADMIN_API, { method: 'POST', body: fd })
           .then(res => res.json())
           .then(data => {
-            if (data.success && data.data.subscribers) {
-              const subscribers = data.data.subscribers;
-              if (subscribers.length === 0) {
-                body.innerHTML = '<p style="color:#aaa;">No subscribers found.</p>';
-              } else {
-                // Create table with subscriber info
+            if (data.success) {
+              // Check if we have subscriber data in the response
+              if (data.data.subscribers && data.data.subscribers.length > 0) {
+                const subscribers = data.data.subscribers;
                 let rows = '';
                 subscribers.forEach((sub, idx) => {
                   const email = sub.email || 'N/A';
@@ -331,6 +329,10 @@
                   '<thead><tr><th>#</th><th>Email</th><th>Subscribed</th></tr></thead>' +
                   '<tbody>' + rows + '</tbody>' +
                   '</table>';
+              } else {
+                // If no subscriber data, show count and message
+                const count = data.data.subscribers || 0;
+                body.innerHTML = '<p>Total subscribers: <strong>' + count + '</strong></p><p style="color:#aaa;">Detailed subscriber list not available in current data.</p>';
               }
             } else {
               body.innerHTML = '<p style="color:red;">Error: ' + (data.message || 'Failed to load subscribers') + '</p>';
