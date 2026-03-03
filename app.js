@@ -7,10 +7,91 @@ let generatedPayload = null;
 let qrTimer = null;
 let qrExpiryTime = null;
 let selectedPaymentMethod = 'promptpay';
+let currentGoogleToken = null;
+let currentAuthMethod = 'auto'; // 'auto' or 'manual'
+
+// Helper function to decode JWT
+function decodeJwtResponse(token) {
+  let base64Url = token.split('.')[1];
+  let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  let jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
+  return JSON.parse(jsonPayload);
+}
+
+// Global hook for Google GIS callback
+window.handleCredentialResponse = function (response) {
+  currentGoogleToken = response.credential;
+  const payload = decodeJwtResponse(currentGoogleToken);
+
+  // Update UI to show they are logged in
+  document.getElementById('google-login-button').style.display = 'none';
+  const profileDiv = document.getElementById('google-profile-display');
+
+  if (profileDiv) {
+    profileDiv.style.display = 'flex';
+    document.getElementById('google-profile-pic').src = payload.picture;
+    document.getElementById('google-profile-name').textContent = payload.name + ' (' + payload.email + ')';
+    document.getElementById('email-auto').value = payload.email; // Save to hidden auto input
+  }
+
+  showSuccess(`Signed in as ${payload.given_name}`);
+};
+
+// UI toggle switch logic
+window.toggleAuthMethod = function (method) {
+  currentAuthMethod = method;
+
+  const autoBtn = document.getElementById('auth-auto-btn');
+  const manualBtn = document.getElementById('auth-manual-btn');
+
+  if (method === 'auto') {
+    autoBtn.classList.add('active');
+    autoBtn.style.opacity = '1';
+
+    manualBtn.classList.remove('active');
+    manualBtn.style.opacity = '0.7';
+
+    document.getElementById('google-auth-section').style.display = 'block';
+    document.getElementById('manual-auth-section').style.display = 'none';
+  } else {
+    autoBtn.classList.remove('active');
+    autoBtn.style.opacity = '0.7';
+
+    manualBtn.classList.add('active');
+    manualBtn.style.opacity = '1';
+
+    document.getElementById('google-auth-section').style.display = 'none';
+    document.getElementById('manual-auth-section').style.display = 'block';
+  }
+}
+
+// Reset Google auth
+window.resetGoogleAuth = function () {
+  currentGoogleToken = null;
+  document.getElementById('google-profile-display').style.display = 'none';
+  document.getElementById('google-login-button').style.display = 'flex';
+  document.getElementById('email-auto').value = '';
+}
 
 const API_URL = "https://script.google.com/macros/s/AKfycbxENBG6cKm3ImJd_6gjvxCUnM-hG0xeNhPhjLUleDCyh0JsXhkkG7wOwkBjRW43j-88mg/exec";
 
 document.addEventListener("DOMContentLoaded", function () {
+  // If we are on the order page, render the Google button
+  if (window.location.pathname.includes('order.html')) {
+    if (window.google) {
+      google.accounts.id.initialize({
+        client_id: "292346174128-fk8na6afbrb07q2v1oqc193j83idtjuh.apps.googleusercontent.com",
+        callback: handleCredentialResponse
+      });
+      google.accounts.id.renderButton(
+        document.getElementById("google-login-button"),
+        { theme: "outline", size: "large", shape: "pill", width: 280 }
+      );
+    }
+  }
+
   const item = localStorage.getItem("item");
   const price = parseFloat(localStorage.getItem("price"));
   const selectedSize = localStorage.getItem("selectedSize") || 'M';
