@@ -111,6 +111,8 @@ function doPost(e) {
         return handleOrderSubmission(e);
       case "sendReadyEmails":
         return handleSendReadyEmails(e);
+      case "getSubscribers":
+        return handleGetSubscribers(e);
       default:
         Logger.log("❌ Invalid action: " + action);
         return jsonError("Invalid request");
@@ -281,6 +283,48 @@ function handleMarkOrderDone(e) {
   } catch (err) {
     Logger.log("❌ markOrderDone error: " + err.toString());
     return jsonError("Failed to update order");
+  }
+}
+
+// =================================================
+// GET SUBSCRIBERS (Admin only)
+// =================================================
+function handleGetSubscribers(e) {
+  const token = String(e.parameter.token || "").trim();
+  
+  // Validate admin session
+  if (!validateAdminSession(token)) {
+    Logger.log("❌ Unauthorized getSubscribers request");
+    return jsonError("Unauthorized");
+  }
+  
+  Logger.log("=== GET SUBSCRIBERS REQUEST (AUTHORIZED) ===");
+  
+  try {
+    const newsletterSheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(NEWSLETTER_SHEET);
+    const data = newsletterSheet.getDataRange().getValues();
+    
+    const subscribers = [];
+    
+    // Skip header row, process data
+    for (let i = 1; i < data.length; i++) {
+      const row = data[i];
+      if (row[0] && isValidEmail(row[0])) { // Email validation
+        subscribers.push({
+          email: row[0],     // Column A - Email
+          date: row[1] || '' // Column B - Timestamp
+        });
+      }
+    }
+    
+    Logger.log("✅ Retrieved " + subscribers.length + " subscribers");
+    return jsonSuccess({ 
+      subscribers: subscribers 
+    });
+    
+  } catch (error) {
+    Logger.log("❌ Error retrieving subscribers: " + error.toString());
+    return jsonError("Failed to load subscribers");
   }
 }
 
