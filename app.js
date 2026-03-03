@@ -78,22 +78,20 @@ window.resetGoogleAuth = function () {
 const API_URL = "https://script.google.com/macros/s/AKfycbxENBG6cKm3ImJd_6gjvxCUnM-hG0xeNhPhjLUleDCyh0JsXhkkG7wOwkBjRW43j-88mg/exec";
 
 document.addEventListener("DOMContentLoaded", function () {
-  // If we are on the order page, render the Google button
-  if (window.location.pathname.includes('order.html')) {
+  // Check if we are on a page that has the Google Login button
+  const container = document.getElementById("google-login-button");
+  if (container) {
     function initGoogleAuth() {
       if (window.google && window.google.accounts) {
-        const container = document.getElementById("google-login-button");
-        if (container) {
-          container.innerHTML = ""; // Clear out the fallback button
-          google.accounts.id.initialize({
-            client_id: "292346174128-fk8na6afbrb07q2v1oqc193j83idtjuh.apps.googleusercontent.com",
-            callback: handleCredentialResponse
-          });
-          google.accounts.id.renderButton(
-            container,
-            { theme: "outline", size: "large", shape: "pill", width: 280 }
-          );
-        }
+        container.innerHTML = ""; // Clear out the fallback button
+        google.accounts.id.initialize({
+          client_id: "292346174128-fk8na6afbrb07q2v1oqc193j83idtjuh.apps.googleusercontent.com",
+          callback: handleCredentialResponse
+        });
+        google.accounts.id.renderButton(
+          container,
+          { theme: "outline", size: "large", shape: "pill", width: 280 }
+        );
       } else {
         setTimeout(initGoogleAuth, 100);
       }
