@@ -1426,7 +1426,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function loadAdminData() {
       const token = sessionStorage.getItem('adminToken');
       if (!token) {
-        showToast('Session expired. Please login again.', 'fail');
+        showAdminToast('Session expired. Please login again.');
         logout();
         return;
       }
@@ -1443,16 +1443,16 @@ document.addEventListener('DOMContentLoaded', function () {
             buildAdminCharts(res.data);
           } else {
             if (res.message === 'Unauthorized') {
-              showToast('Session expired. Please login again.', 'fail');
+              showAdminToast('Session expired. Please login again.');
               logout();
             } else {
-              showToast('Could not load analytics.', 'fail');
+              showAdminToast('Could not load analytics.');
               clearSkeletons();
             }
           }
         })
         .catch(() => {
-          showToast('Network error — could not reach server.', 'fail');
+          showAdminToast('Network error — could not reach server.');
           clearSkeletons();
         });
     }
@@ -1577,7 +1577,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (!token) {
         console.log('No token found in sessionStorage'); // Debug log
-        showToast('Session expired. Please login again.', 'fail');
+        showAdminToast('Session expired. Please login again.');
         logout();
         return;
       }
@@ -1656,18 +1656,18 @@ document.addEventListener('DOMContentLoaded', function () {
           console.log('Response:', res); // Debug log
           if (res.success) {
             const n = res.data?.sentTo ?? res.data?.message ?? '?';
-            showToast('✅ Newsletter sent to ' + n + ' subscribers!', 'ok');
+            showAdminToast('✅ Newsletter sent to ' + n + ' subscribers!');
           } else {
             if (res.message === 'Unauthorized') {
-              showToast('Session expired. Please login again.', 'fail');
+              showAdminToast('Session expired. Please login again.');
               logout();
             } else {
-              showToast('❌ Failed: ' + (res.message || 'Unknown error'), 'fail');
+              showAdminToast('❌ Failed: ' + (res.message || 'Unknown error'));
             }
           }
         })
         .catch(() => {
-          showToast('❌ Network error — could not reach server.', 'fail');
+          showAdminToast('❌ Network error — could not reach server.');
         });
     }
 
@@ -1711,13 +1711,13 @@ document.addEventListener('DOMContentLoaded', function () {
       console.log("Content preview:", content.substring(0, 100) + "...");
 
       if (!token) {
-        showToast('Session expired. Please login again.', 'fail');
+        showAdminToast('Session expired. Please login again.');
         logout();
         return;
       }
 
       if (!subject || !content) {
-        showToast('Please fill in Subject and HTML Content.', 'fail');
+        showAdminToast('Please fill in Subject and HTML Content.');
         console.log("Error: Missing subject or content");
         return;
       }
@@ -1741,20 +1741,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
           if (res.success) {
             const n = res.data?.sentTo ?? '?';
-            showToast('✅ Sent to ' + n + ' subscribers!', 'ok');
+            showAdminToast('✅ Sent to ' + n + ' subscribers!');
             closeEmailEditor();
             document.getElementById('email-subject').value = '';
             document.getElementById('email-content').value = '';
             document.getElementById('email-preview').innerHTML =
               '<span style="color:#aaa;font-size:.85rem;">Click Preview to render HTML…</span>';
           } else {
-            showToast('❌ Failed: ' + (res.message || 'Error'), 'fail');
+            showAdminToast('❌ Failed: ' + (res.message || 'Error'));
           }
         })
         .catch(() => {
           sendBtn.disabled = false;
           sendBtn.textContent = '📧 Send to All Subscribers';
-          showToast('❌ Network error. Try again.', 'fail');
+          showAdminToast('❌ Network error. Try again.');
         });
     }
 
