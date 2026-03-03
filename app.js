@@ -119,6 +119,18 @@ document.addEventListener("DOMContentLoaded", function () {
     // Setup payment method listeners
     setupPaymentMethods();
   }
+
+  // Confetti for success page
+  if (window.location.pathname.includes('success')) {
+    if (typeof confetti === 'function') {
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff']
+      });
+    }
+  }
 });
 
 // ================================
@@ -843,38 +855,42 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // Check if we're on FAQ page for FAQ functionality
-  if (window.location.pathname.includes('faq.html')) {
-    // Initialize FAQ accordion
-    const faqQuestions = document.querySelectorAll('.faq-question');
+  if (document.querySelector('.faq-container')) {
+    // Initialize FAQ accordion using delegation for robustness
+    const faqSectionsContainer = document.querySelector('.faq-sections');
+    if (faqSectionsContainer) {
+      faqSectionsContainer.addEventListener('click', function (e) {
+        const question = e.target.closest('.faq-question');
+        if (!question) return;
 
-    faqQuestions.forEach(question => {
-      question.addEventListener('click', function (e) {
         e.preventDefault();
-        e.stopPropagation();
 
-        const answer = this.nextElementSibling;
-        const isActive = this.classList.contains('active');
+        const answer = question.nextElementSibling;
+        if (!answer) return;
+
+        const section = question.closest('.faq-section');
+
+        // Toggle current FAQ
+        const isActive = question.classList.contains('active');
 
         // Close all other FAQs in the same section
-        const section = this.closest('.faq-section');
-        section.querySelectorAll('.faq-question.active').forEach(otherQuestion => {
-          if (otherQuestion !== this) {
-            otherQuestion.classList.remove('active');
-            otherQuestion.nextElementSibling.classList.remove('active');
+        section.querySelectorAll('.faq-question.active').forEach(other => {
+          if (other !== question) {
+            other.classList.remove('active');
+            other.nextElementSibling.classList.remove('active');
           }
         });
 
-        // Toggle current FAQ
-        this.classList.toggle('active');
+        question.classList.toggle('active');
         answer.classList.toggle('active');
       });
-    });
+    }
 
     // Category filtering
     const categoryBtns = document.querySelectorAll('.faq-category-btn');
     const faqSections = document.querySelectorAll('.faq-section');
     const noResults = document.getElementById('noResults');
-    const faqSectionsContainer = document.querySelector('.faq-sections');
+
 
     categoryBtns.forEach(btn => {
       btn.addEventListener('click', function () {
@@ -932,19 +948,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Filter FAQ items
         faqItems.forEach(item => {
-          const question = item.querySelector('.faq-question').textContent.toLowerCase();
-          const answer = item.querySelector('.faq-answer').textContent.toLowerCase();
+          const questionText = item.querySelector('.faq-question').textContent.toLowerCase();
+          const answerText = item.querySelector('.faq-answer').textContent.toLowerCase();
 
-          if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+          if (questionText.includes(searchTerm) || answerText.includes(searchTerm)) {
             item.style.display = 'block';
             visibleItems++;
-
-            // Show parent section
-            const section = item.closest('.faq-section');
-            section.style.display = 'block';
           } else {
             item.style.display = 'none';
           }
+        });
+
+        // Hide empty sections
+        faqSections.forEach(section => {
+          const sectionItems = section.querySelectorAll('.faq-item');
+          let hasVisible = false;
+          sectionItems.forEach(item => {
+            if (item.style.display === 'block') hasVisible = true;
+          });
+          section.style.display = hasVisible || searchTerm === '' ? 'block' : 'none';
         });
 
         // Show no results if nothing matches
