@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </head>
+
 <body>
   <div class="container">
     <!-- Animated Navigation -->
@@ -47,7 +49,7 @@
       <div class="step-content active" id="step1">
         <div class="form-card">
           <h2>📋 Order Details</h2>
-          
+
           <div class="order-summary">
             <div class="summary-item">
               <span class="label">Product:</span>
@@ -111,7 +113,7 @@
       <div class="step-content" id="step2">
         <div class="form-card">
           <h2>Payment</h2>
-          
+
           <div class="payment-methods">
             <div class="payment-option">
               <input type="radio" id="promptpay" name="paymentMethod" value="promptpay" checked>
@@ -137,32 +139,29 @@
               </div>
             </div>
 
-          <label class="label" id="slipLabel">
-            Upload payment slip
-            <input id="slip" type="file" accept="image/png, image/jpeg" required>
-            <span class="hint">Max 5MB • JPG or PNG</span>
-          </label>
+            <label class="label" id="slipLabel">
+              Upload payment slip
+              <input id="slip" type="file" accept="image/png, image/jpeg" required>
+              <span class="hint">Max 5MB • JPG or PNG</span>
+            </label>
 
-          <!-- Cloudflare Turnstile -->
-          <div class="cf-turnstile"
-               data-sitekey="0x4AAAAAACd8YswS-VO9XLfe"
-               data-callback="onTurnstileSuccess">
-          </div>
+            <!-- Cloudflare Turnstile -->
+            <div class="cf-turnstile" data-sitekey="0x4AAAAAACd8YswS-VO9XLfe" data-callback="onTurnstileSuccess">
+            </div>
 
-          <div class="button-row">
-            <button type="button" class="btn-secondary" onclick="cancelOrder()">
-              Cancel Order
-            </button>
-            <button type="button" class="btn-secondary" onclick="goToStep1()">
-              ← Back
-            </button>
-            <button type="button" class="btn-primary" id="submitBtn" onclick="submitOrder()">
-              <span class="btn-text">Submit Order</span>
-            </button>
-          </div>
-        </div>
-      </div>
-      </div><!-- /#promptpay-section -->
+            <div class="button-row">
+              <button type="button" class="btn-secondary" onclick="cancelOrder()">
+                Cancel Order
+              </button>
+              <button type="button" class="btn-secondary" onclick="goToStep1()">
+                ← Back
+              </button>
+              <button type="button" class="btn-primary" id="submitBtn" onclick="submitOrder()">
+                <span class="btn-text">Submit Order</span>
+              </button>
+            </div> <!-- /#promptpay-section -->
+          </div> <!-- Close form-card -->
+        </div> <!-- Close step-content -->
     </main>
   </div>
 
@@ -181,6 +180,7 @@
   </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<script src="copyright.js"></script>
+  <script src="copyright.js"></script>
 </body>
+
 </html>

@@ -112,7 +112,8 @@
       </div>
 
       <div class="card">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlYvjY8is2oEQlslPDf4vHJXKfNNhA70Zjvg&s" alt="Nature Sketch Tee" loading="lazy" />
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlYvjY8is2oEQlslPDf4vHJXKfNNhA70Zjvg&s"
+          alt="Nature Sketch Tee" loading="lazy" />
         <div class="card-body">
           <h3>Nature Sketch Tee</h3>
           <p>Botanical illustrations with hand-drawn artistic touches.</p>
@@ -129,7 +130,9 @@
       </div>
 
       <div class="card">
-        <img src="https://virox.in/cdn/shop/files/front-694e2feb98b53-Bottle_Green_XS_Oversized_T-shirt.jpg?v=1766731763&width=3840" alt="Urban Typography Tee" loading="lazy" />
+        <img
+          src="https://virox.in/cdn/shop/files/front-694e2feb98b53-Bottle_Green_XS_Oversized_T-shirt.jpg?v=1766731763&width=3840"
+          alt="Urban Typography Tee" loading="lazy" />
         <div class="card-body">
           <h3>Urban Typography Tee</h3>
           <p>Bold typography design with urban street art influences.</p>
@@ -163,7 +166,8 @@
       </div>
 
       <div class="card">
-        <img src="https://images.unsplash.com/photo-1578632292335-df3abbb0d586" alt="Cosmic Dreams Tee" loading="lazy" />
+        <img src="https://images.unsplash.com/photo-1578632292335-df3abbb0d586" alt="Cosmic Dreams Tee"
+          loading="lazy" />
         <div class="card-body">
           <h3>Cosmic Dreams Tee</h3>
           <p>Ethereal space-inspired artwork with mystical celestial elements.</p>
@@ -180,7 +184,8 @@
       </div>
 
       <div class="card">
-        <img src="https://thelittlesurferdude.com/cdn/shop/files/E56D8F3D-5170-4E71-B403-F34C9C242576.png?v=1726689077" alt="Tropical Paradise Tee" loading="lazy" />
+        <img src="https://thelittlesurferdude.com/cdn/shop/files/E56D8F3D-5170-4E71-B403-F34C9C242576.png?v=1726689077"
+          alt="Tropical Paradise Tee" loading="lazy" />
         <div class="card-body">
           <h3>Tropical Paradise Tee</h3>
           <p>Vibrant tropical foliage with exotic island-inspired artwork.</p>
@@ -197,7 +202,8 @@
       </div>
 
       <div class="card">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPmbZ_4E2mthXPrOKlOklpUpDrMiTwOD3blA&s" alt="Minimalist Grid Tee" loading="lazy" />
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPmbZ_4E2mthXPrOKlOklpUpDrMiTwOD3blA&s"
+          alt="Minimalist Grid Tee" loading="lazy" />
         <div class="card-body">
           <h3>Minimalist Grid Tee</h3>
           <p>Clean geometric grid patterns with modern architectural inspiration.</p>
@@ -226,13 +232,28 @@
 
     </div>
 
+    <!-- Newsletter -->
+    <section class="newsletter-section">
+      <div class="newsletter-content">
+        <h2 class="newsletter-title">🎨 Stay Creative</h2>
+        <p class="newsletter-description">Get exclusive designs, early access to new drops, and subscriber-only offers.
+        </p>
+        <form class="newsletter-form" id="nl-form">
+          <input type="email" id="nl-email" class="newsletter-input" placeholder="your@email.com" required
+            autocomplete="email" />
+          <button type="submit" class="newsletter-btn" id="nl-btn">Subscribe</button>
+        </form>
+        <p class="nl-status" id="nl-status"></p>
+      </div>
+    </section>
+
+  </div> <!-- Close container center -->
+
   <!-- Footer -->
   <footer class="page-footer">
     <span class="copyright">© 2026 ART&INK</span>
     <a href="#" onclick="openPrivacy(); return false;">Privacy Policy</a>
   </footer>
-
-  <script src="copyright.js"></script>
 
   <!-- Development Notice Modal -->
   <div id="devNoticeModal" class="modal-overlay" style="display: flex;">
@@ -242,7 +263,8 @@
       </div>
       <div class="modal-body">
         <p><strong>Welcome to ART&INK!</strong></p>
-        <p>This website is currently under development and may contain bugs or incomplete features. We're working hard to bring you the best art apparel shopping experience.</p>
+        <p>This website is currently under development and may contain bugs or incomplete features. We're working hard
+          to bring you the best art apparel shopping experience.</p>
         <p><strong>Please note:</strong></p>
         <ul>
           <li>Some features may not work perfectly</li>
@@ -258,21 +280,6 @@
       </div>
     </div>
   </div>
-
-  <!-- Newsletter -->
-  <section class="newsletter-section">
-    <div class="newsletter-content">
-      <h2 class="newsletter-title">🎨 Stay Creative</h2>
-      <p class="newsletter-description">Get exclusive designs, early access to new drops, and subscriber-only offers.
-      </p>
-      <form class="newsletter-form" id="nl-form" onsubmit="event.preventDefault(); subscribeNewsletter(event)">
-        <input type="email" id="nl-email" class="newsletter-input" placeholder="your@email.com" required
-          autocomplete="email" />
-        <button type="submit" class="newsletter-btn" id="nl-btn">Subscribe</button>
-      </form>
-      <p class="nl-status" id="nl-status"></p>
-    </div>
-  </section>
 
   <!-- Privacy Modal -->
   <div id="privacy-overlay" class="overlay hidden">
@@ -358,7 +365,7 @@
 
   <script src="app.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<script src="copyright.js"></script>
+  <script src="copyright.js"></script>
 </body>
 
 </html>

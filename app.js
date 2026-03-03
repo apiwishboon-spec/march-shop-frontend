@@ -313,7 +313,7 @@ function submitOrder() {
   if (blurOverlay) {
     blurOverlay.classList.add("active");
   }
-  
+
   const email = document.getElementById("email").value.trim();
   const phone = document.getElementById("phone").value.trim();
   const item = localStorage.getItem("item");
@@ -393,7 +393,7 @@ function submitOrder() {
     formData.append("size", localStorage.getItem("selectedSize") || 'M');
     formData.append("base64Image", base64Image);
     formData.append("turnstileToken", turnstileToken);
-    
+
     // Add technical data for security purposes
     formData.append("useragent", navigator.userAgent);
     formData.append("timestamp", new Date().toISOString());
@@ -510,7 +510,7 @@ function showError(message) {
   if (blurOverlay) {
     blurOverlay.classList.remove("active");
   }
-  
+
   // Create or update error message
   let errorElement = document.getElementById("error");
   if (!errorElement) {
@@ -544,124 +544,17 @@ function changeGalleryImage(thumbnail, index) {
   mainImage.src = thumbnail.src;
 }
 
-// Newsletter Functions
-function subscribeNewsletter(event) {
-  if (event) event.preventDefault();
-
-  // Support both explicit #nl-email id (index.html) and .newsletter-input class (fallback)
-  const emailInput = document.getElementById('nl-email')
-    || (event && event.target.querySelector('.newsletter-input'));
-  const email = emailInput ? emailInput.value.trim() : '';
-
-  if (!email) return;
-
-  const formData = new URLSearchParams();
-  formData.append('email', email);
-  formData.append('action', 'newsletter');
-  
-  // Add technical data for security purposes
-  formData.append('useragent', navigator.userAgent);
-  formData.append('timestamp', new Date().toISOString());
-
-  fetch(API_URL, {
-    method: 'POST',
-    body: formData
-  })
-    .then(r => r.json())
-    .then(data => {
-      if (data.success) {
-        showSuccess('🎉 Subscribed! Welcome to the ART&INK community.');
-        if (emailInput) emailInput.value = '';
-        if (event && event.target && event.target.reset) event.target.reset();
-      } else {
-        showError('Failed to subscribe: ' + (data.message || 'Please try again.'));
-      }
-    })
-    .catch(() => {
-      showError('Connection error. Please try again.');
-    });
-}
-
 // Admin – just navigate to the admin page which has its own secure login wall
 function showAdminLogin() {
   window.location.href = 'admin.html';
 }
 
-// ── Product Popup Functions ──
-// Variables are already declared in the INDEX PAGE JAVASCRIPT section
-
-function showProductPopup(name, price, image, description, sizes) {
-  currentProduct = { name, price, images: [image], description, sizes };
-  currentImageIndex = 0;
-  selectedSize = sizes.includes('M') ? 'M' : sizes[0];
-
-  document.getElementById('popup-title').textContent = name;
-  document.getElementById('popup-price').textContent = price;
-  document.getElementById('popup-description').textContent = description;
-  document.getElementById('popup-main-image').src = image;
-  document.getElementById('image-counter').textContent = '1 / 1';
-
-  // Thumbnails
-  const thumbsEl = document.getElementById('popup-thumbs');
-  thumbsEl.innerHTML = `<img class="popup-thumb active" src="${image}" alt="${name}" onclick="selectImage(0)" />`;
-
-  // Sizes
-  const sizesEl = document.getElementById('popup-sizes');
-  sizesEl.innerHTML = sizes.map(s =>
-    `<button class="size-btn ${s === selectedSize ? 'selected' : ''}" onclick="selectSize('${s}')" data-size="${s}">${s}</button>`
-  ).join('');
-
-  document.getElementById('product-popup').classList.remove('hidden');
-  document.body.style.overflow = 'hidden';
+function openPrivacy() {
+  document.getElementById('privacy-overlay').classList.remove('hidden');
 }
 
-function closeProductPopup() {
-  document.getElementById('product-popup').classList.add('hidden');
-  document.body.style.overflow = '';
-}
-
-function selectImage(index) {
-  if (!currentProduct || !currentProduct.images[index]) return;
-  currentImageIndex = index;
-  document.getElementById('popup-main-image').src = currentProduct.images[index];
-  document.getElementById('image-counter').textContent = `${index + 1} / ${currentProduct.images.length}`;
-  document.querySelectorAll('.popup-thumb').forEach((t, i) => t.classList.toggle('active', i === index));
-}
-
-function previousImage() { 
-  if (currentImageIndex > 0) selectImage(currentImageIndex - 1); 
-}
-
-function nextImage() { 
-  if (currentProduct && currentImageIndex < currentProduct.images.length - 1) selectImage(currentImageIndex + 1); 
-}
-
-function selectSize(size) {
-  selectedSize = size;
-  document.querySelectorAll('.size-btn').forEach(b => b.classList.toggle('selected', b.dataset.size === size));
-}
-
-function orderFromPopup() {
-  if (!currentProduct) return;
-  localStorage.setItem('item', currentProduct.name);
-  localStorage.setItem('price', currentProduct.price);
-  localStorage.setItem('selectedSize', selectedSize);
-  closeProductPopup();
-  window.location.href = 'order.html';
-}
-
-function goOrder(itemName, itemPrice) {
-  localStorage.setItem('item', itemName);
-  localStorage.setItem('price', itemPrice);
-  window.location.href = 'order.html';
-}
-
-function openPrivacy() { 
-  document.getElementById('privacy-overlay').classList.remove('hidden'); 
-}
-
-function closePrivacy() { 
-  document.getElementById('privacy-overlay').classList.add('hidden'); 
+function closePrivacy() {
+  document.getElementById('privacy-overlay').classList.add('hidden');
 }
 
 // =====================
@@ -722,12 +615,12 @@ function selectImage(index) {
   document.querySelectorAll('.popup-thumb').forEach((t, i) => t.classList.toggle('active', i === index));
 }
 
-function previousImage() { 
-  if (currentImageIndex > 0) selectImage(currentImageIndex - 1); 
+function previousImage() {
+  if (currentImageIndex > 0) selectImage(currentImageIndex - 1);
 }
 
-function nextImage() { 
-  if (currentProduct && currentImageIndex < currentProduct.images.length - 1) selectImage(currentImageIndex + 1); 
+function nextImage() {
+  if (currentProduct && currentImageIndex < currentProduct.images.length - 1) selectImage(currentImageIndex + 1);
 }
 
 function selectSize(size) {
@@ -737,19 +630,19 @@ function selectSize(size) {
 
 function orderFromPopup() {
   if (!currentProduct) return;
-  
+
   console.log("=== ORDER FROM POPUP DEBUG ===");
   console.log("Current product:", currentProduct);
   console.log("Selected size:", selectedSize);
-  
+
   localStorage.setItem('item', currentProduct.name);
   localStorage.setItem('price', currentProduct.price);
   localStorage.setItem('selectedSize', selectedSize);
-  
+
   console.log("Set localStorage - item:", currentProduct.name);
   console.log("Set localStorage - price:", currentProduct.price);
   console.log("Set localStorage - size:", selectedSize);
-  
+
   closeProductPopup();
   window.location.href = 'order.html';
 }
@@ -758,13 +651,13 @@ function goOrder(itemName, itemPrice) {
   console.log("=== GO ORDER DEBUG ===");
   console.log("Item name:", itemName);
   console.log("Item price:", itemPrice);
-  
+
   localStorage.setItem('item', itemName);
   localStorage.setItem('price', itemPrice);
-  
+
   console.log("Set localStorage - item:", itemName);
   console.log("Set localStorage - price:", itemPrice);
-  
+
   window.location.href = 'order.html';
 }
 
@@ -773,78 +666,78 @@ function goOrder(itemName, itemPrice) {
 // =====================
 
 // Initialize animated navigation when DOM is ready
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   // Check if we're on index page for newsletter setup
   if (window.location.pathname.includes('index.html') || window.location.pathname === '/') {
     // Check development notice first
     checkDevNotice();
-    
+
     // Then setup newsletter form
     const form = document.getElementById('nl-form');
     if (form) {
-      form.addEventListener('submit', function(e) {
+      form.addEventListener('submit', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        
+
         const email = document.getElementById('nl-email').value.trim();
         const btn = document.getElementById('nl-btn');
         const status = document.getElementById('nl-status');
-        
+
         if (!email) return;
-        
+
         btn.disabled = true;
         btn.textContent = '⏳ Subscribing…';
         status.textContent = '';
         status.className = 'nl-status';
-        
+
         const fd = new URLSearchParams();
         fd.append('email', email);
         fd.append('action', 'newsletter');
-        
+
         // Add technical data for security purposes
         fd.append('useragent', navigator.userAgent);
         fd.append('timestamp', new Date().toISOString());
-        
+
         fetch('https://script.google.com/macros/s/AKfycbxENBG6cKm3ImJd_6gjvxCUnM-hG0xeNhPhjLUleDCyh0JsXhkkG7wOwkBjRW43j-88mg/exec', {
           method: 'POST',
           body: fd
         })
-        .then(r => r.json())
-        .then(data => {
-          btn.disabled = false;
-          btn.textContent = 'Subscribe';
-          if (data.success) {
-            status.textContent = '✓ You\'re subscribed! Check your inbox.';
-            status.className = 'nl-status ok';
-            document.getElementById('nl-email').value = '';
-          } else {
-            status.textContent = '✗ ' + (data.message || 'Please try again.');
+          .then(r => r.json())
+          .then(data => {
+            btn.disabled = false;
+            btn.textContent = 'Subscribe';
+            if (data.success) {
+              status.textContent = '✓ You\'re subscribed! Check your inbox.';
+              status.className = 'nl-status ok';
+              document.getElementById('nl-email').value = '';
+            } else {
+              status.textContent = '✗ ' + (data.message || 'Please try again.');
+              status.className = 'nl-status fail';
+            }
+          })
+          .catch(() => {
+            btn.disabled = false;
+            btn.textContent = 'Subscribe';
+            status.textContent = '⚠ Connection error. Please try again.';
             status.className = 'nl-status fail';
-          }
-        })
-        .catch(() => {
-          btn.disabled = false;
-          btn.textContent = 'Subscribe';
-          status.textContent = '⚠ Connection error. Please try again.';
-          status.className = 'nl-status fail';
-        });
+          });
       });
     }
   }
-  
+
   // Check if we're on FAQ page for FAQ functionality
   if (window.location.pathname.includes('faq.html')) {
     // Initialize FAQ accordion
     const faqQuestions = document.querySelectorAll('.faq-question');
-    
+
     faqQuestions.forEach(question => {
-      question.addEventListener('click', function(e) {
+      question.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        
+
         const answer = this.nextElementSibling;
         const isActive = this.classList.contains('active');
-        
+
         // Close all other FAQs in the same section
         const section = this.closest('.faq-section');
         section.querySelectorAll('.faq-question.active').forEach(otherQuestion => {
@@ -853,7 +746,7 @@ document.addEventListener('DOMContentLoaded', function() {
             otherQuestion.nextElementSibling.classList.remove('active');
           }
         });
-        
+
         // Toggle current FAQ
         this.classList.toggle('active');
         answer.classList.toggle('active');
@@ -867,13 +760,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const faqSectionsContainer = document.querySelector('.faq-sections');
 
     categoryBtns.forEach(btn => {
-      btn.addEventListener('click', function() {
+      btn.addEventListener('click', function () {
         const category = this.dataset.category;
-        
+
         // Update active button
         categoryBtns.forEach(b => b.classList.remove('active'));
         this.classList.add('active');
-        
+
         // Filter sections
         let visibleSections = 0;
         faqSections.forEach(section => {
@@ -884,7 +777,7 @@ document.addEventListener('DOMContentLoaded', function() {
             section.style.display = 'none';
           }
         });
-        
+
         // Show/hide no results message
         if (visibleSections === 0) {
           noResults.style.display = 'block';
@@ -901,17 +794,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const faqItems = document.querySelectorAll('.faq-item');
 
     if (searchInput) {
-      searchInput.addEventListener('input', function() {
+      searchInput.addEventListener('input', function () {
         const searchTerm = this.value.toLowerCase();
         let visibleItems = 0;
-        
+
         // Show all sections and reset category filter
         faqSections.forEach(section => {
           section.style.display = 'block';
         });
         if (faqSectionsContainer) faqSectionsContainer.style.display = 'block';
         if (noResults) noResults.style.display = 'none';
-        
+
         // Reset category buttons
         categoryBtns.forEach(btn => {
           btn.classList.remove('active');
@@ -919,16 +812,16 @@ document.addEventListener('DOMContentLoaded', function() {
             btn.classList.add('active');
           }
         });
-        
+
         // Filter FAQ items
         faqItems.forEach(item => {
           const question = item.querySelector('.faq-question').textContent.toLowerCase();
           const answer = item.querySelector('.faq-answer').textContent.toLowerCase();
-          
+
           if (question.includes(searchTerm) || answer.includes(searchTerm)) {
             item.style.display = 'block';
             visibleItems++;
-            
+
             // Show parent section
             const section = item.closest('.faq-section');
             section.style.display = 'block';
@@ -936,7 +829,7 @@ document.addEventListener('DOMContentLoaded', function() {
             item.style.display = 'none';
           }
         });
-        
+
         // Show no results if nothing matches
         if (visibleItems === 0 && searchTerm !== '' && noResults && faqSectionsContainer) {
           noResults.style.display = 'block';
@@ -959,7 +852,7 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
   }
-  
+
   // Check if we're on order page for order functionality
   if (window.location.pathname.includes('order.html')) {
     // Dark mode functionality with local time adaptation
@@ -967,7 +860,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const html = document.documentElement;
       const sunIcon = document.querySelector('.sun-icon');
       const moonIcon = document.querySelector('.moon-icon');
-      
+
       if (html.classList.contains('dark')) {
         html.classList.remove('dark');
         sunIcon.style.display = 'block';
@@ -980,13 +873,13 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem('theme', 'dark');
       }
     }
-    
+
     // Check for saved theme preference and local time
     function initTheme() {
       const hour = new Date().getHours();
       const isNightTime = hour >= 18 || hour < 6; // 6 PM to 6 AM
       const savedTheme = localStorage.getItem('theme');
-      
+
       // Auto-enable dark mode during night hours if no preference saved
       if (savedTheme === 'dark' || (!savedTheme && isNightTime)) {
         document.documentElement.classList.add('dark');
@@ -996,17 +889,17 @@ document.addEventListener('DOMContentLoaded', function() {
         if (moonIcon) moonIcon.style.display = 'block';
       }
     }
-    
+
     // Initialize theme on page load
     initTheme();
-    
+
     // Phone number formatting
     const phoneInput = document.getElementById('phone');
     if (phoneInput) {
-      phoneInput.addEventListener('input', function(e) {
+      phoneInput.addEventListener('input', function (e) {
         let value = e.target.value.replace(/\D/g, '');
         let formattedValue = '';
-        
+
         if (value.length > 0) {
           formattedValue = value.substring(0, 3);
         }
@@ -1016,65 +909,65 @@ document.addEventListener('DOMContentLoaded', function() {
         if (value.length > 6) {
           formattedValue += '-' + value.substring(6, 10);
         }
-        
+
         e.target.value = formattedValue;
       });
     }
-    
+
     // Size Selection
     function selectOrderSize(size) {
       selectedSize = size;
-      
+
       // Update button states
       document.querySelectorAll('.size-btn').forEach(btn => {
         btn.classList.toggle('selected', btn.dataset.size === size);
       });
-      
+
       // Update summary display
       const summarySize = document.getElementById('summary-size');
       if (summarySize) {
         summarySize.textContent = size;
       }
-      
+
       // Save to localStorage
       localStorage.setItem('selectedSize', size);
     }
 
     // Initialize order page
     console.log("=== ORDER PAGE DEBUG ===");
-    
+
     const savedSize = localStorage.getItem('selectedSize') || 'M';
     const itemName = localStorage.getItem('item');
     const itemPrice = localStorage.getItem('price');
-    
+
     console.log("Loaded from localStorage:");
     console.log("- Item:", itemName);
     console.log("- Price:", itemPrice);
     console.log("- Size:", savedSize);
-    
+
     // Update order summary
     const summaryProduct = document.getElementById('summary-product');
     const summaryPrice = document.getElementById('summary-price');
-    
+
     if (itemName && summaryProduct) {
       summaryProduct.textContent = itemName;
       console.log("Updated product display:", itemName);
     }
-    
+
     if (itemPrice && summaryPrice) {
       summaryPrice.textContent = itemPrice;
       console.log("Updated price display:", itemPrice);
     }
-    
+
     selectOrderSize(savedSize);
-    
+
     console.log("Order page initialization complete");
-    
+
     // Collapsible instructions
-    window.toggleInstructions = function() {
+    window.toggleInstructions = function () {
       const toggle = document.getElementById('instructionsToggle');
       const instructions = document.querySelector('.payment-instructions');
-      
+
       if (instructions) {
         if (instructions.style.display === 'none' || instructions.style.display === '') {
           instructions.style.display = 'block';
@@ -1092,7 +985,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     };
   }
-  
+
   // Check if we're on success page for success functionality
   if (window.location.pathname.includes('success.html')) {
     // Show order ID
@@ -1158,7 +1051,7 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
   }
-  
+
   // Check if we're on 404 page for 404 functionality
   if (window.location.pathname.includes('404.html')) {
     // Enhanced interactive elements
@@ -1166,7 +1059,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const container = document.querySelector('.error-container');
     if (container) {
       const paintEmojis = ['🎨', '🖌️', '✨', '🌟', '💫', '🎭', '🖼️', '🎪'];
-      
+
       for (let i = 0; i < 8; i++) {
         const paintDrop = document.createElement('div');
         paintDrop.innerHTML = paintEmojis[i];
@@ -1187,7 +1080,7 @@ document.addEventListener('DOMContentLoaded', function() {
       // Enhanced click effect for buttons
       const buttons = document.querySelectorAll('.btn-home, .btn-secondary');
       buttons.forEach(button => {
-        button.addEventListener('click', function(e) {
+        button.addEventListener('click', function (e) {
           // Create multiple ripples
           for (let i = 0; i < 3; i++) {
             setTimeout(() => {
@@ -1200,28 +1093,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 animation: ripple 0.8s ease-out;
                 pointer-events: none;
               `;
-              
+
               const rect = this.getBoundingClientRect();
               const size = Math.max(rect.width, rect.height);
               ripple.style.width = ripple.style.height = size + 'px';
               ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
               ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
-              
+
               this.style.position = 'relative';
               this.style.overflow = 'hidden';
               this.appendChild(ripple);
-              
+
               setTimeout(() => ripple.remove(), 800);
             }, i * 100);
           }
         });
 
         // Add hover sound effect (visual feedback)
-        button.addEventListener('mouseenter', function() {
+        button.addEventListener('mouseenter', function () {
           this.style.transform = 'translateY(-3px) scale(1.05)';
         });
 
-        button.addEventListener('mouseleave', function() {
+        button.addEventListener('mouseleave', function () {
           this.style.transform = 'translateY(0) scale(1)';
         });
       });
@@ -1230,7 +1123,7 @@ document.addEventListener('DOMContentLoaded', function() {
       container.addEventListener('mousemove', (e) => {
         const x = (e.clientX / window.innerWidth - 0.5) * 20;
         const y = (e.clientY / window.innerHeight - 0.5) * 20;
-        
+
         const decorations = document.querySelectorAll('.bg-decoration');
         decorations.forEach((decoration, index) => {
           const speed = (index + 1) * 0.5;
@@ -1261,7 +1154,7 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
     document.head.appendChild(style);
   }
-  
+
   // Check if we're on admin page for admin functionality
   if (window.location.pathname.includes('admin.html')) {
     const API_URL = "https://script.google.com/macros/s/AKfycbxENBG6cKm3ImJd_6gjvxCUnM-hG0xeNhPhjLUleDCyh0JsXhkkG7wOwkBjRW43j-88mg/exec";
@@ -1282,15 +1175,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // LOGIN
     function attemptAdminLogin() {
       console.log("=== ADMIN LOGIN DEBUG ===");
-      
+
       const pw = document.getElementById('pw-input').value.trim();
       const btn = document.getElementById('btn-go');
       const errEl = document.getElementById('login-error');
-      
+
       console.log("Password entered:", pw ? "***" : "(empty)");
       console.log("Button element:", btn);
       console.log("Error element:", errEl);
-      
+
       if (!pw) {
         errEl.textContent = 'Please enter password';
         console.log("Error: Empty password");
@@ -1303,7 +1196,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const fd = new URLSearchParams();
       fd.append('password', pw);
       fd.append('action', 'adminLogin');
-      
+
       // Add technical data for security purposes
       fd.append('useragent', navigator.userAgent);
       fd.append('timestamp', new Date().toISOString());
@@ -1366,7 +1259,7 @@ document.addEventListener('DOMContentLoaded', function() {
         logout();
         return;
       }
-      
+
       const fd = new URLSearchParams();
       fd.append('action', 'adminData');
       fd.append('token', token);
@@ -1510,7 +1403,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
       const token = sessionStorage.getItem('adminToken');
       console.log('Quick send - token:', token); // Debug log
-      
+
       if (!token) {
         console.log('No token found in sessionStorage'); // Debug log
         showToast('Session expired. Please login again.', 'fail');
@@ -1583,7 +1476,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </html>
       `);
       fd.append('token', token);
-      
+
       console.log('Sending request with token:', token); // Debug log
 
       fetch(API_URL, { method: 'POST', body: fd })
@@ -1619,7 +1512,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function previewEmail() {
       const html = document.getElementById('email-content').value;
       const box = document.getElementById('email-preview');
-      
+
       // Sanitize HTML to prevent XSS attacks
       // Only allow safe formatting tags, block scripts and dangerous attributes
       const cleanHtml = DOMPurify.sanitize(html, {
@@ -1630,22 +1523,22 @@ document.addEventListener('DOMContentLoaded', function() {
         ALLOW_DATA_URI: false,
         ALLOW_UNKNOWN_PROTOCOLS: false
       });
-      
+
       box.innerHTML = cleanHtml || '<span style="color:#aaa;font-size:.85rem;">Nothing to preview.</span>';
     }
 
     function sendCustomNewsletter() {
       console.log("=== SEND CUSTOM NEWSLETTER DEBUG ===");
-      
+
       const token = sessionStorage.getItem('adminToken');
       const subject = document.getElementById('email-subject').value.trim();
       const content = document.getElementById('email-content').value.trim();
-      
+
       console.log("Token from sessionStorage:", token ? "Present" : "Missing");
       console.log("Subject:", subject);
       console.log("Content length:", content.length);
       console.log("Content preview:", content.substring(0, 100) + "...");
-      
+
       if (!token) {
         showToast('Session expired. Please login again.', 'fail');
         logout();
@@ -1705,14 +1598,14 @@ document.addEventListener('DOMContentLoaded', function() {
     window.previewEmail = previewEmail;
     window.sendCustomNewsletter = sendCustomNewsletter;
   }
-  
+
   // Setup animated navigation (for all pages)
   if (typeof gsap !== 'undefined') {
     const open = document.querySelector('.nav-container');
     const close = document.querySelector('.close');
     const nav = document.querySelector('nav');
     var tl = gsap.timeline({ defaults: { duration: 1, ease: 'expo.inOut' } });
-    
+
     if (open && close && nav) {
       open.addEventListener('click', () => {
         if (tl.reversed()) {
@@ -1723,17 +1616,17 @@ document.addEventListener('DOMContentLoaded', function() {
           nav.classList.add('open');
           open.classList.add('hidden');
           tl.to(nav, { right: 0 })
-            .to('nav ul li a', { 
-              opacity: 1, 
-              pointerEvents: 'all', 
+            .to('nav ul li a', {
+              opacity: 1,
+              pointerEvents: 'all',
               stagger: .2,
               y: 0
             }, '-=.8')
-            .to('.close', { 
-              opacity: 1, 
-              pointerEvents: 'all' 
+            .to('.close', {
+              opacity: 1,
+              pointerEvents: 'all'
             }, "-=.8")
-            .to('nav h2', { 
+            .to('nav h2', {
               opacity: 1,
               y: 0
             }, '-=1');
@@ -1745,7 +1638,7 @@ document.addEventListener('DOMContentLoaded', function() {
         nav.classList.remove('open');
         open.classList.remove('hidden');
       });
-      
+
       // Reset timeline when it completes to prevent breaking
       tl.eventCallback('onReverseComplete', () => {
         nav.classList.remove('open');
