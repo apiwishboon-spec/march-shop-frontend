@@ -103,19 +103,22 @@ document.addEventListener("DOMContentLoaded", function () {
   const price = parseFloat(localStorage.getItem("price"));
   const selectedSize = localStorage.getItem("selectedSize") || 'M';
 
-  console.log('Loading order page with:', { item, price, selectedSize });
+  // Make sure this logic ONLY fires on the order page!
+  if (window.location.pathname.includes('order')) {
+    console.log('Loading order page with:', { item, price, selectedSize });
 
-  if (!item || !price) {
-    console.log('Missing item or price, redirecting to index');
-    location.href = "index.html";
-    return;
+    if (!item || !price) {
+      console.log('Missing item or price, redirecting to index');
+      location.href = "index.html";
+      return;
+    }
+
+    // Initialize step 1
+    updateOrderSummary(item, price, selectedSize);
+
+    // Setup payment method listeners
+    setupPaymentMethods();
   }
-
-  // Initialize step 1
-  updateOrderSummary(item, price, selectedSize);
-
-  // Setup payment method listeners
-  setupPaymentMethods();
 });
 
 // ================================
