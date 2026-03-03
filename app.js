@@ -1700,6 +1700,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function sendCustomNewsletter() {
       console.log("=== SEND CUSTOM NEWSLETTER DEBUG ===");
+      console.log("API_URL:", API_URL);
 
       const token = sessionStorage.getItem('adminToken');
       const subject = document.getElementById('email-subject').value.trim();
@@ -1734,8 +1735,13 @@ document.addEventListener('DOMContentLoaded', function () {
       fd.append('token', token);
 
       fetch(API_URL, { method: 'POST', body: fd })
-        .then(r => r.json())
+        .then(r => {
+          console.log("Response status:", r.status);
+          console.log("Response headers:", [...r.headers.entries()]);
+          return r.json();
+        })
         .then(res => {
+          console.log("Full response:", res);
           sendBtn.disabled = false;
           sendBtn.textContent = '📧 Send to All Subscribers';
 
@@ -1751,7 +1757,8 @@ document.addEventListener('DOMContentLoaded', function () {
             showAdminToast('❌ Failed: ' + (res.message || 'Error'));
           }
         })
-        .catch(() => {
+        .catch(err => {
+          console.log("Network error:", err);
           sendBtn.disabled = false;
           sendBtn.textContent = '📧 Send to All Subscribers';
           showAdminToast('❌ Network error. Try again.');
