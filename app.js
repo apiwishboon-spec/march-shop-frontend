@@ -218,8 +218,11 @@ function goToStep2() {
     return;
   }
 
-  if (!phone || !phone.match(/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/)) {
-    showError("Please enter a valid phone number (Format: XXX-XXX-XXXX)");
+  // Remove any spaces or dashes they typed to check the raw digits
+  const cleanPhone = phone.replace(/[\s\-]/g, '');
+
+  if (!cleanPhone || cleanPhone.length < 10) {
+    showError("Please enter a valid 10-digit phone number.");
     return;
   }
 
@@ -491,7 +494,8 @@ function submitOrder() {
     const formData = new URLSearchParams();
     formData.append("action", "order"); // Add action parameter
     formData.append("email", emailValue); // Use the validated email value
-    formData.append("phone", phone);
+    const cleanPhone = phone.replace(/[\s\-]/g, '');
+    formData.append("phone", cleanPhone);
     formData.append("itemId", item);
     formData.append("price", price);
     formData.append("quantity", qty);
