@@ -1743,11 +1743,12 @@ document.addEventListener('DOMContentLoaded', function () {
       console.log("=== SEND CUSTOM NEWSLETTER DEBUG ===");
       console.log("API_URL:", API_URL);
 
-      const token = sessionStorage.getItem('adminToken');
+      // Use consistent token retrieval
+      const token = sessionStorage.getItem('adminToken') || localStorage.getItem('adminToken') || '';
       const subject = document.getElementById('email-subject').value.trim();
       const content = document.getElementById('email-content').value.trim();
 
-      console.log("Token from sessionStorage:", token ? "Present" : "Missing");
+      console.log("Token from storage:", token ? "Present" : "Missing");
       console.log("Subject:", subject);
       console.log("Content length:", content.length);
       console.log("Content preview:", content.substring(0, 100) + "...");
