@@ -80,16 +80,25 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxENBG6cKm3ImJd_6gjvxCU
 document.addEventListener("DOMContentLoaded", function () {
   // If we are on the order page, render the Google button
   if (window.location.pathname.includes('order.html')) {
-    if (window.google) {
-      google.accounts.id.initialize({
-        client_id: "292346174128-fk8na6afbrb07q2v1oqc193j83idtjuh.apps.googleusercontent.com",
-        callback: handleCredentialResponse
-      });
-      google.accounts.id.renderButton(
-        document.getElementById("google-login-button"),
-        { theme: "outline", size: "large", shape: "pill", width: 280 }
-      );
+    function initGoogleAuth() {
+      if (window.google && window.google.accounts) {
+        const container = document.getElementById("google-login-button");
+        if (container) {
+          container.innerHTML = ""; // Clear out the fallback button
+          google.accounts.id.initialize({
+            client_id: "292346174128-fk8na6afbrb07q2v1oqc193j83idtjuh.apps.googleusercontent.com",
+            callback: handleCredentialResponse
+          });
+          google.accounts.id.renderButton(
+            container,
+            { theme: "outline", size: "large", shape: "pill", width: 280 }
+          );
+        }
+      } else {
+        setTimeout(initGoogleAuth, 100);
+      }
     }
+    initGoogleAuth();
   }
 
   const item = localStorage.getItem("item");
