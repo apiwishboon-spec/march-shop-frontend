@@ -97,10 +97,12 @@ function doPost(e) {
         return handleAdminLogin(e);
       case "adminData":
         return handleAdminData(e);
+      case "getOrders":
+        return handleGetOrders(e);
+      case "markOrderDone":
+        return handleMarkOrderDone(e);
       case "sendCustomNewsletter":
         return handleSendCustomNewsletter(e);
-      // FIX #3: Removed dead "sendNewsletter" route — handleSendNewsletter was never defined.
-      // If you need a separate sendNewsletter action, implement the function or map it to handleSendCustomNewsletter.
       case "newsletter":
         return handleNewsletterSubscription(e);
       case "validateDiscount":
@@ -220,6 +222,65 @@ function handleAdminData(e) {
   } catch (error) {
     Logger.log("❌ Error retrieving admin data: " + error.toString());
     return jsonError("Failed to load data");
+  }
+}
+
+// =================================================
+// GET ALL ORDERS (Admin only)
+// =================================================
+function handleGetOrders(e) {
+  const token = String(e.parameter.token || "").trim();
+  if (!validateAdminSession(token)) return jsonError("Unauthorized");
+
+  try {
+    const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
+    const data = sheet.getDataRange().getValues();
+
+    const orders = [];
+    for (let i = 1; i < data.length; i++) {
+      const row = data[i];
+      orders.push({
+        rowIndex: i + 1, // 1-based row number for later updates
+        timestamp:  row[0],
+        orderId:    row[1],
+        email:      row[2],
+        phone:      row[3],
+        item:       row[4],
+        unitPrice:  row[5],
+        qty:        row[6],
+        total:      row[7],
+        status:     row[8],  // I — Pending / Done
+        slipUrl:    row[9],  // J
+        size:       row[10], // K
+        name:       row[11]  // L
+      });
+    }
+
+    return jsonSuccess({ orders });
+  } catch (err) {
+    Logger.log("❌ getOrders error: " + err.toString());
+    return jsonError("Failed to load orders");
+  }
+}
+
+// =================================================
+// MARK ORDER AS DONE (Admin only — writes 'Done' to column I)
+// =================================================
+function handleMarkOrderDone(e) {
+  const token    = String(e.parameter.token    || "").trim();
+  const rowIndex = parseInt(e.parameter.rowIndex || "0", 10);
+
+  if (!validateAdminSession(token)) return jsonError("Unauthorized");
+  if (!rowIndex || rowIndex < 2)    return jsonError("Invalid row");
+
+  try {
+    const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
+    sheet.getRange(rowIndex, 9).setValue("Done"); // Column I (1-based = 9)
+    Logger.log("✅ Row " + rowIndex + " marked as Done");
+    return jsonSuccess({ rowIndex });
+  } catch (err) {
+    Logger.log("❌ markOrderDone error: " + err.toString());
+    return jsonError("Failed to update order");
   }
 }
 

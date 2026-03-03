@@ -51,37 +51,39 @@
       <h1 class="page-title">Dashboard</h1>
       <p class="page-sub" id="last-updated">Loading analytics…</p>
 
-      <!-- Stat Cards -->
+      <!-- Stat Cards (clickable) -->
       <div class="stats-grid">
-        <div class="stat-card">
+        <div class="stat-card" style="cursor:pointer;" onclick="openStatModal('orders')" title="View completed orders">
           <div class="stat-icon" style="background:#fef3c7;">🛍️</div>
           <div>
             <div class="stat-value skeleton" id="total-orders">—</div>
             <div class="stat-label">Completed Orders</div>
           </div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" style="cursor:pointer;" onclick="openStatModal('revenue')"
+          title="View revenue breakdown">
           <div class="stat-icon" style="background:#dcfce7;">💳</div>
           <div>
             <div class="stat-value skeleton" id="total-revenue">—</div>
             <div class="stat-label">Total Revenue</div>
           </div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" style="cursor:pointer;" onclick="openStatModal('products')" title="View products sold">
           <div class="stat-icon" style="background:#eff6ff;">📦</div>
           <div>
             <div class="stat-value skeleton" id="products-sold">—</div>
             <div class="stat-label">Products Sold</div>
           </div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" style="cursor:pointer;" onclick="openStatModal('customers')"
+          title="View unique customers">
           <div class="stat-icon" style="background:#f5f3ff;">👥</div>
           <div>
             <div class="stat-value skeleton" id="new-customers">—</div>
             <div class="stat-label">Unique Customers</div>
           </div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" style="cursor:pointer;" onclick="openStatModal('subscribers')" title="View subscribers">
           <div class="stat-icon" style="background:#fdf2f8;">📬</div>
           <div>
             <div class="stat-value skeleton" id="subscriber-count">—</div>
@@ -107,8 +109,19 @@
         </div>
       </div>
 
+      <!-- ═══════════════════════════════════════
+           INCOMPLETE ORDERS
+      ═══════════════════════════════════════ -->
+      <div class="section-title" style="margin-top:36px;">⏳ Incomplete Orders</div>
+      <div style="margin-bottom:12px; display:flex; justify-content:flex-end;">
+        <button class="topbar-btn" onclick="loadIncompleteOrders()">🔄 Reload Orders</button>
+      </div>
+      <div id="orders-panel" style="overflow-x:auto;">
+        <p style="color:#aaa;">Loading incomplete orders…</p>
+      </div>
+
       <!-- Newsletter -->
-      <div class="section-title">📧 Newsletter</div>
+      <div class="section-title" style="margin-top:36px;">📧 Newsletter</div>
       <div class="newsletter-panel">
         <div class="nl-info">
           <h4>Send to All Subscribers</h4>
@@ -160,7 +173,157 @@
   <!-- Toast -->
   <div class="toast" id="toast"></div>
 
-<script src="copyright.js"></script>
+  <!-- Stat Detail Modal -->
+  <div id="stat-modal-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;padding:20px;overflow-y:auto;" onclick="closeStatModal(event)">
+    <div style="background:#fff;border-radius:16px;max-width:720px;margin:40px auto;padding:28px;position:relative;" onclick="event.stopPropagation()">
+      <button onclick="closeStatModal()" style="position:absolute;top:16px;right:16px;background:none;border:none;font-size:1.4rem;cursor:pointer;">&#x2715;</button>
+      <h3 id="stat-modal-title" style="margin-top:0;"></h3>
+      <div id="stat-modal-body" style="margin-top:16px;overflow-x:auto;"></div>
+    </div>
+  </div>
+
+  <script>
+    const ADMIN_API = "https://script.google.com/macros/s/AKfycbxENBG6cKm3ImJd_6gjvxCUnM-hG0xeNhPhjLUleDCyh0JsXhkkG7wOwkBjRW43j-88mg/exec";
+
+    const tblStyle = `<style>
+      .orders-tbl{width:100%;border-collapse:collapse;font-size:.85rem;}
+      .orders-tbl th{background:#f3f4f6;padding:10px 12px;text-align:left;font-weight:600;white-space:nowrap;border-bottom:2px solid #e5e7eb;}
+      .orders-tbl td{padding:10px 12px;border-bottom:1px solid #f0f0f0;vertical-align:middle;word-break:break-word;}
+      .orders-tbl tr:hover td{background:#fafafa;}
+      .btn-mark-done{background:#22c55e;color:#fff;border:none;border-radius:8px;padding:6px 14px;cursor:pointer;font-weight:600;white-space:nowrap;}
+      .btn-mark-done:disabled{background:#86efac;cursor:not-allowed;}
+      .slip-link{color:#6366f1;text-decoration:none;} .slip-link:hover{text-decoration:underline;}
+    </style>`;
+
+    function getAdminToken() {
+      return localStorage.getItem('adminToken') || sessionStorage.getItem('adminToken') || '';
+    }
+
+    async function loadIncompleteOrders() {
+      const panel = document.getElementById('orders-panel');
+      if (!panel) return;
+      panel.innerHTML = '<p style="color:#aaa;">Loading...</p>';
+      const fd = new URLSearchParams();
+      fd.append('action', 'getOrders');
+      fd.append('token', getAdminToken());
+      try {
+        const res  = await fetch(ADMIN_API, { method:'POST', body:fd });
+        const json = await res.json();
+        if (!json.success) { panel.innerHTML = '<p style="color:red;">Error: '+(json.message||'Failed')+'</p>'; return; }
+        const pending = (json.data.orders||[]).filter(o => String(o.status).toLowerCase() !== 'done');
+        if (pending.length === 0) { panel.innerHTML = '<p style="color:#4ade80;font-weight:600;">&#10003; All orders are completed!</p>'; return; }
+        let rows = '';
+        pending.forEach((o, idx) => {
+          const slip = o.slipUrl ? '<a class="slip-link" href="'+o.slipUrl+'" target="_blank">View &#128444;</a>' : '-';
+          rows += '<tr id="row-'+o.rowIndex+'">'
+            + '<td>'+(idx+1)+'</td>'
+            + '<td><code>'+(o.orderId||'-')+'</code></td>'
+            + '<td>'+(o.email||'-')+'</td>'
+            + '<td>'+(o.phone||'-')+'</td>'
+            + '<td>'+(o.item||'-')+'</td>'
+            + '<td>'+(o.qty||'-')+'</td>'
+            + '<td><b>'+(o.size||'-')+'</b></td>'
+            + '<td>&#3647;'+(o.total||'-')+'</td>'
+            + '<td>'+slip+'</td>'
+            + '<td><span style="background:#fef3c7;color:#92400e;padding:3px 8px;border-radius:20px;font-size:.75rem;">'+(o.status||'Pending')+'</span></td>'
+            + '<td><button class="btn-mark-done" onclick="markDone('+o.rowIndex+', this)">&#10003; Done</button></td>'
+            + '</tr>';
+        });
+        panel.innerHTML = tblStyle + '<table class="orders-tbl"><thead><tr><th>#</th><th>Order ID</th><th>Email</th><th>Phone</th><th>Item</th><th>Qty</th><th>Size</th><th>Total</th><th>Slip</th><th>Status</th><th>Action</th></tr></thead><tbody>'+rows+'</tbody></table>';
+      } catch(err) {
+        panel.innerHTML = '<p style="color:red;">Error: '+err.message+'</p>';
+      }
+    }
+
+    async function markDone(rowIndex, btn) {
+      btn.disabled = true; btn.textContent = 'Saving...';
+      const fd = new URLSearchParams();
+      fd.append('action', 'markOrderDone');
+      fd.append('token', getAdminToken());
+      fd.append('rowIndex', rowIndex);
+      try {
+        const res  = await fetch(ADMIN_API, { method:'POST', body:fd });
+        const json = await res.json();
+        if (json.success) {
+          const row = document.getElementById('row-'+rowIndex);
+          if (row) { row.style.opacity='0.4'; row.style.transition='opacity .5s'; }
+          btn.textContent = 'Done!';
+          showAdminToast('Order marked as Done!');
+        } else {
+          btn.disabled=false; btn.textContent='&#10003; Done';
+          showAdminToast('Error: '+(json.message||'Failed'));
+        }
+      } catch(err) {
+        btn.disabled=false; btn.textContent='&#10003; Done';
+        showAdminToast('Network error');
+      }
+    }
+
+    let _cachedOrders = null;
+
+    async function openStatModal(type) {
+      document.getElementById('stat-modal-overlay').style.display='block';
+      const title = document.getElementById('stat-modal-title');
+      const body  = document.getElementById('stat-modal-body');
+      body.innerHTML = '<p style="color:#aaa;">Loading...</p>';
+      if (!_cachedOrders) {
+        const fd = new URLSearchParams();
+        fd.append('action','getOrders'); fd.append('token', getAdminToken());
+        try {
+          const r = await fetch(ADMIN_API,{method:'POST',body:fd});
+          const j = await r.json();
+          _cachedOrders = j.success ? j.data.orders : [];
+        } catch(e) { _cachedOrders=[]; }
+      }
+      const done = _cachedOrders.filter(o => String(o.status).toLowerCase()==='done');
+      if (type==='orders') {
+        title.textContent = 'Completed Orders';
+        const rows=done.map(o=>'<tr><td><code>'+(o.orderId||'-')+'</code></td><td>'+(o.email||'-')+'</td><td>'+(o.item||'-')+'</td><td>'+(o.size||'-')+'</td><td>&#3647;'+(o.total||'-')+'</td></tr>').join('');
+        body.innerHTML=tblStyle+'<table class="orders-tbl"><thead><tr><th>Order ID</th><th>Email</th><th>Item</th><th>Size</th><th>Total</th></tr></thead><tbody>'+(rows||'<tr><td colspan=5 style="color:#aaa">No completed orders</td></tr>')+'</tbody></table>';
+      } else if (type==='revenue') {
+        title.textContent = 'Revenue Breakdown';
+        const rows=done.map(o=>'<tr><td><code>'+(o.orderId||'-')+'</code></td><td>'+(o.email||'-')+'</td><td>'+(o.item||'-')+'</td><td>&#3647;'+(o.total||'-')+'</td></tr>').join('');
+        body.innerHTML=tblStyle+'<table class="orders-tbl"><thead><tr><th>Order ID</th><th>Email</th><th>Item</th><th>Total</th></tr></thead><tbody>'+(rows||'<tr><td colspan=4 style="color:#aaa">No data</td></tr>')+'</tbody></table>';
+      } else if (type==='products') {
+        title.textContent = 'Products Sold';
+        const counts={};
+        done.forEach(o=>{counts[o.item]=(counts[o.item]||0)+Number(o.qty||1);});
+        const rows=Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([k,v])=>'<tr><td>'+k+'</td><td><b>'+v+'</b></td></tr>').join('');
+        body.innerHTML=tblStyle+'<table class="orders-tbl"><thead><tr><th>Product</th><th>Units Sold</th></tr></thead><tbody>'+(rows||'<tr><td colspan=2 style="color:#aaa">No data</td></tr>')+'</tbody></table>';
+      } else if (type==='customers') {
+        title.textContent = 'Unique Customers';
+        const emails=[...new Set(done.map(o=>o.email).filter(Boolean))];
+        const rows=emails.map(e=>'<tr><td>'+e+'</td></tr>').join('');
+        body.innerHTML=tblStyle+'<table class="orders-tbl"><thead><tr><th>Email</th></tr></thead><tbody>'+(rows||'<tr><td style="color:#aaa">No data</td></tr>')+'</tbody></table>';
+      } else {
+        title.textContent='Subscribers';
+        body.innerHTML='<p>Open Google Sheets Sheet2 for the full subscriber list.</p>';
+      }
+    }
+
+    function closeStatModal(e) {
+      if (!e || e.target===document.getElementById('stat-modal-overlay'))
+        document.getElementById('stat-modal-overlay').style.display='none';
+    }
+
+    function showAdminToast(msg) {
+      const t=document.getElementById('toast');
+      if (t){ t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const dash = document.getElementById('dashboard');
+      if (!dash) return;
+      new MutationObserver(function() {
+        if (dash.style.display!=='none' && !dash.dataset.ordersLoaded) {
+          dash.dataset.ordersLoaded='1';
+          loadIncompleteOrders();
+        }
+      }).observe(dash, {attributes:true, attributeFilter:['style']});
+    });
+  </script>
+
+  <script src="copyright.js"></script>
 </body>
 
 </html>
