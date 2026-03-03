@@ -9,8 +9,8 @@ window.attemptLogin = function() {
   console.log('Current href:', window.location.href);
   
   // Check if we're on admin page - more flexible check
-  const isAdminPage = window.location.pathname.includes('admin.html') || 
-                     window.location.href.includes('admin.html') ||
+  const isAdminPage = window.location.pathname.includes('admin') || 
+                     window.location.href.includes('admin') ||
                      document.title.includes('Admin') ||
                      // Fallback: check if admin elements exist
                      (document.getElementById('pw-input') && document.getElementById('btn-go'));
@@ -770,7 +770,7 @@ function changeGalleryImage(thumbnail, index) {
 
 // Admin – just navigate to the admin page which has its own secure login wall
 function showAdminLogin() {
-  window.location.href = 'admin.html';
+  window.location.href = 'admin';
 }
 
 function openPrivacy() {
@@ -1327,7 +1327,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // Check if we're on admin page for admin functionality
-  if (window.location.pathname.includes('admin.html')) {
+  if (window.location.pathname.includes('admin')) {
     const API_URL = "https://script.google.com/macros/s/AKfycbxENBG6cKm3ImJd_6gjvxCUnM-hG0xeNhPhjLUleDCyh0JsXhkkG7wOwkBjRW43j-88mg/exec";
 
     let barChart = null;
