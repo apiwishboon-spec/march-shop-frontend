@@ -1708,18 +1708,29 @@ document.addEventListener('DOMContentLoaded', function () {
       console.log("DOMPurify available:", typeof DOMPurify !== 'undefined');
 
       try {
-        // Sanitize HTML to prevent XSS attacks
-        // Only allow safe formatting tags, block scripts and dangerous attributes
-        const cleanHtml = DOMPurify.sanitize(html, {
-          ALLOWED_TAGS: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'strong', 'em', 'ul', 'ol', 'li', 'a', 'img', 'div', 'span', 'br'],
-          ALLOWED_ATTR: ['href', 'src', 'alt', 'class', 'style'],
-          FORBID_ATTR: ['onclick', 'onerror', 'onload', 'onmouseover', 'onfocus', 'onblur', 'onchange', 'onsubmit'],
-          FORBID_TAGS: ['script', 'iframe', 'object', 'embed', 'form', 'input', 'button'],
-          ALLOW_DATA_URI: false,
-          ALLOW_UNKNOWN_PROTOCOLS: false
-        });
+        let cleanHtml = html;
+        
+        // Try to use DOMPurify if available
+        if (typeof DOMPurify !== 'undefined') {
+          console.log("Using DOMPurify for sanitization");
+          cleanHtml = DOMPurify.sanitize(html, {
+            ALLOWED_TAGS: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'strong', 'em', 'ul', 'ol', 'li', 'a', 'img', 'div', 'span', 'br'],
+            ALLOWED_ATTR: ['href', 'src', 'alt', 'class', 'style'],
+            FORBID_ATTR: ['onclick', 'onerror', 'onload', 'onmouseover', 'onfocus', 'onblur', 'onchange', 'onsubmit'],
+            FORBID_TAGS: ['script', 'iframe', 'object', 'embed', 'form', 'input', 'button'],
+            ALLOW_DATA_URI: false,
+            ALLOW_UNKNOWN_PROTOCOLS: false
+          });
+        } else {
+          console.log("DOMPurify not available, using basic sanitization");
+          // Basic sanitization - remove script tags and dangerous attributes
+          cleanHtml = html
+            .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+            .replace(/on\w+="[^"]*"/gi, '')
+            .replace(/javascript:/gi, '');
+        }
 
-        console.log("Sanitized HTML length:", cleanHtml.length);
+        console.log("Clean HTML length:", cleanHtml.length);
         box.innerHTML = cleanHtml || '<span style="color:#aaa;font-size:.85rem;">Nothing to preview.</span>';
         console.log("Preview updated successfully");
       } catch (error) {
@@ -1821,46 +1832,6 @@ document.addEventListener('DOMContentLoaded', function () {
           showAdminToast('❌ Network error. Try again.');
         });
     }
-
-    // Add test function
-    window.testNewsletter = function() {
-      console.log("=== TESTING NEWSLETTER ===");
-      
-      const token = sessionStorage.getItem('adminToken');
-      if (!token) {
-        showAdminToast('Please login first');
-        return;
-      }
-
-      const fd = new URLSearchParams();
-      fd.append('subject', '[TEST] ART&INK Newsletter Test');
-      fd.append('content', `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #f3a6c8;">🎨 ART&INK Test Newsletter</h2>
-          <p>This is a test email to verify the newsletter system is working.</p>
-          <p>If you receive this, the custom newsletter feature is working correctly!</p>
-          <hr style="border: 1px solid #eee; margin: 20px 0;">
-          <p style="color: #666; font-size: 12px;">© 2026 ART&INK Shop</p>
-        </div>
-      `);
-      fd.append('action', 'sendCustomNewsletter');
-      fd.append('token', token);
-
-      fetch(API_URL, { method: 'POST', body: fd })
-        .then(r => r.json())
-        .then(res => {
-          console.log("Test response:", res);
-          if (res.success) {
-            showAdminToast('✅ Test email sent successfully!');
-          } else {
-            showAdminToast('❌ Test failed: ' + (res.message || 'Unknown error'));
-          }
-        })
-        .catch(err => {
-          console.log("Test error:", err);
-          showAdminToast('❌ Test failed: Network error');
-        });
-    };
 
     // Make functions globally available
     // Note: attemptLogin is already defined globally at the top of the file
