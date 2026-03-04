@@ -1335,6 +1335,10 @@ document.addEventListener('DOMContentLoaded', function () {
     window.toggleAuthMethod = toggleAuthMethod;
     window.showAuthChoiceDialog = showAuthChoiceDialog;
     window.chooseAuthMethod = chooseAuthMethod;
+    window.cancelOrder = cancelOrder;
+    window.goToStep2 = goToStep2;
+    window.goToStep1 = goToStep1;
+    window.submitOrder = submitOrder;
   }
 
 
