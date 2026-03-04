@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes">
+  <title>ART&INK Shop - Order - ART&INK</title>
+  
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#f3a6c8" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="ART&INK" />
+  <meta name="application-name" content="ART&INK" />
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="../pwa/manifest.json" />
+  
+  <!-- Apple Touch Icon -->
+  <link rel="apple-touch-icon" href="../assets/img/art-ink-icon.png" />
+  
+  <link rel="icon" type="image/png" href="../assets/img/art-ink-icon.png">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+
+<body>
+  <div class="container">
+
+
+    <!-- Simple Step Indicator -->
+    <div class="step-indicator">
+      <div class="step active" id="step1-indicator">
+        <div class="step-dot">📝</div>
+        <div class="step-label">order</div>
+        <div class="step-description">Your details</div>
+      </div>
+      <div class="step" id="step2-indicator">
+        <div class="step-dot">💸</div>
+        <div class="step-label">payment</div>
+        <div class="step-description">Your details</div>
+      </div>
+    </div>
+
+    <main>
+      <!-- Step 1: Order Details -->
+      <div class="step-content active" id="step1">
+        <div class="form-card">
+          <h2>📋 Order Details</h2>
+
+          <div class="order-summary">
+            <div class="summary-item">
+              <span class="label">Product:</span>
+              <span class="value" id="summary-product">-</span>
+            </div>
+            <div class="summary-item">
+              <span class="label">Price:</span>
+              <span class="value">฿<span id="summary-price">-</span></span>
+            </div>
+            <div class="summary-item">
+              <span class="label">Size:</span>
+              <span class="value" id="summary-size">M</span>
+            </div>
+            <div class="summary-item">
+              <span class="label">Selected Size:</span>
+              <div class="size-selector">
+                <div class="size-options">
+                  <button type="button" class="size-btn" data-size="S" onclick="selectOrderSize('S')">S</button>
+                  <button type="button" class="size-btn" data-size="M" onclick="selectOrderSize('M')">M</button>
+                  <button type="button" class="size-btn" data-size="L" onclick="selectOrderSize('L')">L</button>
+                  <button type="button" class="size-btn" data-size="XL" onclick="selectOrderSize('XL')">XL</button>
+                </div>
+              </div>
+            </div>
+            <div class="summary-item total-row">
+              <span class="label">Total:</span>
+              <span class="value total-price">฿<span id="summary-total">-</span></span>
+            </div>
+          </div>
+
+          <form id="orderForm">
+
+            <div class="auth-toggle-group" style="display:flex; gap:10px; margin-bottom: 20px;">
+              <label class="auth-toggle-option active" id="auth-auto-btn"
+                style="flex:1; border: 1px solid var(--border-primary); padding:10px; border-radius:12px; cursor:pointer; text-align:center; transition:0.3s;">
+                <input type="radio" name="auth-method" value="auto" checked onchange="toggleAuthMethod(this.value)"
+                  style="display:none;">
+                <div>
+                  <div style="font-weight:600; margin-bottom:4px;">🔐 Sign in with Google</div>
+                  <div style="font-size:0.85rem; color:#666;">Secure • Auto-fill details</div>
+                </div>
+              </label>
+              <label class="auth-toggle-option" id="auth-manual-btn"
+                style="flex:1; border: 1px solid var(--border-primary); padding:10px; border-radius:12px; cursor:pointer; text-align:center; transition:0.3s; opacity: 0.7;">
+                <input type="radio" name="auth-method" value="manual" onchange="toggleAuthMethod(this.value)"
+                  style="display:none;">
+                <div>
+                  <div style="font-weight:600; margin-bottom:4px;">✍️ Manual Entry</div>
+                  <div style="font-size:0.85rem; color:#666;">Type details yourself</div>
+                </div>
+              </label>
+            </div>
+
+            <!-- Auto Google Auth Section -->
+            <div id="google-auth-section" class="auth-section active" style="text-align:center;">
+              <p class="hint" style="margin-bottom:12px;">Sign in securely to auto-fill your details and protect your
+                order.</p>
+
+              <div id="google-login-button"
+                style="margin-bottom:12px; display:flex; justify-content:center; align-items:center;">
+                <!-- Fallback GSI style button while script loads -->
+                <button type="button" class="gsi-material-button"
+                  onclick="document.querySelector('[role=\'button\']')?.click()">
+                  <div class="gsi-material-button-state"></div>
+                  <div class="gsi-material-button-content-wrapper">
+                    <div class="gsi-material-button-icon">
+                      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"
+                        xmlns:xlink="http://www.w3.org/1999/xlink" style="display: block;">
+                        <path fill="#EA4335"
+                          d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z">
+                        </path>
+                        <path fill="#4285F4"
+                          d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z">
+                        </path>
+                        <path fill="#FBBC05"
+                          d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z">
+                        </path>
+                        <path fill="#34A853"
+                          d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z">
+                        </path>
+                        <path fill="none" d="M0 0h48v48H0z"></path>
+                      </svg>
+                    </div>
+                    <span class="gsi-material-button-contents">Continue with Google</span>
+                    <span style="display: none;">Continue with Google</span>
+                  </div>
+                </button>
+              </div>
+
+              <!-- Hidden input that fills when Google Auth succeeds -->
+              <input id="email-auto" type="hidden" placeholder="Google Email" disabled>
+              <div id="google-profile-display"
+                style="display:none; align-items:center; justify-content:center; gap:10px; padding:10px; background:var(--bg-secondary); border-radius:8px; border:1px solid var(--border-primary); margin-bottom:10px;">
+                <img id="google-profile-pic" src="" alt="Profile" style="width:32px; height:32px; border-radius:50%;">
+                <span id="google-profile-name" style="font-weight:600; font-size:0.9rem;"></span>
+                <span style="font-size:1.2rem; cursor:pointer; margin-left:10px;" onclick="resetGoogleAuth()"
+                  title="Sign out / Reset">🔄</span>
+              </div>
+            </div>
+
+            <!-- Manual Email Section -->
+            <div id="manual-auth-section" class="auth-section" style="display:none;">
+              <label class="label">
+                Email Address
+                <input id="email-manual" type="email" placeholder="your@email.com">
+              </label>
+            </div>
+
+            <label class="label" style="margin-top:20px;">
+              Phone Number
+              <input id="phone" type="tel" placeholder="xxx-xxx-xxxx" required>
+            </label>
+
+            <label class="label">
+              Quantity
+              <input id="qty" type="number" min="1" max="5" value="1" required>
+              <span class="hint">Maximum 5 items per order (spam protection)</span>
+            </label>
+
+            <div class="button-row">
+              <button type="button" class="btn-secondary" onclick="cancelOrder()">
+                Cancel
+              </button>
+              <button type="button" class="btn-primary" onclick="goToStep2()">
+                Next →
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Step 2: Payment -->
+      <div class="step-content" id="step2">
+        <div class="form-card">
+          <h2>Payment</h2>
+
+          <div class="payment-methods">
+            <div class="payment-option">
+              <input type="radio" id="promptpay" name="paymentMethod" value="promptpay" checked>
+              <label for="promptpay" class="payment-label">
+                <div class="payment-icon">📱</div>
+                <div class="payment-info">
+                  <strong>PromptPay QR</strong>
+                  <span>Scan QR code with mobile banking app</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div id="promptpay-section">
+            <div class="qr-section">
+              <div class="qr-card">
+                <img id="dynamicQR" src="" alt="Payment QR Code">
+                <div class="qr-info">
+                  <h3>📸 Scan QR Code</h3>
+                  <p>Use your mobile banking app to scan this QR code and complete the payment.</p>
+                  <!-- QR timer is injected dynamically by app.js -->
+                </div>
+              </div>
+            </div>
+
+            <label class="label" id="slipLabel">
+              Upload payment slip
+              <input id="slip" type="file" accept="image/png, image/jpeg" required>
+              <span class="hint">Max 5MB • JPG or PNG</span>
+            </label>
+
+            <!-- Cloudflare Turnstile -->
+            <div class="cf-turnstile" data-sitekey="0x4AAAAAACd8YswS-VO9XLfe" data-callback="onTurnstileSuccess">
+            </div>
+
+            <div class="button-row">
+              <button type="button" class="btn-secondary" onclick="cancelOrder()">
+                Cancel Order
+              </button>
+              <button type="button" class="btn-secondary" onclick="goToStep1()">
+                ← Back
+              </button>
+              <button type="button" class="btn-primary" id="submitBtn" onclick="submitOrder()">
+                <span class="btn-text">Submit Order</span>
+              </button>
+            </div> <!-- /#promptpay-section -->
+          </div> <!-- Close form-card -->
+        </div> <!-- Close step-content -->
+    </main>
+  </div>
+
+  <!-- Blur Overlay with Loader -->
+  <div class="blur-overlay" id="blurOverlay">
+    <div class="loader"></div>
+  </div>
+
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  <script src="../assets/js/app.js"></script>
+
+  <!-- Footer -->
+  <footer class="page-footer">
+    <span class="copyright">© 2026 ART&INK</span>
+    <a href="#" onclick="openPrivacy(); return false;">Privacy Policy</a>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="../assets/js/copyright.js"></script>
+</body>
+
+</html>
