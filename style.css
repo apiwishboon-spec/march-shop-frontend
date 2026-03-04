@@ -5879,6 +5879,220 @@ body.admin-page {
   gap: 8px;
 }
 
+/* Legal Pages Styles */
+.privacy-policy, .terms-of-service {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.policy-content, .terms-content {
+  text-align: left;
+  margin-top: 40px;
+}
+
+.policy-section, .terms-section {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: 20px;
+  padding: 32px;
+  margin-bottom: 32px;
+  box-shadow: 0 4px 20px var(--shadow-light);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.policy-section::before, .terms-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-mid) 45%, var(--gradient-end) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.policy-section:hover::before, .terms-section:hover::before {
+  opacity: 1;
+}
+
+.policy-section:hover, .terms-section:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px var(--shadow-medium);
+  border-color: var(--border-secondary);
+}
+
+.policy-section h2, .terms-section h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.policy-section h3, .terms-section h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 24px 0 12px 0;
+  padding-left: 16px;
+  border-left: 3px solid var(--gradient-start);
+}
+
+.policy-section p, .terms-section p {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+.policy-section ul, .terms-section ul {
+  margin: 16px 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.policy-section li, .terms-section li {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  padding-left: 28px;
+  position: relative;
+}
+
+.policy-section li::before, .terms-section li::before {
+  content: '▸';
+  position: absolute;
+  left: 8px;
+  color: var(--gradient-start);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.policy-section strong, .terms-section strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.policy-section a, .terms-section a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.policy-section a:hover, .terms-section a:hover {
+  color: var(--primary-hover);
+  text-decoration: underline;
+}
+
+.back-to-home {
+  text-align: center;
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border-primary);
+}
+
+.back-to-home .btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 32px;
+  font-size: 1.1rem;
+  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+  border: none;
+  border-radius: 30px;
+  color: white;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 25px rgba(243, 166, 200, 0.3);
+}
+
+.back-to-home .btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 35px rgba(243, 166, 200, 0.4);
+}
+
+/* Enhanced Typography for Legal Pages */
+.privacy-policy h1, .terms-of-service h1 {
+  margin-bottom: 8px;
+}
+
+.privacy-policy .subtitle, .terms-of-service .subtitle {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+  font-weight: 400;
+}
+
+/* Responsive Design for Legal Pages */
+@media (max-width: 768px) {
+  .privacy-policy, .terms-of-service {
+    padding: 20px 16px;
+  }
+  
+  .policy-section, .terms-section {
+    padding: 24px 20px;
+    margin-bottom: 24px;
+  }
+  
+  .policy-section h2, .terms-section h2 {
+    font-size: 1.3rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .policy-section h3, .terms-section h3 {
+    font-size: 1.1rem;
+    padding-left: 12px;
+  }
+  
+  .policy-section li, .terms-section li {
+    padding-left: 24px;
+  }
+  
+  .back-to-home .btn-primary {
+    padding: 14px 24px;
+    font-size: 1rem;
+  }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.policy-section, .terms-section {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.policy-section:nth-child(2) { animation-delay: 0.1s; }
+.policy-section:nth-child(3) { animation-delay: 0.2s; }
+.policy-section:nth-child(4) { animation-delay: 0.3s; }
+.policy-section:nth-child(5) { animation-delay: 0.4s; }
+.policy-section:nth-child(6) { animation-delay: 0.5s; }
+
+.terms-section:nth-child(2) { animation-delay: 0.1s; }
+.terms-section:nth-child(3) { animation-delay: 0.2s; }
+.terms-section:nth-child(4) { animation-delay: 0.3s; }
+.terms-section:nth-child(5) { animation-delay: 0.4s; }
+.terms-section:nth-child(6) { animation-delay: 0.5s; }
+
 /* Admin Responsive Design */
 @media (max-width: 640px) {
   .topbar {
