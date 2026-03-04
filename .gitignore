@@ -1,5 +1,6 @@
 # Backend - Google Apps Script (DO NOT COMMIT)
 backend/
+.code.gs
 
 # OS generated files
 .DS_Store
