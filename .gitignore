@@ -1,6 +1,6 @@
 # Backend - Google Apps Script (DO NOT COMMIT)
 backend/
-.code.gs
+*.code.gs
 
 # OS generated files
 .DS_Store
@@ -33,6 +33,10 @@ coverage/
 
 # Dependency directories
 node_modules/
+
+# Build outputs
+dist/
+build/
 
 # Optional npm cache directory
 .npm

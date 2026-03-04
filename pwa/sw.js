@@ -3,8 +3,8 @@ const CACHE_NAME = 'artink-v1';
 
 // Minimal cache for essential files only
 const urlsToCache = [
-  '/art-ink-icon.png',
-  '/manifest.json'
+  '../assets/img/art-ink-icon.png',
+  '../pwa/manifest.json'
 ];
 
 // Install event - cache only essential resources

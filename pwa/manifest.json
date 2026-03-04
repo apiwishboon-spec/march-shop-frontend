@@ -1,0 +1,60 @@
+{
+  "name": "ART&INK - Premium Artwork Shirts",
+  "short_name": "ART&INK",
+  "description": "Premium artwork shirts screen-printed in Thailand. Limited drops, real artists.",
+  "start_url": "/pages/",
+  "display": "standalone",
+  "background_color": "#fafafa",
+  "theme_color": "#f3a6c8",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["shopping", "fashion", "art"],
+  "icons": [
+    {
+      "src": "../assets/img/art-ink-icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "../assets/img/art-ink-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Browse Collection",
+      "short_name": "Browse",
+      "description": "Browse our artwork shirt collection",
+      "url": "/pages/",
+      "icons": [
+        {
+          "src": "../assets/i{
+  "name": "ART&INK - Premium Artwork Shirts",
+  "short_name": "ART&INK",
+  "des      "short_name": "ART&INK",
+  "descriptime": "O  "description": "Premium":  "start_url": "/pages/",
+  "display": "standalone",
+  "background_color": "#fafafa",
+  "theme_col
+   "display": "standalonets  "background_color": "#f    "theme_color": "#f3a6c8",
+  " }  "orientation": "portraitee  "scope": "/",
+  "lang": "en",
+  "ss  "lang": "ennk-  "categories"    "icons": [
+    {
+      "src": "../assets/img",    {
+     m_    or      "sizes": "192x192",
+      "type": "imagho      "type": "image/png
+       "purpose": "any mas".    },
+    {
+      "src": "../,
+    { "sizes"      "sizes": "512x512",
+      "type": "imag        "type": "image/png
+       "purpose": "any masbi    }
+  ],
+  "short}
+  ]
+}
