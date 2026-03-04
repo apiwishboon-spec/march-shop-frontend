@@ -1329,6 +1329,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       }
     };
+
+    // Make functions globally available
+    window.selectOrderSize = selectOrderSize;
+    window.toggleAuthMethod = toggleAuthMethod;
+    window.showAuthChoiceDialog = showAuthChoiceDialog;
+    window.chooseAuthMethod = chooseAuthMethod;
   }
 
 
