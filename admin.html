@@ -361,6 +361,59 @@
           loadIncompleteOrders();
         }
       }).observe(dash, { attributes: true, attributeFilter: ['style'] });
+      
+      // Auto-refresh all data every 20 seconds
+      let autoRefreshInterval;
+      
+      function startAutoRefresh() {
+        // Clear existing interval if any
+        if (autoRefreshInterval) {
+          clearInterval(autoRefreshInterval);
+        }
+        
+        // Set up auto-refresh every 20 seconds
+        autoRefreshInterval = setInterval(() => {
+          console.log('Auto-refreshing admin data...');
+          
+          // Refresh incomplete orders
+          loadIncompleteOrders();
+          
+          // Clear cached orders to force fresh data
+          _cachedOrders = null;
+          
+          // Show subtle toast notification
+          showAdminToast('🔄 Data refreshed');
+        }, 20000); // 20 seconds
+        
+        console.log('Auto-refresh started: updates every 20 seconds');
+      }
+      
+      function stopAutoRefresh() {
+        if (autoRefreshInterval) {
+          clearInterval(autoRefreshInterval);
+          autoRefreshInterval = null;
+          console.log('Auto-refresh stopped');
+        }
+      }
+      
+      // Start auto-refresh when dashboard is visible
+      function checkAndStartRefresh() {
+        if (dash.style.display !== 'none') {
+          startAutoRefresh();
+        } else {
+          stopAutoRefresh();
+        }
+      }
+      
+      // Monitor dashboard visibility
+      const observer = new MutationObserver(checkAndStartRefresh);
+      observer.observe(dash, { attributes: true, attributeFilter: ['style'] });
+      
+      // Initial check
+      checkAndStartRefresh();
+      
+      // Clean up on page unload
+      window.addEventListener('beforeunload', stopAutoRefresh);
     });
   </script>
 
