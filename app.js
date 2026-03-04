@@ -122,6 +122,10 @@ window.handleCredentialResponse = function (response) {
 // UI toggle switch logic
 window.toggleAuthMethod = function (method) {
   currentAuthMethod = method;
+  
+  // Save user's choice
+  localStorage.setItem('preferredAuthMethod', method);
+  console.log("Saved auth method preference:", method);
 
   const autoBtn = document.getElementById('auth-auto-btn');
   const manualBtn = document.getElementById('auth-manual-btn');
@@ -1289,7 +1293,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Show authentication method choice dialog if not previously chosen
     const authChoice = localStorage.getItem('preferredAuthMethod');
     if (!authChoice) {
-      showAuthChoiceDialog();
+      // Don't show modal, let user choose in the form
+      console.log("User needs to choose authentication method in form");
     } else {
       // Apply saved choice
       if (authChoice === 'manual') {
