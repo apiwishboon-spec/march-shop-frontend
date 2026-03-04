@@ -192,6 +192,77 @@
   <script>
     const ADMIN_API = "https://script.google.com/macros/s/AKfycbxENBG6cKm3ImJd_6gjvxCUnM-hG0xeNhPhjLUleDCyh0JsXhkkG7wOwkBjRW43j-88mg/exec";
 
+    // Notification System
+    let previousOrderIds = new Set();
+    let notificationPermission = 'default';
+
+    // Request notification permission on page load
+    async function requestNotificationPermission() {
+      if ('Notification' in window) {
+        if (Notification.permission === 'default') {
+          const permission = await Notification.requestPermission();
+          notificationPermission = permission;
+          if (permission === 'granted') {
+            showAdminToast('🔔 Notifications enabled! You will be alerted about new orders.');
+          } else if (permission === 'denied') {
+            showAdminToast('⚠️ Notifications blocked. Please enable in browser settings for order alerts.');
+          }
+        } else {
+          notificationPermission = Notification.permission;
+        }
+      }
+    }
+
+    // Show notification for new orders
+    function showOrderNotification(newOrders) {
+      if (notificationPermission !== 'granted') return;
+
+      newOrders.forEach((order, index) => {
+        setTimeout(() => {
+          const notification = new Notification('🛍️ New Order Received!', {
+            body: `${order.item} (${order.size}) - ฿${order.total}\nCustomer: ${order.email}`,
+            icon: '/art-ink-icon.png',
+            tag: `order-${order.orderId}`,
+            requireInteraction: true,
+            actions: [
+              {
+                action: 'view',
+                title: 'View Order'
+              }
+            ]
+          });
+
+          // Handle notification click
+          notification.onclick = function() {
+            window.focus();
+            notification.close();
+            // Scroll to orders section
+            document.getElementById('orders-panel').scrollIntoView({ behavior: 'smooth' });
+          };
+        }, index * 1000); // Stagger notifications if multiple
+      });
+    }
+
+    // Check for new orders
+    function checkForNewOrders(currentOrders) {
+      const currentOrderIds = new Set(currentOrders.map(o => o.orderId).filter(Boolean));
+      const newOrderIds = [...currentOrderIds].filter(id => !previousOrderIds.has(id));
+      
+      if (newOrderIds.length > 0) {
+        const newOrders = currentOrders.filter(o => newOrderIds.includes(o.orderId));
+        showOrderNotification(newOrders);
+        
+        // Show admin toast for multiple orders
+        if (newOrders.length === 1) {
+          showAdminToast(`🔔 New order: ${newOrders[0].item} from ${newOrders[0].email}`);
+        } else {
+          showAdminToast(`🔔 ${newOrders.length} new orders received!`);
+        }
+      }
+      
+      previousOrderIds = currentOrderIds;
+    }
+
     const tblStyle = `<style>
       .orders-tbl{width:100%;border-collapse:collapse;font-size:.85rem;}
       .orders-tbl th{background:#f3f4f6;padding:10px 12px;text-align:left;font-weight:600;white-space:nowrap;border-bottom:2px solid #e5e7eb;}
@@ -228,7 +299,17 @@
           }
           return; 
         }
-        const pending = (json.data.orders || []).filter(o => String(o.status).toLowerCase() !== 'done');
+        const allOrders = json.data.orders || [];
+        const pending = allOrders.filter(o => String(o.status).toLowerCase() !== 'done');
+        
+        // Check for new orders (only after initial load)
+        if (!isInitialLoad) {
+          checkForNewOrders(pending);
+        } else {
+          // Initialize previousOrderIds on first load
+          previousOrderIds = new Set(pending.map(o => o.orderId).filter(Boolean));
+        }
+        
         if (pending.length === 0) { 
           panel.innerHTML = '<p style="color:#4ade80;font-weight:600;">&#10003; All orders are completed!</p>'; 
           return; 
@@ -386,6 +467,10 @@
     document.addEventListener('DOMContentLoaded', function () {
       const dash = document.getElementById('dashboard');
       if (!dash) return;
+      
+      // Request notification permission when dashboard loads
+      requestNotificationPermission();
+      
       new MutationObserver(function () {
         if (dash.style.display !== 'none' && !dash.dataset.ordersLoaded) {
           dash.dataset.ordersLoaded = '1';
