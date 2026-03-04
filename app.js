@@ -1168,6 +1168,103 @@ document.addEventListener('DOMContentLoaded', function () {
       localStorage.setItem('selectedSize', size);
     }
 
+    // Authentication Choice Dialog
+    function showAuthChoiceDialog() {
+      console.log("=== SHOW AUTH CHOICE DIALOG ===");
+      
+      // Create modal overlay
+      const modal = document.createElement('div');
+      modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+      `;
+      
+      // Create dialog content
+      const dialog = document.createElement('div');
+      dialog.style.cssText = `
+        background: white;
+        padding: 32px;
+        border-radius: 16px;
+        max-width: 400px;
+        width: 90%;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        text-align: center;
+      `;
+      
+      dialog.innerHTML = `
+        <h2 style="margin: 0 0 24px 0; color: #333;">🔐 Choose Authentication Method</h2>
+        <p style="margin: 0 0 20px 0; color: #666; line-height: 1.5;">
+          How would you like to sign in for your order?
+        </p>
+        
+        <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+          <button onclick="chooseAuthMethod('google')" style="
+            flex: 1;
+            padding: 16px;
+            border: 2px solid #4285f4;
+            background: #4285f4;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+          ">
+            🔐 Sign in with Google
+          </button>
+          <button onclick="chooseAuthMethod('manual')" style="
+            flex: 1;
+            padding: 16px;
+            border: 2px solid #6c757d;
+            background: #6c757d;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+          ">
+            ✍️ Manual Entry
+          </button>
+        </div>
+        
+        <div style="font-size: 14px; color: #888;">
+          <div style="margin-bottom: 8px;">
+            <strong>🔐 Google:</strong> Secure, auto-fills your details
+          </div>
+          <div>
+            <strong>✍️ Manual:</strong> Type your email and phone manually
+          </div>
+        </div>
+      `;
+      
+      modal.appendChild(dialog);
+      document.body.appendChild(modal);
+      
+      // Auto-close after choice
+      window.authChoiceModal = modal;
+    }
+    
+    function chooseAuthMethod(method) {
+      console.log("User chose auth method:", method);
+      localStorage.setItem('preferredAuthMethod', method);
+      
+      // Remove modal
+      if (window.authChoiceModal) {
+        document.body.removeChild(window.authChoiceModal);
+        window.authChoiceModal = null;
+      }
+      
+      // Apply the choice
+      setTimeout(() => toggleAuthMethod(method), 100);
+    }
+
     // Initialize order page
     console.log("=== ORDER PAGE DEBUG ===");
 
@@ -1179,6 +1276,19 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log("- Item:", itemName);
     console.log("- Price:", itemPrice);
     console.log("- Size:", savedSize);
+
+    // Show authentication method choice dialog if not previously chosen
+    const authChoice = localStorage.getItem('preferredAuthMethod');
+    if (!authChoice) {
+      showAuthChoiceDialog();
+    } else {
+      // Apply saved choice
+      if (authChoice === 'manual') {
+        setTimeout(() => toggleAuthMethod('manual'), 100);
+      } else {
+        setTimeout(() => toggleAuthMethod('auto'), 100);
+      }
+    }
 
     // Update order summary
     const summaryProduct = document.getElementById('summary-product');
