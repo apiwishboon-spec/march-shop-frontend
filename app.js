@@ -1206,7 +1206,7 @@ document.addEventListener('DOMContentLoaded', function () {
         </p>
         
         <div style="display: flex; gap: 12px; margin-bottom: 20px;">
-          <button onclick="chooseAuthMethod('google')" style="
+          <button id="auth-google-btn" style="
             flex: 1;
             padding: 16px;
             border: 2px solid #4285f4;
@@ -1219,7 +1219,7 @@ document.addEventListener('DOMContentLoaded', function () {
           ">
             🔐 Sign in with Google
           </button>
-          <button onclick="chooseAuthMethod('manual')" style="
+          <button id="auth-manual-btn" style="
             flex: 1;
             padding: 16px;
             border: 2px solid #6c757d;
@@ -1246,6 +1246,15 @@ document.addEventListener('DOMContentLoaded', function () {
       
       modal.appendChild(dialog);
       document.body.appendChild(modal);
+      
+      // Add event listeners instead of onclick
+      document.getElementById('auth-google-btn').addEventListener('click', function() {
+        chooseAuthMethod('auto');
+      });
+      
+      document.getElementById('auth-manual-btn').addEventListener('click', function() {
+        chooseAuthMethod('manual');
+      });
       
       // Auto-close after choice
       window.authChoiceModal = modal;
