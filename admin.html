@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes">
   <title>Admin — Chromink</title>
-  <link rel="icon" type="image/png" href="../assets/img/art-ink-icon.png">
+  <link rel="icon" type="image/png" href="../assets/img/chromink-icon.png">
   <link rel="stylesheet" href="../assets/css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,7 +27,7 @@
       <input type="password" id="pw-input" placeholder="Enter password" autocomplete="current-password">
 
       <div class="login-btns">
-        <button class="btn-go" id="btn-go" onclick="attemptLogin()">Go →</button>
+        <button class="btn-go" id="btn-go" onclick="attemptAdminLogin()">Go →</button>
         <button class="btn-cancel-login" onclick="cancelLogin()">Cancel</button>
       </div>
 
@@ -221,7 +221,7 @@
         setTimeout(() => {
           const notification = new Notification('🛍️ New Order Received!', {
             body: `${order.item} (${order.size}) - ฿${order.total}\nCustomer: ${order.email}`,
-            icon: '/art-ink-icon.png',
+            icon: '/chromink-icon.png',
             tag: `order-${order.orderId}`,
             requireInteraction: true,
             actions: [
