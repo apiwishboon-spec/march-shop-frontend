@@ -1,22 +1,389 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ART&INK - Redirecting...</title>
-  <script>
-    // Redirect to pages folder
-    window.location.href = '/pages/';
-  </script>
-  <noscript>
-    <meta http-equiv="refresh" content="0; url=/pages/">
-  </noscript>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
+  <meta name="description"
+    content="ART&INK – Premium artwork shirts screen-printed in Thailand. Limited drops, real artists." />
+  <meta name="postimage-verification" content="32c63680df0e8cff71f0515299c4aa69" />
+  
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#f3a6c8" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="ART&INK" />
+  <meta name="application-name" content="ART&INK" />
+  <meta name="msapplication-TileColor" content="#f3a6c8" />
+  <meta name="msapplication-config" content="../pwa/browserconfig.xml" />
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="../pwa/manifest.json" />
+  
+  <!-- Apple Touch Icon -->
+  <link rel="apple-touch-icon" href="../assets/img/art-ink-icon.png" />
+  
+  <title>ART&INK – Artwork Shirts</title>
+  <link rel="icon" type="image/png" href="../assets/img/art-ink-icon.png" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
 </head>
+
 <body>
-  <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
-    <h1>🎨 ART&INK</h1>
-    <p>Redirecting to main site...</p>
-    <p><a href="/pages/">Click here if you are not redirected automatically</a></p>
+  <div class="container center">
+    <!-- Animated Navigation -->
+    <div class="nav-container">
+      <div class="bars"></div>
+    </div>
+
+    <nav>
+      <h2>ART&INK</h2>
+      <div class="close">
+        <div></div>
+      </div>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="story.html">Our Story</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+      <h1 class="brand"><span class="brand-gradient">ART&INK</span></h1>
+      <p class="slogan"><strong>Crafted to Be Seen</strong></p>
+
+      <div class="story-button-container">
+        <a href="story.html" class="story-btn">
+          <span>🎨</span> Discover Our Journey
+        </a>
+        <a href="faq.html" class="faq-btn">
+          <span>❓</span> Frequently Asked Questions
+        </a>
+      </div>
+    </section>
+
+    <!-- Products -->
+    <div class="section-heading">
+      <h2>Our Collection</h2>
+      <p>Screen-printed in limited quantities · Real artists · Premium cotton</p>
+    </div>
+
+    <div class="grid">
+
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1520975916090-3105956dac38" alt="Abstract Line Art Tee"
+          loading="lazy" />
+        <div class="card-body">
+          <h3>Abstract Line Art Tee</h3>
+          <p>Minimalist line artwork screen-printed on premium cotton.</p>
+          <div class="price-row">
+            <span class="price-badge">฿290</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-order" onclick="goOrder('Abstract Line Art Tee', 290)">Order Now</button>
+            <button class="btn-info"
+              onclick="showProductPopup('Abstract Line Art Tee', 290, 'https://images.unsplash.com/photo-1520975916090-3105956dac38', 'Minimalist line artwork screen-printed on premium cotton. Clean, modern design with artistic expression. Perfect for those who appreciate subtle elegance and contemporary art.', ['S','M','L','XL'])">ℹ️
+              Details</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlSRyksxG3i0jBPHPqV_b_xvskjtITO3QkYg&s"
+          alt="Cyber Geometry Tee" loading="lazy" />
+        <div class="card-body">
+          <h3>Cyber Geometry Tee</h3>
+          <p>Futuristic geometric artwork with hand-finished print.</p>
+          <div class="price-row">
+            <span class="price-badge">฿350</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-order" onclick="goOrder('Cyber Geometry Tee', 350)">Order Now</button>
+            <button class="btn-info"
+              onclick="showProductPopup('Cyber Geometry Tee', 350, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlSRyksxG3i0jBPHPqV_b_xvskjtITO3QkYg&s', 'Modern geometric patterns fusing mathematical precision with artistic creativity. Bold color combinations create striking visual impact. Made from premium cotton blend. Advanced printing techniques ensure long-lasting color vibrancy.', ['S','M','L','XL'])">ℹ️
+              Details</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1578632292335-df3abbb0d586" alt="Vintage Wave Tee" loading="lazy" />
+        <div class="card-body">
+          <h3>Vintage Wave Tee</h3>
+          <p>Retro-inspired wave patterns with nostalgic color palette.</p>
+          <div class="price-row">
+            <span class="price-badge">฿320</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-order" onclick="goOrder('Vintage Wave Tee', 320)">Order Now</button>
+            <button class="btn-info"
+              onclick="showProductPopup('Vintage Wave Tee', 320, 'https://images.unsplash.com/photo-1578632292335-df3abbb0d586', 'Retro-inspired wave patterns with nostalgic color palette. Perfect for those who love vintage aesthetics with modern comfort.', ['S','M','L','XL'])">ℹ️
+              Details</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlYvjY8is2oEQlslPDf4vHJXKfNNhA70Zjvg&s"
+          alt="Nature Sketch Tee" loading="lazy" />
+        <div class="card-body">
+          <h3>Nature Sketch Tee</h3>
+          <p>Botanical illustrations with hand-drawn artistic touches.</p>
+          <div class="price-row">
+            <span class="price-badge">฿280</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-order" onclick="goOrder('Nature Sketch Tee', 280)">Order Now</button>
+            <button class="btn-info"
+              onclick="showProductPopup('Nature Sketch Tee', 280, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlYvjY8is2oEQlslPDf4vHJXKfNNhA70Zjvg&s', 'Delicate botanical illustrations with hand-drawn artistic touches. Nature-inspired design for the eco-conscious art lover.', ['S','M','L','XL'])">ℹ️
+              Details</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <img
+          src="https://virox.in/cdn/shop/files/front-694e2feb98b53-Bottle_Green_XS_Oversized_T-shirt.jpg?v=1766731763&width=3840"
+          alt="Urban Typography Tee" loading="lazy" />
+        <div class="card-body">
+          <h3>Urban Typography Tee</h3>
+          <p>Bold typography design with urban street art influences.</p>
+          <div class="price-row">
+            <span class="price-badge">฿340</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-order" onclick="goOrder('Urban Typography Tee', 340)">Order Now</button>
+            <button class="btn-info"
+              onclick="showProductPopup('Urban Typography Tee', 340, 'https://virox.in/cdn/shop/files/front-694e2feb98b53-Bottle_Green_XS_Oversized_T-shirt.jpg?v=1766731763&width=3840', 'Bold typography design with urban street art influences. Modern statement piece for those who love graphic design and city culture.', ['S','M','L','XL'])">ℹ️
+              Details</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1503342217505-b0a15ec3261c" alt="Test Product" loading="lazy" />
+        <div class="card-body">
+          <h3>Test Product</h3>
+          <p>Test product for demonstration and quality assurance purposes.</p>
+          <div class="price-row">
+            <span class="price-badge">฿1</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-order" onclick="goOrder('Test Product', 1)">Order Now</button>
+            <button class="btn-info"
+              onclick="showProductPopup('Test Product', 1, 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c', 'Test product for demonstration and quality assurance purposes. Perfect for testing the complete order flow and customer experience.', ['S','M','L','XL'])">ℹ️
+              Details</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1578632292335-df3abbb0d586" alt="Cosmic Dreams Tee"
+          loading="lazy" />
+        <div class="card-body">
+          <h3>Cosmic Dreams Tee</h3>
+          <p>Ethereal space-inspired artwork with mystical celestial elements.</p>
+          <div class="price-row">
+            <span class="price-badge">฿330</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-order" onclick="goOrder('Cosmic Dreams Tee', 330)">Order Now</button>
+            <button class="btn-info"
+              onclick="showProductPopup('Cosmic Dreams Tee', 330, 'https://images.unsplash.com/photo-1578632292335-df3abbb0d586', 'Ethereal space-inspired artwork with mystical celestial elements. Dreamy cosmic designs that transport you to another dimension. Perfect for stargazers and dreamers alike.', ['S','M','L','XL'])">ℹ️
+              Details</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="https://thelittlesurferdude.com/cdn/shop/files/E56D8F3D-5170-4E71-B403-F34C9C242576.png?v=1726689077"
+          alt="Tropical Paradise Tee" loading="lazy" />
+        <div class="card-body">
+          <h3>Tropical Paradise Tee</h3>
+          <p>Vibrant tropical foliage with exotic island-inspired artwork.</p>
+          <div class="price-row">
+            <span class="price-badge">฿310</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-order" onclick="goOrder('Tropical Paradise Tee', 310)">Order Now</button>
+            <button class="btn-info"
+              onclick="showProductPopup('Tropical Paradise Tee', 310, 'https://thelittlesurferdude.com/cdn/shop/files/E56D8F3D-5170-4E71-B403-F34C9C242576.png?v=1726689077', 'Vibrant tropical foliage with exotic island-inspired artwork. Escape to paradise with this colorful design featuring palm leaves and tropical blooms. Perfect for summer vibes.', ['S','M','L','XL'])">ℹ️
+              Details</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPmbZ_4E2mthXPrOKlOklpUpDrMiTwOD3blA&s"
+          alt="Minimalist Grid Tee" loading="lazy" />
+        <div class="card-body">
+          <h3>Minimalist Grid Tee</h3>
+          <p>Clean geometric grid patterns with modern architectural inspiration.</p>
+          <div class="price-row">
+            <span class="price-badge">฿295</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-order" onclick="goOrder('Minimalist Grid Tee', 295)">Order Now</button>
+            <button class="btn-info"
+              onclick="showProductPopup('Minimalist Grid Tee', 295, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPmbZ_4E2mthXPrOKlOklpUpDrMiTwOD3blA&s', 'Clean geometric grid patterns with modern architectural inspiration. Sophisticated minimalism meets contemporary design. Perfect for those who appreciate clean lines and modern aesthetics.', ['S','M','L','XL'])">ℹ️
+              Details</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card coming-soon">
+        <img
+          src="https://images.squarespace-cdn.com/content/v1/62588c633f5e973c79f762d6/1684871690589-I8MTBUOPW70YTDL8FA9B/White+Cherry+Tshirt-Back+for+web.png?format=1000w"
+          alt="Artist Collab Tee" loading="lazy" />
+        <div class="card-body">
+          <span class="coming-soon-badge">⏳ Coming Soon</span>
+          <h3>Artist Collab Tee</h3>
+          <p>Limited collaboration with a featured artist. Stay tuned.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Newsletter -->
+    <section class="newsletter-section">
+      <div class="newsletter-content">
+        <h2 class="newsletter-title">🎨 Stay Creative</h2>
+        <p class="newsletter-description">Get exclusive designs, early access to new drops, and subscriber-only offers.
+        </p>
+        <form class="newsletter-form" id="nl-form">
+          <input type="email" id="nl-email" class="newsletter-input" placeholder="your@email.com" required
+            autocomplete="email" />
+          <button type="submit" class="newsletter-btn" id="nl-btn">Subscribe</button>
+        </form>
+        <p class="nl-status" id="nl-status"></p>
+      </div>
+    </section>
+
+  </div> <!-- Close container center -->
+
+  <!-- Footer -->
+  <footer class="page-footer">
+    <span class="copyright">© 2026 ART&INK</span>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="term.html">Terms of Service</a>
+  </footer>
+
+  <!-- Development Notice Modal -->
+  <div id="devNoticeModal" class="modal-overlay" style="display: flex;">
+    <div class="modal-content dev-notice">
+      <div class="modal-header">
+        <h2>🚧 Under Development</h2>
+      </div>
+      <div class="modal-body">
+        <p><strong>Welcome to ART&INK!</strong></p>
+        <p>This website is currently under development and may contain bugs or incomplete features. We're working hard
+          to bring you the best art apparel shopping experience.</p>
+        <p><strong>Please note:</strong></p>
+        <ul>
+          <li>Some features may not work perfectly</li>
+          <li>Design and functionality may change</li>
+          <li>Orders are for testing purposes only</li>
+        </ul>
+        <p><strong>Need help? Contact us:</strong></p>
+        <p>📧 <a href="mailto:apiwish.boon@gmail.com">apiwish.boon@gmail.com</a></p>
+        <p><em>Reply time: Up to 72 hours</em></p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-primary" onclick="closeDevNotice()">I Understand</button>
+      </div>
+    </div>
   </div>
+
+  <!-- Privacy Modal -->
+  <div id="privacy-overlay" class="overlay hidden">
+    <div class="modal-card">
+      <h2>Privacy Policy</h2>
+      <p><strong>Last Updated:</strong> February 2026</p>
+      <p>At <strong>ART&INK Studio</strong>, we are committed to protecting your privacy and personal data.</p>
+
+      <h3>Information We Collect</h3>
+      <ul>
+        <li><strong>Email Address</strong> – Order confirmation and order status updates</li>
+        <li><strong>Phone Number</strong> – Delivery coordination (optional)</li>
+        <li><strong>Order Details</strong> – Item selection, quantity, and order tracking</li>
+        <li><strong>Payment Information</strong> – Payment slip images for verification</li>
+        <li><strong>Technical Data</strong> – IP address for security purposes</li>
+      </ul>
+
+      <h3>How We Use Your Information</h3>
+      <ul>
+        <li>Process and fulfill your orders</li>
+        <li>Send order confirmations and status updates</li>
+        <li>Verify payment submissions</li>
+        <li>Provide customer support</li>
+      </ul>
+
+      <h3>Data Protection</h3>
+      <p>Your personal information is <strong>never sold or shared</strong> with third parties. Data is stored on secure
+        Google servers with limited access.</p>
+
+      <h3>Contact Us</h3>
+      <p>Email: <strong>apiwish.boon@gmail.com</strong> · Response within 72 hours</p>
+
+      <button class="btn-close-modal" onclick="closePrivacy()">Close</button>
+    </div>
+  </div>
+
+  <!-- Product Popup -->
+  <div id="product-popup" class="product-popup hidden">
+    <div class="popup-overlay" onclick="closeProductPopup()"></div>
+    <div class="popup-content">
+      <button class="popup-close" onclick="closeProductPopup()">✕</button>
+
+      <div class="popup-gallery">
+        <div class="main-image" style="position:relative;">
+          <img id="popup-main-image" src="" alt="Product" />
+          <div class="image-nav">
+            <button onclick="previousImage()">‹</button>
+            <span id="image-counter">1 / 1</span>
+            <button onclick="nextImage()">›</button>
+          </div>
+        </div>
+        <div class="thumbnail-grid" id="popup-thumbs"></div>
+      </div>
+
+      <div class="popup-details">
+        <h2 id="popup-title"></h2>
+        <div class="price-tag">฿<span id="popup-price"></span></div>
+
+        <div class="size-selector">
+          <label>Select Size</label>
+          <div class="size-options" id="popup-sizes"></div>
+        </div>
+
+        <nav class="nav-menu">
+          <a href="index.html">Home</a>
+          <a href="story.html">About</a>
+          <a href="faq.html">FAQ</a>
+          <a href="contact.html">Contact</a>
+          <a href="admin.html">Admin</a>
+        </nav>
+
+        <div class="description">
+          <h3>Product Details</h3>
+          <p id="popup-description"></p>
+        </div>
+
+        <div class="popup-actions">
+          <button class="btn-popup-order" onclick="orderFromPopup()">🛍️ Order Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/js/app.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="../assets/js/copyright.js"></script>
 </body>
+
 </html>
