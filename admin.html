@@ -209,16 +209,30 @@
     async function loadIncompleteOrders() {
       const panel = document.getElementById('orders-panel');
       if (!panel) return;
-      panel.innerHTML = '<p style="color:#aaa;">Loading...</p>';
+      
+      // Don't show loading state during auto-refresh
+      const isInitialLoad = !panel.innerHTML || panel.innerHTML.includes('Loading...');
+      if (isInitialLoad) {
+        panel.innerHTML = '<p style="color:#aaa;">Loading...</p>';
+      }
+      
       const fd = new URLSearchParams();
       fd.append('action', 'getOrders');
       fd.append('token', getAdminToken());
       try {
         const res = await fetch(ADMIN_API, { method: 'POST', body: fd });
         const json = await res.json();
-        if (!json.success) { panel.innerHTML = '<p style="color:red;">Error: ' + (json.message || 'Failed') + '</p>'; return; }
+        if (!json.success) { 
+          if (isInitialLoad) {
+            panel.innerHTML = '<p style="color:red;">Error: ' + (json.message || 'Failed') + '</p>';
+          }
+          return; 
+        }
         const pending = (json.data.orders || []).filter(o => String(o.status).toLowerCase() !== 'done');
-        if (pending.length === 0) { panel.innerHTML = '<p style="color:#4ade80;font-weight:600;">&#10003; All orders are completed!</p>'; return; }
+        if (pending.length === 0) { 
+          panel.innerHTML = '<p style="color:#4ade80;font-weight:600;">&#10003; All orders are completed!</p>'; 
+          return; 
+        }
         let rows = '';
         pending.forEach((o, idx) => {
           const slip = o.slipUrl ? '<a class="slip-link" href="' + o.slipUrl + '" target="_blank">View &#128444;</a>' : '-';
@@ -236,9 +250,26 @@
             + '<td><button class="btn-mark-done" onclick="markDone(' + o.rowIndex + ', this)">&#10003; Done</button></td>'
             + '</tr>';
         });
-        panel.innerHTML = tblStyle + '<table class="orders-tbl"><thead><tr><th>#</th><th>Order ID</th><th>Email</th><th>Phone</th><th>Item</th><th>Qty</th><th>Size</th><th>Total</th><th>Slip</th><th>Status</th><th>Action</th></tr></thead><tbody>' + rows + '</tbody></table>';
+        
+        // Create new content
+        const newContent = tblStyle + '<table class="orders-tbl"><thead><tr><th>#</th><th>Order ID</th><th>Email</th><th>Phone</th><th>Item</th><th>Qty</th><th>Size</th><th>Total</th><th>Slip</th><th>Status</th><th>Action</th></tr></thead><tbody>' + rows + '</tbody></table>';
+        
+        // Smooth update without flickering
+        if (!isInitialLoad && panel.innerHTML && panel.innerHTML !== '<p style="color:#4ade80;font-weight:600;">&#10003; All orders are completed!</p>') {
+          // Fade out slightly, update content, fade back in
+          panel.style.opacity = '0.7';
+          setTimeout(() => {
+            panel.innerHTML = newContent;
+            panel.style.opacity = '1';
+          }, 150);
+        } else {
+          // Initial load or no previous content
+          panel.innerHTML = newContent;
+        }
       } catch (err) {
-        panel.innerHTML = '<p style="color:red;">Error: ' + err.message + '</p>';
+        if (isInitialLoad) {
+          panel.innerHTML = '<p style="color:red;">Error: ' + err.message + '</p>';
+        }
       }
     }
 
@@ -375,14 +406,13 @@
         autoRefreshInterval = setInterval(() => {
           console.log('Auto-refreshing admin data...');
           
-          // Refresh incomplete orders
+          // Refresh incomplete orders (smooth update without loading states)
           loadIncompleteOrders();
           
           // Clear cached orders to force fresh data
           _cachedOrders = null;
           
-          // Show subtle toast notification
-          showAdminToast('🔄 Data refreshed');
+          // No toast notification for smoother experience
         }, 20000); // 20 seconds
         
         console.log('Auto-refresh started: updates every 20 seconds');
