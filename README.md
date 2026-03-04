@@ -1,8 +1,8 @@
-# 🎨 ART&INK
+# 🎨 Chromink
 
 **Premium artwork shirts screen-printed in Thailand with limited drops and real artists.**
 
-ART&INK is a modern Progressive Web App (PWA) e-commerce platform featuring Thailand PromptPay QR payment integration, Google Apps Script backend, and a fully mobile-responsive design.
+Chromink is a modern Progressive Web App (PWA) e-commerce platform featuring Thailand PromptPay QR payment integration, Google Apps Script backend, and a fully mobile-responsive design.
 
 ---
 
@@ -140,7 +140,7 @@ python -m http.server 8000
 
 ### **Mobile (iOS/Android)**
 1. Visit the website in mobile browser
-2. Tap "📱 Install ART&INK App" button
+2. Tap "📱 Install Chromink App" button
 3. Confirm installation
 4. App appears on home screen
 
@@ -176,7 +176,7 @@ python -m http.server 8000
 
 ## 📜 License
 
-MIT License © 2026 ART&INK
+MIT License © 2026 Chromink
 
 ---
 
@@ -190,7 +190,7 @@ MIT License © 2026 ART&INK
 
 ---
 
-## 🌟 What Makes ART&INK Special
+## 🌟 What Makes Chromink Special
 
 ✅ **No Complex Payment Gateways** - Simple QR-based system  
 ✅ **No Heavy Frameworks** - Lightweight and fast  
@@ -203,4 +203,4 @@ MIT License © 2026 ART&INK
 
 ---
 
-**🎨 ART&INK - Where Art Meets Everyday Life**
+**🎨 Chromink - Where Art Meets Everyday Life**

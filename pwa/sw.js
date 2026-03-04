@@ -1,4 +1,4 @@
-// Service Worker for ART&INK PWA - Online Only Mode
+// Service Worker for Chromink PWA - Online Only Mode
 const CACHE_NAME = 'artink-v1';
 
 // Minimal cache for essential files only
@@ -44,7 +44,7 @@ self.addEventListener('fetch', event => {
         // For all other requests, show offline message
         if (event.request.destination === 'document') {
           return new Response(
-            '<html><body><h1>ART&INK - Offline</h1><p>Please connect to the internet to use our shop.</p></body></html>',
+            '<html><body><h1>Chromink - Offline</h1><p>Please connect to the internet to use our shop.</p></body></html>',
             { headers: { 'Content-Type': 'text/html' } }
           );
         }
@@ -76,7 +76,7 @@ self.addEventListener('activate', event => {
 // Push notifications (still works when online)
 self.addEventListener('push', event => {
   const options = {
-    body: event.data ? event.data.text() : 'New designs available at ART&INK!',
+    body: event.data ? event.data.text() : 'New designs available at Chromink!',
     icon: '/art-ink-icon.png',
     badge: '/art-ink-icon.png',
     vibrate: [100, 50, 100],
@@ -99,7 +99,7 @@ self.addEventListener('push', event => {
   };
 
   event.waitUntil(
-    self.registration.showNotification('ART&INK', options)
+    self.registration.showNotification('Chromink', options)
   );
 });
 

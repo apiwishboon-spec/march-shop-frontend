@@ -1,5 +1,5 @@
 /*************************************************
- * ART&INK SHOP – AUTO QR VERSION (2-STEP PROCESS)
+ * Chromink SHOP – AUTO QR VERSION (2-STEP PROCESS)
  *************************************************/
 
 // PWA Service Worker Registration - Online Only Mode
@@ -23,7 +23,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
   
   // Show install button or banner
   const installButton = document.createElement('button');
-  installButton.textContent = '📱 Install ART&INK App';
+  installButton.textContent = '📱 Install Chromink App';
   installButton.className = 'pwa-install-btn';
   installButton.style.cssText = `
     position: fixed;
@@ -1759,7 +1759,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // NEWSLETTER — QUICK SEND
     function sendQuickNewsletter() {
-      if (!confirm('Send the default ART&INK newsletter to all subscribers?')) return;
+      if (!confirm('Send the default Chromink newsletter to all subscribers?')) return;
 
       const token = sessionStorage.getItem('adminToken');
       console.log('Quick send - token:', token); // Debug log
@@ -1773,21 +1773,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
       const fd = new URLSearchParams();
       fd.append('action', 'sendCustomNewsletter');
-      fd.append('subject', '🎨 New Designs from ART&INK!');
+      fd.append('subject', '🎨 New Designs from Chromink!');
       fd.append('content', `
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ART&INK Newsletter</title>
+    <title>Chromink Newsletter</title>
 </head>
 <body style="margin:0;padding:0;background:#f4f6f8;font-family:Arial,Helvetica,sans-serif;">
     <div style="max-width:600px;margin:40px auto;background:#ffffff;padding:30px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,0.06);">
         
         <!-- Header -->
         <div style="text-align:center;margin-bottom:30px;">
-            <h1 style="margin:0;color:#333;font-size:28px;">🎨 New Designs from ART&INK!</h1>
+            <h1 style="margin:0;color:#333;font-size:28px;">🎨 New Designs from Chromink!</h1>
         </div>
 
         <!-- Main Content -->
@@ -1827,7 +1827,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 Questions? Reply to this email anytime.
             </p>
             <p style="margin:0;">
-                <small>ART&INK Shop</small>
+                <small>Chromink Shop</small>
             </p>
         </div>
 

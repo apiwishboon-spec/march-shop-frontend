@@ -1,17 +1,17 @@
-// Auto-updating copyright system for ART&INK
+// Auto-updating copyright system for Chromink
 (function() {
     'use strict';
     
     // Get current year
     const currentYear = new Date().getFullYear();
-    const startYear = 2026; // Year ART&INK was established
+    const startYear = 2026; // Year Chromink was established
     
     // Format copyright text
-    let copyrightText = `© ${currentYear} ART&INK`;
+    let copyrightText = `© ${currentYear} Chromink`;
     
     // Show range if different from start year
     if (currentYear > startYear) {
-        copyrightText = `© ${startYear}-${currentYear} ART&INK`;
+        copyrightText = `© ${startYear}-${currentYear} Chromink`;
     }
     
     // Function to update copyright elements
@@ -23,14 +23,14 @@
             // Check if element contains copyright text
             if (element.textContent.includes('©') || element.hasAttribute('data-copyright')) {
                 // Update existing copyright
-                element.innerHTML = element.innerHTML.replace(/©\s*\d{4}(-\d{4})?\s*ART&INK/g, copyrightText);
+                element.innerHTML = element.innerHTML.replace(/©\s*\d{4}(-\d{4})?\s*Chromink/g, copyrightText);
             }
         });
         
         // Find and update specific copyright patterns
         const patterns = [
-            /©\s*\d{4}(-\d{4})?\s*ART&INK/g,
-            /Copyright\s*\(c\)\s*\d{4}(-\d{4})?\s*ART&INK/gi
+            /©\s*\d{4}(-\d{4})?\s*Chromink/g,
+            /Copyright\s*\(c\)\s*\d{4}(-\d{4})?\s*Chromink/gi
         ];
         
         // Update all text nodes that contain copyright
@@ -57,7 +57,7 @@
         
         footers.forEach(footer => {
             // Check if copyright already exists
-            if (!footer.textContent.includes('©') && !footer.textContent.includes('ART&INK')) {
+            if (!footer.textContent.includes('©') && !footer.textContent.includes('Chromink')) {
                 // Add copyright to footer
                 const copyrightSpan = document.createElement('span');
                 copyrightSpan.className = 'copyright';
@@ -73,7 +73,7 @@
         addCopyrightToFooter();
         
         // Log copyright update for debugging
-        console.log(`🎨 ART&INK Copyright updated: ${copyrightText}`);
+        console.log(`🎨 Chromink Copyright updated: ${copyrightText}`);
     }
     
     // Run when DOM is ready
