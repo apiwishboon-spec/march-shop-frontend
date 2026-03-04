@@ -4,8 +4,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
-  <meta name="description"
-    content="ART&INK – Premium artwork shirts screen-printed in Thailand. Limited drops, real artists." />
+  
+  <!-- SEO Meta Tags -->
+  <title>ART&INK – Premium Artwork Shirts | Thailand Screen-Printed T-Shirts</title>
+  <meta name="description" content="Shop ART&INK premium artwork shirts screen-printed in Thailand. Limited edition drops, real artists, unique designs. Fast shipping worldwide." />
+  <meta name="keywords" content="artwork shirts, screen-printed t-shirts, Thailand, limited edition, ART&INK, premium clothing, unique designs, artist collaborations" />
+  <meta name="author" content="ART&INK" />
+  <meta name="robots" content="index, follow" />
+  <meta name="language" content="English" />
+  <meta name="geo.region" content="TH" />
+  <meta name="geo.placename" content="Thailand" />
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://art-ink.pages.dev/" />
+  <meta property="og:title" content="ART&INK – Premium Artwork Shirts | Thailand" />
+  <meta property="og:description" content="Shop premium artwork shirts screen-printed in Thailand. Limited edition drops from real artists." />
+  <meta property="og:image" content="https://art-ink.pages.dev/art-ink-icon.png" />
+  <meta property="og:image:alt" content="ART&INK Logo" />
+  <meta property="og:site_name" content="ART&INK" />
+  <meta property="og:locale" content="en_US" />
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://art-ink.pages.dev/" />
+  <meta property="twitter:title" content="ART&INK – Premium Artwork Shirts" />
+  <meta property="twitter:description" content="Shop premium artwork shirts screen-printed in Thailand. Limited edition drops from real artists." />
+  <meta property="twitter:image" content="https://art-ink.pages.dev/art-ink-icon.png" />
+  
+  <!-- Additional SEO -->
+  <link rel="canonical" href="https://art-ink.pages.dev/" />
   <meta name="postimage-verification" content="32c63680df0e8cff71f0515299c4aa69" />
   
   <!-- PWA Meta Tags -->
@@ -24,13 +52,47 @@
   <!-- Apple Touch Icon -->
   <link rel="apple-touch-icon" href="../assets/img/art-ink-icon.png" />
   
-  <title>ART&INK – Artwork Shirts</title>
+  <!-- Favicon -->
   <link rel="icon" type="image/png" href="../assets/img/art-ink-icon.png" />
-  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="shortcut icon" href="../assets/img/art-ink-icon.png" />
+  
+  <!-- Preconnect for performance -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://images.unsplash.com" />
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../assets/css/style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
     rel="stylesheet" />
+  
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Store",
+    "name": "ART&INK",
+    "description": "Premium artwork shirts screen-printed in Thailand with limited edition drops from real artists.",
+    "url": "https://art-ink.pages.dev/",
+    "logo": "https://art-ink.pages.dev/art-ink-icon.png",
+    "image": "https://art-ink.pages.dev/art-ink-icon.png",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "TH",
+      "addressRegion": "Thailand"
+    },
+    "sameAs": [
+      "https://art-ink.pages.dev/"
+    ],
+    "offers": {
+      "@type": "AggregateOffer",
+      "priceCurrency": "THB",
+      "lowPrice": "280",
+      "highPrice": "350",
+      "offerCount": "8"
+    }
+  }
+  </script>
 </head>
 
 <body>
@@ -55,11 +117,15 @@
     <!-- Hero -->
     <section class="hero">
       <h1 class="brand"><span class="brand-gradient">ART&INK</span></h1>
-      <p class="slogan"><strong>Crafted to Be Seen</strong></p>
+      <p class="slogan"><strong>Premium Artwork Shirts from Thailand</strong></p>
+      <p class="hero-description">Discover limited edition screen-printed t-shirts designed by real artists. Crafted with premium cotton and unique artistic expressions.</p>
 
       <div class="story-button-container">
         <a href="story.html" class="story-btn">
           <span>🎨</span> Discover Our Journey
+        </a>
+        <a href="#products" class="shop-btn">
+          <span>🛍️</span> Shop Collection
         </a>
         <a href="faq.html" class="faq-btn">
           <span>❓</span> Frequently Asked Questions
@@ -68,7 +134,7 @@
     </section>
 
     <!-- Products -->
-    <div class="section-heading">
+    <div id="products" class="section-heading">
       <h2>Our Collection</h2>
       <p>Screen-printed in limited quantities · Real artists · Premium cotton</p>
     </div>

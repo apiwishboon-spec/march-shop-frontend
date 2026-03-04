@@ -1,0 +1,30 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://art-ink.pages.dev/sitemap.xml
+
+# Allow all important files
+Allow: /index.html
+Allow: /order.html
+Allow: /story.html
+Allow: /faq.html
+Allow: /privacy.html
+Allow: /term.html
+Allow: /success.html
+Allow: /404.html
+
+# Allow assets
+Allow: /assets/
+Allow: /pwa/
+
+# Block admin from public indexing (optional - remove if you want it indexed)
+Disallow: /admin.html
+
+# Block common non-content files
+Disallow: /*.json$
+Disallow: /*.xml$
+Disallow: /*.txt$
+
+# Crawl delay (optional - be nice to servers)
+Crawl-delay: 1
