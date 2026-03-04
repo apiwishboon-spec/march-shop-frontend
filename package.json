@@ -1,0 +1,12 @@
+{
+  "name": "march-shop-frontend",
+  "version": "1.0.0",
+  "description": "ART&INK Shop Frontend",
+  "main": "index.html",
+  "scripts": {
+    "build": "echo 'Static site - no build needed'"
+  },
+  "keywords": ["static", "html", "css", "javascript"],
+  "author": "ART&INK",
+  "license": "MIT"
+}
