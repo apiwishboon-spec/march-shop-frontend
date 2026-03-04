@@ -2,6 +2,61 @@
  * ART&INK SHOP – AUTO QR VERSION (2-STEP PROCESS)
  *************************************************/
 
+// PWA Service Worker Registration
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(registration => {
+        console.log('SW registered: ', registration);
+      })
+      .catch(registrationError => {
+        console.log('SW registration failed: ', registrationError);
+      });
+  });
+}
+
+// PWA Install Prompt
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  
+  // Show install button or banner
+  const installButton = document.createElement('button');
+  installButton.textContent = '📱 Install ART&INK App';
+  installButton.className = 'pwa-install-btn';
+  installButton.style.cssText = `
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #f3a6c8 0%, #d9b7ee 45%, #9ecbff 100%);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    z-index: 9999;
+    box-shadow: 0 4px 20px rgba(243, 166, 200, 0.3);
+    transition: all 0.3s ease;
+  `;
+  
+  installButton.addEventListener('click', () => {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then((choiceResult) => {
+      if (choiceResult.outcome === 'accepted') {
+        console.log('User accepted the A2HS prompt');
+        installButton.remove();
+      } else {
+        console.log('User dismissed the A2HS prompt');
+      }
+      deferredPrompt = null;
+    });
+  });
+  
+  document.body.appendChild(installButton);
+});
+
 // Global admin login function placeholder - will be properly defined after DOM loads
 window.attemptLogin = function() {
   console.log('attemptLogin called - checking if admin functions are loaded');
