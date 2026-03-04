@@ -2,7 +2,7 @@
  * ART&INK SHOP – AUTO QR VERSION (2-STEP PROCESS)
  *************************************************/
 
-// PWA Service Worker Registration
+// PWA Service Worker Registration - Online Only Mode
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')

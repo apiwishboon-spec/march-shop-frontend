@@ -1,72 +1,59 @@
+// Service Worker for ART&INK PWA - Online Only Mode
 const CACHE_NAME = 'artink-v1';
+
+// Minimal cache for essential files only
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/order.html',
-  '/faq.html',
-  '/story.html',
-  '/privacy.html',
-  '/term.html',
-  '/admin.html',
-  '/success.html',
-  '/404.html',
-  '/style.css',
-  '/app.js',
-  '/copyright.js',
   '/art-ink-icon.png',
-  'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap',
-  'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js'
+  '/manifest.json'
 ];
 
-// Install event - cache resources
+// Install event - cache only essential resources
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('Opened cache');
+        console.log('SW installed - caching essential files only');
         return cache.addAll(urlsToCache);
       })
   );
 });
 
-// Fetch event - serve from cache when offline
+// Fetch event - always try network first (online only)
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request)
+    fetch(event.request)
       .then(response => {
-        // Cache hit - return response
-        if (response) {
-          return response;
+        // Cache successful responses for icons only
+        if (event.request.url.includes('art-ink-icon.png') || 
+            event.request.url.includes('manifest.json')) {
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME)
+            .then(cache => {
+              cache.put(event.request, responseToCache);
+            });
         }
-
-        // Clone the request
-        const fetchRequest = event.request.clone();
-
-        return fetch(fetchRequest).then(
-          response => {
-            // Check if valid response
-            if(!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
-            }
-
-            // Clone the response
-            const responseToCache = response.clone();
-
-            caches.open(CACHE_NAME)
-              .then(cache => {
-                cache.put(event.request, responseToCache);
-              });
-
-            return response;
-          }
-        ).catch(() => {
-          // Return offline page for navigation requests
-          if (event.request.destination === 'document') {
-            return caches.match('/index.html');
-          }
+        return response;
+      })
+      .catch(() => {
+        // Only serve from cache for icons and manifest
+        if (event.request.url.includes('art-ink-icon.png') || 
+            event.request.url.includes('manifest.json')) {
+          return caches.match(event.request);
+        }
+        
+        // For all other requests, show offline message
+        if (event.request.destination === 'document') {
+          return new Response(
+            '<html><body><h1>ART&INK - Offline</h1><p>Please connect to the internet to use our shop.</p></body></html>',
+            { headers: { 'Content-Type': 'text/html' } }
+          );
+        }
+        
+        return new Response('Offline - Please connect to internet', { 
+          status: 503, 
+          statusText: 'Service Unavailable' 
         });
-      }
-    )
+      })
   );
 });
 
@@ -86,22 +73,7 @@ self.addEventListener('activate', event => {
   );
 });
 
-// Background sync for offline orders
-self.addEventListener('sync', event => {
-  if (event.tag === 'background-sync') {
-    event.waitUntil(doBackgroundSync());
-  }
-});
-
-function doBackgroundSync() {
-  // Handle offline orders when back online
-  return self.registration.showNotification('ART&INK', {
-    body: 'Your offline orders have been synced!',
-    icon: '/art-ink-icon.png'
-  });
-}
-
-// Push notifications
+// Push notifications (still works when online)
 self.addEventListener('push', event => {
   const options = {
     body: event.data ? event.data.text() : 'New designs available at ART&INK!',
