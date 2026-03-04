@@ -1,9 +1,9 @@
 // Service Worker for Chromink PWA - Online Only Mode
-const CACHE_NAME = 'artink-v1';
+const CACHE_NAME = 'chromink-v1';
 
 // Minimal cache for essential files only
 const urlsToCache = [
-  '../assets/img/art-ink-icon.png',
+  '../assets/img/chromink-icon.png',
   '../pwa/manifest.json'
 ];
 
@@ -24,7 +24,7 @@ self.addEventListener('fetch', event => {
     fetch(event.request)
       .then(response => {
         // Cache successful responses for icons only
-        if (event.request.url.includes('art-ink-icon.png') || 
+        if (event.request.url.includes('chromink-icon.png') || 
             event.request.url.includes('manifest.json')) {
           const responseToCache = response.clone();
           caches.open(CACHE_NAME)
@@ -36,7 +36,7 @@ self.addEventListener('fetch', event => {
       })
       .catch(() => {
         // Only serve from cache for icons and manifest
-        if (event.request.url.includes('art-ink-icon.png') || 
+        if (event.request.url.includes('chromink-icon.png') || 
             event.request.url.includes('manifest.json')) {
           return caches.match(event.request);
         }
@@ -77,8 +77,8 @@ self.addEventListener('activate', event => {
 self.addEventListener('push', event => {
   const options = {
     body: event.data ? event.data.text() : 'New designs available at Chromink!',
-    icon: '/art-ink-icon.png',
-    badge: '/art-ink-icon.png',
+    icon: '/chromink-icon.png',
+    badge: '/chromink-icon.png',
     vibrate: [100, 50, 100],
     data: {
       dateOfArrival: Date.now(),
@@ -88,12 +88,12 @@ self.addEventListener('push', event => {
       {
         action: 'explore',
         title: 'Explore new designs',
-        icon: '/art-ink-icon.png'
+        icon: '/chromink-icon.png'
       },
       {
         action: 'close',
         title: 'Close notification',
-        icon: '/art-ink-icon.png'
+        icon: '/chromink-icon.png'
       }
     ]
   };

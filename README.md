@@ -98,7 +98,7 @@ Chromink is a modern Progressive Web App (PWA) e-commerce platform featuring Tha
 │   ├── style.css            # Comprehensive responsive CSS
 │   ├── app.js               # Main application logic
 │   ├── copyright.js         # Dynamic copyright
-│   ├── art-ink-icon.png     # App icon and branding
+│   ├── chromink-icon.png     # App icon and branding
 │   └── manifest.json        # PWA configuration
 │
 ├── ⚙️ PWA Components

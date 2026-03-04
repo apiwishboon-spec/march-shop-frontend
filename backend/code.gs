@@ -596,7 +596,7 @@ function handleContactSubmission(e) {
   
   try {
     // Send email notification to admin
-    const adminEmail = "support@art-ink.com"; // Replace with actual admin email
+    const adminEmail = "apiwish.boon@gmail.com"; // Replace with actual admin email
     const emailSubject = "New Contact Form Submission: " + subject;
     const emailBody = `
 New contact form submission from Chromink website:
@@ -635,7 +635,7 @@ If you have any urgent questions, please don't hesitate to contact us directly.
 
 Best regards,
 The Chromink Team
-support@art-ink.com
+apiwish.boon@gmail.com
     `.trim();
     
     MailApp.sendEmail({
@@ -1161,7 +1161,7 @@ You will receive another email when your order is ready.
 <!-- CTA -->
 <tr>
 <td style="padding-bottom:40px;">
-<a href="https://art-ink-pages.dev/"
+<a href="https://chromink.pages.dev/"
 style="
 background:#87cefa;
 color:#ffffff;
@@ -1187,8 +1187,8 @@ Questions? Reply to this email anytime.
 
 <p style="margin:0;">
 © 2026 Chromink<br>
-<a href="https://art-ink.pages.dev/" style="color:#8fa6e6; text-decoration:none;">
-art-ink.pages.dev
+<a href="https://chromink.pages.dev/" style="color:#8fa6e6; text-decoration:none;">
+chromink.pages.dev
 </a>
 </p>
 
@@ -1274,7 +1274,7 @@ And now, you'll always be first in line.
 <!-- CTA -->
 <tr>
 <td style="padding-bottom:40px;">
-<a href="https://art-ink.pages.dev/"
+<a href="https://chromink.pages.dev/"
 style="
 background:#87cefa;
 color:#ffffff;
@@ -1299,13 +1299,13 @@ You're receiving this email because you subscribed to the Chromink newsletter.
 
 <p style="margin:0;">
 © 2026 Chromink<br>
-<a href="https://art-ink.pages.dev/" style="color:#8fa6e6; text-decoration:none;">
-art-ink.pages.dev
+<a href="https://chromink.pages.dev/" style="color:#8fa6e6; text-decoration:none;">
+chromink.pages.dev
 </a>
 </p>
 
 <p style="margin:10px 0 0 0;">
-<a href="mailto:apiwish.boon@gmail.com?subject=Unsubscribe%20Request&body=Please%20remove%20me%20from%20the%20ART%26INK%20newsletter.%20Now%20plese%20click%20sent."
+<a href="mailto:apiwish.boon@gmail.com?subject=Unsubscribe%20Request&body=Please%20remove%20me%20from%20the%20Chromink%20newsletter.%20Now%20plese%20click%20sent."
 style="color:#8fa6e6; text-decoration:none;">
 Unsubscribe
 </a>
@@ -1404,7 +1404,7 @@ Your order will be held for 7 days.
 <!-- CTA -->
 <tr>
 <td style="padding-bottom:40px;">
-<a href="https://art-ink-pages.dev/"
+<a href="https://chromink.pages.dev/"
 style="
 background:#87cefa;
 color:#ffffff;
@@ -1430,8 +1430,8 @@ Questions? Reply to this email anytime.
 
 <p style="margin:0;">
 © 2026 Chromink<br>
-<a href="https://art-ink.pages.dev/" style="color:#8fa6e6; text-decoration:none;">
-art-ink.pages.dev
+<a href="https://chromink.pages.dev/" style="color:#8fa6e6; text-decoration:none;">
+chromink.pages.dev
 </a>
 </p>
 

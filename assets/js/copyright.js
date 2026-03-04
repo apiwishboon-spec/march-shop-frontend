@@ -84,7 +84,7 @@
     }
     
     // Export for external use
-    window.ARTINKCopyright = {
+    window.ChrominkCopyright = {
         update: updateCopyright,
         getText: () => copyrightText,
         getYear: () => currentYear

@@ -2,9 +2,9 @@
 <browserconfig>
     <msapplication>
         <tile>
-            <square70x70logo src="art-ink-icon.png"/>
-            <square150x150logo src="art-ink-icon.png"/>
-            <square310x310logo src="art-ink-icon.png"/>
+            <square70x70logo src="chromink-icon.png"/>
+            <square150x150logo src="chromink-icon.png"/>
+            <square310x310logo src="chromink-icon.png"/>
             <TileColor>#f3a6c8</TileColor>
         </tile>
     </msapplication>

@@ -1616,7 +1616,7 @@ body.page-loading {
   pointer-events: none;
 }
 
-.art-icon, .ink-icon {
+.chromink-icon {
   position: absolute;
   font-size: 8rem;
   opacity: 0.1;
@@ -1879,7 +1879,7 @@ body.page-loading {
     font-size: 2.5rem;
   }
   
-  .art-icon, .ink-icon {
+  .chromink-icon {
     font-size: 6rem;
   }
 }
